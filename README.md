@@ -1,5 +1,7 @@
 # MB - Mad Balls
 
+---
+
 ## Authors:
 
 ### Luke Berger
@@ -7,6 +9,8 @@
 ### Alexander Roskamp
 
 ### Benedikt Schroeder
+
+---
 
 # Maven
 
