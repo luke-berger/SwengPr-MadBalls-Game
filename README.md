@@ -1,6 +1,6 @@
 # MB - Mad Balls
 
-test
+t
 
 ## Maven
 
