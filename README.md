@@ -1,18 +1,6 @@
 # MB - Mad Balls
 
----
-
-## Authors:
-
-### Luke Berger
-
-### Alexander Roskamp
-
-### Benedikt Schroeder
-
----
-
-# Maven
+## Maven
 
 Kurzübersicht nützlicher Maven-Befehle. Weitere Informationen finden sich im Tutorial:
 
@@ -24,7 +12,7 @@ Kurzübersicht nützlicher Maven-Befehle. Weitere Informationen finden sich im T
 - `mvn javafx:run` führt das Projekt aus
 - `mvn javafx:run -Dargs="--no-gui"` führt das Projekt mit Command-Line-Parameter `--no-gui` aus.
 
-# GitLab
+## GitLab
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
 
@@ -116,7 +104,11 @@ You can also document commands to lint the code or run tests. These steps help t
 
 ## Authors and acknowledgment
 
-Show your appreciation to those who have contributed to the project.
+### Luke Berger
+
+### Alexander Roskamp
+
+### Benedikt Schroeder
 
 ## License
 
