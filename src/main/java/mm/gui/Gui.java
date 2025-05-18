@@ -1,47 +1,78 @@
 package mm.gui;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class Gui extends Application {
 
-    private String baseText = "   Say 'Hello World!'   "; // padded for smooth loop
-    private int offset = 0;
-
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Hello World!");
-        Button btn = new Button();
-        // registered a lambda function, which is called when the button is clicked
-        btn.setOnAction(event -> {System.out.println("Hello World!");});
+        primaryStage.setTitle("MadBalls©");
 
+        // Buttons
+        Button btnPuzzle = new Button("Puzzle-Mode");
+        Button btnSandbox = new Button("Sandbox-Mode");
+
+        Button btnOptions = new Button("Options-Mode");
+
+        // Placeholder actions
+        btnPuzzle.setOnAction(e -> System.out.println("Starting Puzzle Mode"));
+        btnSandbox.setOnAction(e -> System.out.println("Starting Sandbox Mode"));
+        btnOptions.setOnAction(e -> System.out.println("Opening Options"));
+
+        // Load and center background image
+        Image backgroundImage = new Image(getClass().getResource("MB_TitleScreen.png").toExternalForm());
+        ImageView backgroundView = new ImageView(backgroundImage);
+        backgroundView.setPreserveRatio(true);
+        //
+        //
+        backgroundView.setFitWidth(1980); // optional: scales proportionally
+
+        // StackPane for centered background
+        StackPane backgroundLayer = new StackPane(backgroundView);
+        backgroundLayer.setPrefSize(1980, 1080);
+
+        // Pane for freely positioned buttons
+        Pane buttonLayer = new Pane();
+
+        // Set button positions and rotations (adjust as needed)
+        btnPuzzle.setLayoutX(490);
+        btnPuzzle.setLayoutY(470);
+        btnPuzzle.setRotate(-10);
+
+        btnSandbox.setLayoutX(780);
+        btnSandbox.setLayoutY(470);
+        btnSandbox.setRotate(7);
+
+        btnOptions.setLayoutX(700);
+        btnOptions.setLayoutY(600);
+        btnOptions.setRotate(-5);
+
+        // Assign CSS classes
+        btnPuzzle.getStyleClass().add("btnPuzzle");
+        btnSandbox.getStyleClass().add("btnPuzzle");
+        btnOptions.getStyleClass().add("btnPuzzle");
+
+        // Add buttons to button layer
+        buttonLayer.getChildren().addAll(btnPuzzle, btnSandbox, btnOptions);
+
+        // StackPane root: layers background and button pane
         StackPane root = new StackPane();
-        root.getChildren().add(btn);
-        primaryStage.setScene(new Scene(root, 300, 250));
+        root.getChildren().addAll(backgroundLayer, buttonLayer);
+
+        // Create and style the scene
+        Scene scene = new Scene(root, 1980, 1080);
+        scene.getStylesheets().add(getClass().getResource("titleScreen.css").toExternalForm());
+
+        // Show the stage
+        primaryStage.setScene(scene);
         primaryStage.show();
-
-        // Animation loop: scroll text
-        AnimationTimer scrollingTextTimer = new AnimationTimer() {
-            private long lastUpdate = 0;
-
-            // handle is abstract, and has to be implemented in order for an AnimationTimer to be instantiated! (You could create a new class that inherits to keep it clean).
-            @Override
-            public void handle(long now) {
-                // a so called "spin-wait", that checks if 150ms have passed.
-                if (now - lastUpdate >= 150_000_000) {
-                    String scrolled = baseText.substring(offset) + baseText.substring(0, offset);
-                    btn.setText(scrolled);
-                    offset = (offset + 1) % baseText.length();
-                    lastUpdate = now;
-                }
-            }
-        };
-        scrollingTextTimer.start();
-
     }
 
     public static void main(String[] args) {
