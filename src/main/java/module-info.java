@@ -7,4 +7,5 @@ module mm {
     requires jbox2d.library;
     
     exports mm.gui;
+    exports mm.physics;
 }
