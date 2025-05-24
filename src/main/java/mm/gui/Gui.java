@@ -31,9 +31,9 @@ public class Gui extends Application {
         Circle pinQuit = createPin(800 + 56, 600, Color.YELLOW);
 
         // === Overlay und Optionsfenster ===
-        StackPane overlayBackground = new StackPane();
-        overlayBackground.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-        overlayBackground.setVisible(false);
+        StackPane overlayBackgroundOptions = new StackPane();
+        overlayBackgroundOptions.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        overlayBackgroundOptions.setVisible(false);
 
         Pane optionsWindow = new Pane();
         optionsWindow.setPrefSize(600, 400);
@@ -85,21 +85,47 @@ public class Gui extends Application {
         Button btnCloseOptions = new Button("X");
         btnCloseOptions.setLayoutX(560);
         btnCloseOptions.setLayoutY(10);
-        btnCloseOptions.setOnAction(e -> overlayBackground.setVisible(false));
+        btnCloseOptions.setOnAction(e -> overlayBackgroundOptions.setVisible(false));
 
-        // === Optionen-Inhalte hinzufügen ===
+        StackPane overlayBackgroundPuzzle = new StackPane();
+        overlayBackgroundPuzzle.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+        overlayBackgroundPuzzle.setVisible(false);
+
+        // === Puzzle Window ===
+        Pane puzzleWindow = new Pane();
+        puzzleWindow.setPrefSize(720, 480);
+        puzzleWindow.setMaxSize(600, 400);
+        puzzleWindow.setStyle("-fx-background-color: rgba(46, 36, 87, 0.94); -fx-background-radius: 12;");
+
+        Label lblTitlePuzzle = new Label("Puzzle Picker");
+        lblTitlePuzzle.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
+        lblTitlePuzzle.setLayoutX(230);
+        lblTitlePuzzle.setLayoutY(30);
+
+        // === Close-Button oben rechts ===
+        Button btnClosePuzzle = new Button("X");
+        btnClosePuzzle.setLayoutX(560);
+        btnClosePuzzle.setLayoutY(10);
+        btnClosePuzzle.setOnAction(e -> overlayBackgroundPuzzle.setVisible(false));
+
+        puzzleWindow.getChildren().addAll(
+                lblTitlePuzzle, btnClosePuzzle);
+
         optionsWindow.getChildren().addAll(
                 lblTitleAudio, lblMusic, sliderMusic, lblSound, sliderSound,
                 lblTitleGraphics, lblTexturePack, btnUploadTexture,
                 btnCloseOptions);
 
         StackPane.setAlignment(optionsWindow, Pos.CENTER);
-        overlayBackground.getChildren().add(optionsWindow);
+        overlayBackgroundOptions.getChildren().add(optionsWindow);
+
+        StackPane.setAlignment(puzzleWindow, Pos.CENTER);
+        overlayBackgroundPuzzle.getChildren().add(puzzleWindow);
 
         // === Button-Events ===
-        btnPuzzle.setOnAction(e -> System.out.println("Starting Puzzle Mode"));
+        btnPuzzle.setOnAction(e -> overlayBackgroundPuzzle.setVisible(true));
         btnSandbox.setOnAction(e -> System.out.println("Starting Sandbox Mode"));
-        btnOptions.setOnAction(e -> overlayBackground.setVisible(true));
+        btnOptions.setOnAction(e -> overlayBackgroundOptions.setVisible(true));
         btnQuit.setOnAction(e -> {
             System.out.println("Quitting Game...");
             System.exit(0);
@@ -144,7 +170,7 @@ public class Gui extends Application {
 
         // === Root-StackPane ===
         StackPane root = new StackPane();
-        root.getChildren().addAll(backgroundLayer, buttonLayer, overlayBackground);
+        root.getChildren().addAll(backgroundLayer, buttonLayer, overlayBackgroundPuzzle, overlayBackgroundOptions);
 
         Scene scene = new Scene(root, 1980, 1080);
         scene.getStylesheets().add(getClass().getResource("titleScreen.css").toExternalForm());
