@@ -1,13 +1,15 @@
 package mm.gui;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -24,23 +26,68 @@ public class Gui extends Application {
         Button btnOptions = new Button("Options");
         Button btnQuit = new Button("Quit");
 
-        // === Kreise (Reißzwecken) über Buttons ===
-        Circle pinPuzzle = createPin(525, 460, Color.RED);
-        Circle pinSandbox = createPin(670 + 50, 442, Color.BLUE);
-        Circle pinOptions = createPin(850 + 58, 460, Color.GREEN);
-        Circle pinQuit = createPin(800 + 56, 600, Color.YELLOW);
+        btnPuzzle.setRotate(-7);
+        btnSandbox.setRotate(0);
+        btnOptions.setRotate(5);
+        btnQuit.setRotate(-3);
 
-        // === Overlay und Optionsfenster ===
+        // === Buttons mit Pins kombinieren ===
+        HBox topRow = new HBox(60,
+                btnWithPin(btnPuzzle, Color.RED),
+                btnWithPin(btnSandbox, Color.BLUE),
+                btnWithPin(btnOptions, Color.GREEN));
+        topRow.setAlignment(Pos.CENTER);
+
+        HBox bottomRow = new HBox(btnWithPin(btnQuit, Color.YELLOW));
+        bottomRow.setAlignment(Pos.BASELINE_RIGHT);
+
+        VBox buttonLayer = new VBox(40, topRow, bottomRow);
+        buttonLayer.setAlignment(Pos.CENTER);
+
+        // === Bilder laden ===
+        Image backgroundLogo = new Image(getClass().getResource("MadBallsLogo.jpeg").toExternalForm());
+        Image backgroundBoard = new Image(getClass().getResource("MB_TitleScreenBoard.jpeg").toExternalForm());
+
+        // === logoBox ===
+        HBox logoBox = new HBox();
+        logoBox.setPrefSize(800, 400);
+        logoBox.setAlignment(Pos.CENTER);
+
+        BackgroundImage logoBg = new BackgroundImage(
+                backgroundLogo,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(100, 100, true, true, true, false));
+        logoBox.setBackground(new Background(logoBg));
+
+        // === boardBox ===
+        HBox boardBox = new HBox(buttonLayer);
+        boardBox.setPrefSize(600, 400);
+        boardBox.setAlignment(Pos.CENTER);
+        boardBox.setPadding(new Insets(0, 0, 20, 0));
+
+        BackgroundImage boardBg = new BackgroundImage(
+                backgroundBoard,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.CENTER,
+                new BackgroundSize(100, 100, true, true, true, false));
+        boardBox.setBackground(new Background(boardBg));
+
+        VBox logoANDBoard = new VBox(logoBox, boardBox);
+        logoANDBoard.setPadding(new Insets(0, 0, 30, 0));
+
+        // === Overlay: Optionen ===
         StackPane overlayBackgroundOptions = new StackPane();
         overlayBackgroundOptions.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
         overlayBackgroundOptions.setVisible(false);
 
         Pane optionsWindow = new Pane();
-        optionsWindow.setPrefSize(600, 400);
         optionsWindow.setMaxSize(600, 400);
+        optionsWindow.setMinSize(600, 400);
         optionsWindow.setStyle("-fx-background-color: rgba(46, 36, 87, 0.94); -fx-background-radius: 12;");
 
-        // === Audio Options ===
         Label lblTitleAudio = new Label("Audio Options");
         lblTitleAudio.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
         lblTitleAudio.setLayoutX(230);
@@ -66,7 +113,6 @@ public class Gui extends Application {
         sliderSound.setLayoutY(130);
         sliderSound.setPrefWidth(300);
 
-        // === Grafik Options ===
         Label lblTitleGraphics = new Label("Grafik");
         lblTitleGraphics.setStyle("-fx-text-fill: white; -fx-font-size: 20px;");
         lblTitleGraphics.setLayoutX(260);
@@ -81,20 +127,27 @@ public class Gui extends Application {
         btnUploadTexture.setLayoutX(200);
         btnUploadTexture.setLayoutY(225);
 
-        // === Close-Button oben rechts ===
         Button btnCloseOptions = new Button("X");
         btnCloseOptions.setLayoutX(560);
         btnCloseOptions.setLayoutY(10);
         btnCloseOptions.setOnAction(e -> overlayBackgroundOptions.setVisible(false));
 
+        optionsWindow.getChildren().addAll(
+                lblTitleAudio, lblMusic, sliderMusic, lblSound, sliderSound,
+                lblTitleGraphics, lblTexturePack, btnUploadTexture,
+                btnCloseOptions);
+
+        overlayBackgroundOptions.getChildren().add(optionsWindow);
+        StackPane.setAlignment(optionsWindow, Pos.CENTER);
+
+        // === Overlay: Puzzle ===
         StackPane overlayBackgroundPuzzle = new StackPane();
         overlayBackgroundPuzzle.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
         overlayBackgroundPuzzle.setVisible(false);
 
-        // === Puzzle Window ===
         Pane puzzleWindow = new Pane();
-        puzzleWindow.setPrefSize(720, 480);
-        puzzleWindow.setMaxSize(600, 400);
+        puzzleWindow.setMaxSize(720, 480);
+        puzzleWindow.setMinSize(720, 480);
         puzzleWindow.setStyle("-fx-background-color: rgba(46, 36, 87, 0.94); -fx-background-radius: 12;");
 
         Label lblTitlePuzzle = new Label("Puzzle Picker");
@@ -102,75 +155,31 @@ public class Gui extends Application {
         lblTitlePuzzle.setLayoutX(230);
         lblTitlePuzzle.setLayoutY(30);
 
-        // === Close-Button oben rechts ===
         Button btnClosePuzzle = new Button("X");
         btnClosePuzzle.setLayoutX(560);
         btnClosePuzzle.setLayoutY(10);
         btnClosePuzzle.setOnAction(e -> overlayBackgroundPuzzle.setVisible(false));
 
-        puzzleWindow.getChildren().addAll(
-                lblTitlePuzzle, btnClosePuzzle);
-
-        optionsWindow.getChildren().addAll(
-                lblTitleAudio, lblMusic, sliderMusic, lblSound, sliderSound,
-                lblTitleGraphics, lblTexturePack, btnUploadTexture,
-                btnCloseOptions);
-
-        StackPane.setAlignment(optionsWindow, Pos.CENTER);
-        overlayBackgroundOptions.getChildren().add(optionsWindow);
-
-        StackPane.setAlignment(puzzleWindow, Pos.CENTER);
+        puzzleWindow.getChildren().addAll(lblTitlePuzzle, btnClosePuzzle);
         overlayBackgroundPuzzle.getChildren().add(puzzleWindow);
+        StackPane.setAlignment(puzzleWindow, Pos.CENTER);
 
-        // === Button-Events ===
-        btnPuzzle.setOnAction(e -> overlayBackgroundPuzzle.setVisible(true));
-        btnSandbox.setOnAction(e -> System.out.println("Starting Sandbox Mode"));
-        btnOptions.setOnAction(e -> overlayBackgroundOptions.setVisible(true));
-        btnQuit.setOnAction(e -> {
-            System.out.println("Quitting Game...");
-            System.exit(0);
-        });
-
-        // === Hintergrundbild ===
-        javafx.scene.image.Image backgroundImage = new javafx.scene.image.Image(
-                getClass().getResource("MB_TitleScreen.png").toExternalForm());
-        javafx.scene.image.ImageView backgroundView = new javafx.scene.image.ImageView(backgroundImage);
-        backgroundView.setPreserveRatio(true);
-        backgroundView.setFitWidth(1920);
-
-        StackPane backgroundLayer = new StackPane(backgroundView);
-        backgroundLayer.setPrefSize(1920, 1080);
-
-        // === Buttons positionieren ===
-        btnPuzzle.setLayoutX(480);
-        btnPuzzle.setLayoutY(460);
-        btnPuzzle.setRotate(-7);
-
-        btnSandbox.setLayoutX(670);
-        btnSandbox.setLayoutY(442);
-
-        btnOptions.setLayoutX(850);
-        btnOptions.setLayoutY(460);
-        btnOptions.setRotate(6);
-
-        btnQuit.setLayoutX(800);
-        btnQuit.setLayoutY(600);
-        btnQuit.setRotate(3);
-
+        // === Button Styles + Events ===
         btnPuzzle.getStyleClass().add("btnTS");
         btnSandbox.getStyleClass().add("btnTS");
         btnOptions.getStyleClass().add("btnTS");
         btnQuit.getStyleClass().add("btnTS");
 
-        // === Buttons & Pins in Layer ===
-        Pane buttonLayer = new Pane();
-        buttonLayer.getChildren().addAll(
-                btnPuzzle, btnSandbox, btnOptions, btnQuit,
-                pinPuzzle, pinSandbox, pinOptions, pinQuit);
+        btnPuzzle.setOnAction(e -> overlayBackgroundPuzzle.setVisible(true));
+        btnSandbox.setOnAction(e -> System.out.println("Starting Sandbox Mode"));
+        btnOptions.setOnAction(e -> overlayBackgroundOptions.setVisible(true));
+        btnQuit.setOnAction(e -> System.exit(0));
 
-        // === Root-StackPane ===
+        // === Root-Layout ===
         StackPane root = new StackPane();
-        root.getChildren().addAll(backgroundLayer, buttonLayer, overlayBackgroundPuzzle, overlayBackgroundOptions);
+        root.setStyle("-fx-background-color: #0e1722;");
+        root.getChildren().addAll(logoANDBoard, overlayBackgroundPuzzle,
+                overlayBackgroundOptions);
 
         Scene scene = new Scene(root, 1920, 1080);
         scene.getStylesheets().add(getClass().getResource("titleScreen.css").toExternalForm());
@@ -182,15 +191,19 @@ public class Gui extends Application {
         primaryStage.show();
     }
 
-    // === Hilfsmethode für Reißzweckenkreise ===
-    private Circle createPin(double x, double y, Color color) {
-        Circle pin = new Circle(6); // Radius 6px
+    private Circle createPin(Color color) {
+        Circle pin = new Circle(6);
         pin.setFill(color);
-        pin.setLayoutX(x);
-        pin.setLayoutY(y);
         pin.setStroke(Color.BLACK);
         pin.setStrokeWidth(1.5);
         return pin;
+    }
+
+    private StackPane btnWithPin(Button btn, Color pinColor) {
+        Circle pin = createPin(pinColor);
+        StackPane stack = new StackPane(btn, pin);
+        StackPane.setAlignment(pin, Pos.TOP_CENTER);
+        return stack;
     }
 
     public static void main(String[] args) {
