@@ -1,7 +1,5 @@
 # MB - Mad Balls
 
-tee
-
 ## Maven
 
 Kurzübersicht nützlicher Maven-Befehle. Weitere Informationen finden sich im Tutorial:
@@ -106,11 +104,11 @@ You can also document commands to lint the code or run tests. These steps help t
 
 ## Authors and acknowledgment
 
-### Luke Berger
+### Luke Berger (Graphikdesigner/Project Coordinater)
 
-### Alexander Roskamp
+### Alexander Roskamp (Lead Developer)
 
-### Benedikt Schroeder
+### Benedikt Schroeder (Projecttester)
 
 ## License
 

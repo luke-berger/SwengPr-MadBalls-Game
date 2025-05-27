@@ -14,7 +14,7 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
 import javafx.application.Application;
-import javafx.geometry.Point2D;
+
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;

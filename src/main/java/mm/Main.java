@@ -1,7 +1,13 @@
 package mm;
 
-import mm.gui.Gui;
-import mm.model.Example;
+import java.io.File;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import mm.gui.TitleScreen;
+import mm.model.objects.GameObject;
+import mm.model.objects.Level;
+import mm.model.objects.LevelReader;
 
 /**
  * The common starting point of the GUI.
@@ -9,12 +15,20 @@ import mm.model.Example;
 public class Main {
     /**
      * The external entry point of the application.
+     * 
      * @param args The command line arguments passed to the application.
      */
     public static void main(String[] args) {
-        Example example = new Example(0);
+
+        String filePath = "src/main/java/mm/model/level/";
+        String fileName = "Standart_Level.JSON";
+        LevelReader reader = new LevelReader(filePath, fileName);
+
+        Level level = reader.readFile();
+
         System.out.println("Starting...");
-        Gui.main(args);
+        TitleScreen.main(args);
         System.out.println("Exiting...");
+
     }
 }
