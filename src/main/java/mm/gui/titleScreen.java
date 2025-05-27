@@ -20,7 +20,7 @@ public class TitleScreen extends Application {
         primaryStage.setTitle("MadBalls©");
 
         // === Buttons ===
-        Button btnPuzzle = new Button("Puzzlestest");
+        Button btnPuzzle = new Button("Puzzles");
         Button btnSandbox = new Button("Sandbox");
         Button btnOptions = new Button("Options");
         Button btnQuit = new Button("Quit");
