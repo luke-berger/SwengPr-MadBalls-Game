@@ -1,15 +1,13 @@
 package mm;
 
-
 import java.io.File;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import mm.gui.Gui;
+import mm.gui.TitleScreen;
 import mm.model.objects.GameObject;
 import mm.model.objects.Level;
 import mm.model.objects.LevelReader;
-
 
 /**
  * The common starting point of the GUI.
@@ -28,10 +26,9 @@ public class Main {
 
         Level level = reader.readFile();
 
-        
-        /*System.out.println("Starting...");
-        Gui.main(args);
-        System.out.println("Exiting...");*/
+        System.out.println("Starting...");
+        TitleScreen.main(args);
+        System.out.println("Exiting...");
 
     }
 }

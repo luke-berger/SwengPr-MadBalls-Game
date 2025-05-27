@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
-public class titleScreen extends Application {
+public class TitleScreen extends Application {
 
     @Override
     public void start(Stage primaryStage) {
