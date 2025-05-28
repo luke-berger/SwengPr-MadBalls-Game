@@ -53,6 +53,15 @@
     </dependencies>
 
     <build>
+        <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </resource>
+        <!-- Add more <resource> blocks here if you have other resource folders -->
+    </resources>
         <plugins>
             <plugin>
                 <!-- The Compiler plugin is used to compile the sources of your project. -->

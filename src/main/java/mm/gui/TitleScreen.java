@@ -44,10 +44,8 @@ public class TitleScreen extends Application {
         buttonLayer.setAlignment(Pos.CENTER);
 
         // === Bilder laden ===
-        Image backgroundLogo = new Image(
-                getClass().getResource("/mm/rsc/MadBallsLogo.jpeg").toExternalForm());
-        Image backgroundBoard = new Image(
-                getClass().getResource("/mm/rsc/MB_TitleScreenBoard.jpeg").toExternalForm());
+        Image backgroundLogo = new Image(getClass().getResourceAsStream("/pictures/MadBallsLogo.jpeg"));
+        Image backgroundBoard = new Image(getClass().getResourceAsStream("/pictures/MB_TitleScreenBoard.jpeg"));
 
         // === logoBox ===
         HBox logoBox = new HBox();
@@ -183,7 +181,7 @@ public class TitleScreen extends Application {
                 overlayBackgroundOptions);
 
         Scene scene = new Scene(root, 1920, 1080);
-        scene.getStylesheets().add(getClass().getResource("/mm/styling/titleScreen.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/styling/titleScreen.css").toExternalForm());
 
         primaryStage.setScene(scene);
         primaryStage.setMaxWidth(1920);
