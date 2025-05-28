@@ -1,4 +1,4 @@
-package mm.physics;
+package mm.core.physics;
 
 
 import org.jbox2d.callbacks.ContactImpulse;
