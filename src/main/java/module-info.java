@@ -11,7 +11,7 @@ module mm {
     requires com.fasterxml.jackson.databind;
 
     exports mm.gui;
-    exports mm.physics;
+    
 
     opens mm.model.objects to com.fasterxml.jackson.databind;
 }
