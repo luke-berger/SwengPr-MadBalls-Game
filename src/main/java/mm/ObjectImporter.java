@@ -1,6 +1,6 @@
 package mm;
 
-
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,13 +8,18 @@ import mm.model.objects.GameObject;
 import mm.model.objects.Level;
 import mm.model.objects.LevelReader;
 
-
 public class ObjectImporter {
 
     private Level level;
 
     public ObjectImporter() {
-        LevelReader levelTemplate = new LevelReader("src\\main\\java\\mm\\model\\level\\", "standard_level.json");
+        // Load JSON from resources (works on all OS)
+        InputStream is = getClass().getResourceAsStream("/mm/model/level/standard_level.json");
+        if (is == null) {
+            System.err.println("Level JSON not found in resources!");
+            return;
+        }
+        LevelReader levelTemplate = new LevelReader(is);
         level = levelTemplate.readFile();
 
         if (level == null || level.getLevelObjects() == null) {
