@@ -13,8 +13,8 @@ public class ObjectImporter {
     private Level level;
 
     public ObjectImporter() {
-        // Load JSON from resources (works on all OS)
-        InputStream is = getClass().getResourceAsStream("/mm/model/level/standard_level.json");
+        // Correct resource path for all OS
+        InputStream is = getClass().getResourceAsStream("/level/standard_level.json");
         if (is == null) {
             System.err.println("Level JSON not found in resources!");
             return;
