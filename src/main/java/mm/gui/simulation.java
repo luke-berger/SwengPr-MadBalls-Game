@@ -52,6 +52,7 @@ public class simulation extends Application {
         });
         btnExport.setOnAction(e -> {
             timer.stop();
+            setupSimulation();
             exportLevel();
         });
 
