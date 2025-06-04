@@ -11,7 +11,7 @@ public class FxToGameObject {
     private static int nextname; 
     
     public static GameObject convertBack(PhysicsVisualPair pair) {
-        GameObject gameObject;
+        GameObject gameObject = null;
 
         String name;
         Position position = new Position();
@@ -21,12 +21,11 @@ public class FxToGameObject {
         Physics physics;
 
         Shape shape = pair.visual;
-        name = type + nextname;
+        //name = type + nextname;
         nextname++;
 
         Color tmp = (Color) shape.getFill();
         assert(tmp != null);
-        tmp
 
         if (shape instanceof Rectangle) {
         type = "Rectangle";
@@ -51,14 +50,14 @@ public class FxToGameObject {
 
         position.setX(x);
         position.setY(y);
-        size = new Size(r * 2, r * 2); // Durchmesser als "size"
-        radius = r;
+        //size = new Size(r * 2, r * 2); // Durchmesser als "size"
+        //radius = r;
     } else {
         throw new IllegalArgumentException("Shape-Typ nicht unterstützt: " + shape.getClass());
     }
 
 
-        gameObject = new GameObject(name, type, position, size, colour, physics, radius)
+        //gameObject = new GameObject(name, type, position, size, colour, physics, radius)
         return gameObject;
     }
 }

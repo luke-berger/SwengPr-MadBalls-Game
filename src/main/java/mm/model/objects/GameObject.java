@@ -37,11 +37,6 @@ public class GameObject {
      */
     private Physics physics;
 
-    /**
-     *  The radius of circle shape if needed 
-     */
-    private Float radius;
-
 
     public GameObject() {}
 
