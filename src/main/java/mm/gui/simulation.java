@@ -1,9 +1,11 @@
 package mm.gui;
 
-import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import mm.FxToGameObject;
 import mm.GameObjectConverter;
@@ -13,59 +15,134 @@ import mm.core.physics.ResettableAnimationTimer;
 import mm.model.objects.GameObject;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class simulation extends Application {
+public class simulation {
 
     private World world;
     private List<PhysicsVisualPair> pairs;
-    private Pane root;
+    private Pane simSpace;
     private ResettableAnimationTimer timer;
+    private HBox bottomBar;
 
-    @Override
-    public void start(Stage primaryStage) {
-        root = new Pane();
-        Scene scene = new Scene(root, 800, 600);
+    public Scene getScene(Stage primaryStage) {
+        BorderPane root = new BorderPane();
+        root.setId("root-pane");
 
-        Button btnStart = new Button("Start Simulation");
-        btnStart.setTranslateX(10);
-        btnStart.setTranslateY(10);
+        // Simulation area
+        simSpace = new Pane();
+        simSpace.getStyleClass().add("sim-space");
+        root.setCenter(simSpace);
 
-        Button btnReset = new Button("Reset Simulation");
-        btnReset.setTranslateX(120);
-        btnReset.setTranslateY(10);
+        // Sidebar
+        VBox sideBar = new VBox();
+        sideBar.getStyleClass().add("side-bar");
+        sideBar.setPrefWidth(200);
 
-        Button btnExport = new Button("Export Level");
-        btnExport.setTranslateX(680);
-        btnExport.setTranslateY(10);
+        StackPane inventoryBox = new StackPane();
+        inventoryBox.getStyleClass().add("inventory-box");
+        VBox.setVgrow(inventoryBox, Priority.ALWAYS);
 
-        root.getChildren().addAll(btnStart, btnReset, btnExport);
+        HBox squareContainer = new HBox();
+        squareContainer.getStyleClass().add("square-container");
+        squareContainer.setAlignment(Pos.CENTER);
 
+        StackPane menuSquare = new StackPane();
+        menuSquare.getStyleClass().add("menu-square");
+
+        // Grid with round buttons and icons
+        GridPane grid = new GridPane();
+        grid.getStyleClass().add("menu-grid");
+
+        for (int row = 0; row < 2; row++) {
+            for (int col = 0; col < 3; col++) {
+                Button btn = new Button();
+                btn.getStyleClass().add("menu-button");
+
+                FontIcon icon = null;
+
+                if (row == 0 && col == 0) {
+                    icon = new FontIcon(FontAwesomeSolid.PLAY); // Play
+                    btn.setOnAction(e -> timer.start());
+                } else if (row == 0 && col == 1) {
+                    icon = new FontIcon(FontAwesomeSolid.STOP); // Stop
+                    btn.setOnAction(e -> {
+                        timer.stop();
+                        setupSimulation();
+                    });
+                } else if (row == 0 && col == 2) {
+                    icon = new FontIcon(FontAwesomeSolid.COGS); // Settings
+                    btn.setOnAction(e -> {
+                        TitleScreen titleScreen = new TitleScreen();
+                        Scene titleScene = titleScreen.createTitleScene(primaryStage);
+                        primaryStage.setScene(titleScene);
+                    });
+                } else if (row == 1 && col == 0) {
+                    icon = new FontIcon(FontAwesomeSolid.FILE_EXPORT); // Export
+                } else if (row == 1 && col == 1) {
+                    icon = new FontIcon(FontAwesomeSolid.PAUSE); // Pause
+                    btn.setOnAction(e -> timer.stop());
+                } else if (row == 1 && col == 2) {
+                    icon = new FontIcon(FontAwesomeSolid.SAVE); // Save
+                    btn.setOnAction(e -> {
+                        timer.stop();
+                        setupSimulation();
+                        exportLevel();
+                    });
+                }
+
+                if (icon != null) {
+                    icon.setIconSize(16);
+                    icon.setIconColor(Color.WHITE);
+                    btn.setGraphic(icon);
+                }
+
+                grid.add(btn, col, row);
+            }
+        }
+
+        menuSquare.getChildren().add(grid);
+        squareContainer.getChildren().add(menuSquare);
+        sideBar.getChildren().addAll(inventoryBox, squareContainer);
+        root.setRight(sideBar);
+
+        // create bottom bar
+        bottomBar = new HBox();
+        bottomBar.getStyleClass().add("bottom-bar");
+        bottomBar.setPrefHeight(150);
+        root.setBottom(bottomBar);
+
+        // initialize simulation
         setupSimulation();
 
-        btnStart.setOnAction(e -> timer.start());
-        btnReset.setOnAction(e -> {
-            timer.stop();
-            setupSimulation();
-        });
-        btnExport.setOnAction(e -> {
-            timer.stop();
-            setupSimulation();
-            exportLevel();
+        // bind root size to stage
+        root.prefWidthProperty().bind(primaryStage.widthProperty());
+        root.prefHeightProperty().bind(primaryStage.heightProperty());
+
+        Scene scene = new Scene(root);
+
+        // load CSS stylesheet
+        scene.getStylesheets().add(
+                getClass().getResource("/styling/simulation.css").toExternalForm());
+
+        // force CSS and layout pass
+        Platform.runLater(() -> {
+            root.applyCss();
+            root.layout();
         });
 
-        primaryStage.setTitle("JavaFX + JBox2D Physics Demo");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        return scene;
     }
 
     private void setupSimulation() {
-        // Remove all visuals except buttons
-        root.getChildren().removeIf(node -> !(node instanceof Button));
+        // clear all nodes except buttons
+        simSpace.getChildren().removeIf(node -> !(node instanceof Button));
 
-        // Create new world and pairs
+        // create new physics world
         world = new World(new Vec2(0.0f, 9.8f));
         pairs = new ArrayList<>();
 
@@ -75,25 +152,22 @@ public class simulation extends Application {
         for (GameObject obj : gameObjects) {
             PhysicsVisualPair pair = GameObjectConverter.convert(obj, world);
             if (pair.visual != null) {
-                root.getChildren().add(pair.visual);
+                simSpace.getChildren().add(pair.visual);
                 pairs.add(pair);
             }
         }
 
-        // Create a new timer with the new world and pairs
+        // create new timer for simulation
         timer = new ResettableAnimationTimer(world, pairs);
     }
 
     private void exportLevel() {
+        // convert physics visuals back to game objects
         ArrayList<GameObject> gameObjects = new ArrayList<>();
         for (PhysicsVisualPair pair : pairs) {
-                GameObject obj = FxToGameObject.convertBack(pair);
-                gameObjects.add(obj);
+            GameObject obj = FxToGameObject.convertBack(pair);
+            gameObjects.add(obj);
         }
         System.out.println("export done!");
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
