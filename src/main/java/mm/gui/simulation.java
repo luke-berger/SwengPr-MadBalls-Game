@@ -12,10 +12,13 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import mm.FxToGameObject;
 import mm.GameObjectConverter;
+import mm.InventoryObjectConverter;
 import mm.ObjectImporter;
 import mm.PhysicsVisualPair;
 import mm.core.physics.ResettableAnimationTimer;
 import mm.model.objects.GameObject;
+import mm.model.objects.InventoryObject;
+
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -31,6 +34,7 @@ public class Simulation {
     private Pane simSpace;
     private ResettableAnimationTimer timer;
     private HBox bottomBar;
+    private StackPane inventoryBox;
 
     public Scene getScene(Stage primaryStage) {
         // main layout container
@@ -46,8 +50,7 @@ public class Simulation {
         VBox sideBar = new VBox();
         sideBar.getStyleClass().add("side-bar");
         sideBar.setPrefWidth(200);
-
-        StackPane inventoryBox = new StackPane();
+        inventoryBox = new StackPane();
         inventoryBox.getStyleClass().add("inventory-box");
         VBox.setVgrow(inventoryBox, Priority.ALWAYS);
 
@@ -121,6 +124,7 @@ public class Simulation {
         mainPane.setBottom(bottomBar);
 
         setupSimulation();
+        setupInventory();
 
         // root stack to layer overlay on top of mainPane
         StackPane rootStack = new StackPane();
@@ -221,6 +225,25 @@ public class Simulation {
         }
 
         timer = new ResettableAnimationTimer(world, pairs);
+    }
+
+    private void setupInventory() {
+        world = new World(new Vec2(0.0f, 9.8f));
+        pairs = new ArrayList<>();
+
+        ObjectImporter importer = new ObjectImporter();
+        List<InventoryObject> inventoryObjects = importer.getInventoryObjects();
+
+        System.out.print("Loaded inventory objects: "+inventoryObjects.size());
+
+        for (InventoryObject obj: inventoryObjects){
+            PhysicsVisualPair pair = InventoryObjectConverter.convert(obj, world);
+            if (pair.visual != null){
+                inventoryBox.getChildren().add(pair.visual);
+                pairs.add(pair);
+            }
+        }
+
     }
 
     private void exportLevel() {

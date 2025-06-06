@@ -69,15 +69,15 @@
   ],
   "inventory": [
     {
-      "type": "box",
+      "type": "rectangle",
       "count": 1,
       "size": {
-        "width": 1.0,
-        "height": 1.0,
-        "radius": 0
+        "width": 100.0,
+        "height": 50.0,
+        "radius": 0.0
       },
       "sprite": null,
-      "colour": "BLACK",
+      "colour": "RED",
       "physics": {
         "bodyType": "DYNAMIC",
         "density": 1.0,
@@ -93,10 +93,10 @@
       "size": {
         "width": 0.0,
         "height": 0.0,
-        "radius": 1.0
+        "radius": 15.0
       },
       "sprite": null,
-      "colour": "BLACK",
+      "colour": "GREEN",
       "physics": {
         "bodyType": "DYNAMIC",
         "density": 1.0,
@@ -109,9 +109,9 @@
       "type": "rectangle",
       "count": 1,
       "size": {
-        "width": 1.0,
-        "height": 1.0,
-        "radius": 0
+        "width": 100.0,
+        "height": 100.0,
+        "radius": 0.0
       },
       "sprite": null,
       "colour": "BLACK",

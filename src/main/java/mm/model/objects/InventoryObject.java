@@ -1,4 +1,5 @@
 package mm.model.objects;
+
 /**
  * POJO
  * The InventoryObject (Item) Class
@@ -10,7 +11,7 @@ public class InventoryObject {
     private String sprite;
     private String colour;
     private Physics physics;
-    private Float radius;
+    private float radius;
 
     public InventoryObject() {}
 
@@ -27,17 +28,17 @@ public class InventoryObject {
      * @param physics the jBox2d physics Info
      * @param radius radius of circle shape placeable
      */
-    public InventoryObject(String type, int count, Size size, String colour, Physics physics, Float radius) {
+    public InventoryObject(String type, int count, Size size, String colour, Physics physics, float radius) {
         this.type = type;
         this.count = count;
         this.size = size;
         this.colour = colour;
         this.physics = physics;
         this.radius = radius;
+        this.count = count;
     }
 
     public String getType() {return this.type;}
-    // no set type because if type changes, new unique object gets made
 
     public int getCount() {return this.count;}
     public void setCount(int newCount) {this.count = newCount;}
@@ -54,7 +55,7 @@ public class InventoryObject {
     public Physics getPhysics() {return this.physics;}
     public void setPhysics(Physics newPhysics) {this.physics = newPhysics;}
 
-    public Float getRadius() {return this.radius;}
-    public void setRadius(Float newRadius) {this.radius = newRadius;}
+    public float getRadius() {return this.radius;}
+    public void setRadius(float newRadius) {this.radius = newRadius;}
 
 }

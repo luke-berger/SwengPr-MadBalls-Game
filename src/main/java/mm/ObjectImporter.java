@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mm.model.objects.GameObject;
+import mm.model.objects.InventoryObject;
 import mm.model.objects.Level;
 import mm.model.objects.LevelReader;
 
@@ -30,6 +31,13 @@ public class ObjectImporter {
     public List<GameObject> getGameObjects() {
         if (level != null && level.getLevelObjects() != null) {
             return level.getLevelObjects();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<InventoryObject> getInventoryObjects(){
+        if (level != null && level.getInventoryObject() != null){
+            return level.getInventoryObject();
         }
         return new ArrayList<>();
     }
