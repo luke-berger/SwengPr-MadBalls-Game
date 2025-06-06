@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -35,6 +36,7 @@ public class Testbench {
     private ResettableAnimationTimer timer;
     private HBox bottomBar;
     private StackPane inventoryBox;
+    private VBox inventoryItemBox;
     // test comment
 
     public Scene getScene(Stage primaryStage) {
@@ -51,9 +53,14 @@ public class Testbench {
         VBox sideBar = new VBox();
         sideBar.getStyleClass().add("side-bar");
         sideBar.setPrefWidth(200);
+        
+        // Part of sidebar where items are displayed
         inventoryBox = new StackPane();
         inventoryBox.getStyleClass().add("inventory-box");
         VBox.setVgrow(inventoryBox, Priority.ALWAYS);
+        inventoryItemBox = new VBox();
+        inventoryBox.getChildren().add(inventoryItemBox);
+        inventoryItemBox.getStyleClass().add("inventoryItemBox");
 
         HBox squareContainer = new HBox();
         squareContainer.getStyleClass().add("square-container");
@@ -235,12 +242,13 @@ public class Testbench {
         ObjectImporter importer = new ObjectImporter();
         List<InventoryObject> inventoryObjects = importer.getInventoryObjects();
 
-        System.out.print("Loaded inventory objects: "+inventoryObjects.size());
-
         for (InventoryObject obj: inventoryObjects){
             PhysicsVisualPair pair = InventoryObjectConverter.convert(obj, world);
             if (pair.visual != null){
-                inventoryBox.getChildren().add(pair.visual);
+
+                StackPane wrapper = new StackPane(pair.visual);
+                wrapper.setPrefSize(60, 60);
+                inventoryItemBox.getChildren().add(wrapper);
                 pairs.add(pair);
             }
         }

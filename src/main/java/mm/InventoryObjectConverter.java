@@ -57,7 +57,7 @@ public class InventoryObjectConverter {
             body.createFixture(fixture);
 
         }else if ("circle".equalsIgnoreCase(type)){
-            float radius = obj.getRadius();
+            float radius = obj.getSize().getRadius();
             Circle circ = new Circle(radius, Color.valueOf(obj.getColour()));
             visual = circ;
 
