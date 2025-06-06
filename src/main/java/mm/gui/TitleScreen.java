@@ -182,7 +182,7 @@ public class TitleScreen {
 
                 btnPuzzle.setOnAction(e -> overlayBackgroundPuzzle.setVisible(true));
                 btnSandbox.setOnAction(e -> {
-                        Simulation sim = new Simulation();
+                        Testbench sim = new Testbench();
                         Scene simScene = sim.getScene(primaryStage);
                         primaryStage.setScene(simScene);
                 });
