@@ -5,9 +5,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import mm.gui.TitleScreen;
 import mm.model.objects.Level;
-import mm.model.objects.LevelReader;
-
-import java.io.InputStream;
 
 public class Main extends Application {
 
@@ -28,15 +25,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        // Load JSON from resources (works on all OS)
-        InputStream is = Main.class.getResourceAsStream("/mm/model/level/Standart_Level.JSON");
-        if (is == null) {
-            System.err.println("Level JSON not found in resources!");
-        } else {
-            LevelReader reader = new LevelReader(is);
-            Level level = reader.readFile();
-            // You can use 'level' here if needed
-        }
 
         System.out.println("Starting...");
         launch(args); // JavaFX starten
