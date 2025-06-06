@@ -122,6 +122,42 @@
         "restitution": 1.0,
         "shape": "rectangle"
       }
+    },
+    {
+      "type": "rectangle",
+      "count": 1,
+      "size": {
+        "width": 100.0,
+        "height": 100.0,
+        "radius": 0.0
+      },
+      "sprite": null,
+      "colour": "RED",
+      "physics": {
+        "bodyType": "STATIC",
+        "density": 0.0,
+        "friction": 1.0,
+        "restitution": 1.0,
+        "shape": "rectangle"
+      }
+    },
+    {
+      "type": "rectangle",
+      "count": 1,
+      "size": {
+        "width": 100.0,
+        "height": 100.0,
+        "radius": 0.0
+      },
+      "sprite": null,
+      "colour": "BLACK",
+      "physics": {
+        "bodyType": "STATIC",
+        "density": 0.0,
+        "friction": 1.0,
+        "restitution": 1.0,
+        "shape": "rectangle"
+      }
     }
   ]
 }

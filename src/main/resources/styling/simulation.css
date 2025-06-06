@@ -138,3 +138,9 @@
     /* offsetX */ 1 /* offsetY */
   );
 }
+
+.inventoryItemBox {
+  -fx-spacing: 15;
+  -fx-alignment: center;
+  -fx-padding: 5 10 5 10;
+}

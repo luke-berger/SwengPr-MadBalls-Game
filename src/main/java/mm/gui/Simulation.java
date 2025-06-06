@@ -5,7 +5,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -28,7 +27,7 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Testbench {
+public class Simulation {
 
     private World world;
     private List<PhysicsVisualPair> pairs;
