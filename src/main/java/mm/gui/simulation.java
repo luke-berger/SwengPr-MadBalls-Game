@@ -35,6 +35,7 @@ public class Simulation {
     private ResettableAnimationTimer timer;
     private HBox bottomBar;
     private StackPane inventoryBox;
+    // test comment
 
     public Scene getScene(Stage primaryStage) {
         // main layout container
