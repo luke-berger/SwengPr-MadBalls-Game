@@ -279,6 +279,8 @@ public class Simulation {
             TitleScreen titleScreen = new TitleScreen();
             Scene titleScene = titleScreen.createTitleScene(ownerStage);
             ownerStage.setScene(titleScene);
+            ownerStage.setWidth(1920);
+            ownerStage.setHeight(1080);
         });
         btnBack.setPrefHeight(40);
 
@@ -286,9 +288,9 @@ public class Simulation {
         Button btnQuit = new Button("Quit Game");
         btnQuit.getStyleClass().add("menu-button");
         btnQuit.setMaxWidth(Double.MAX_VALUE);
-        btnQuit.setOnAction(e -> Platform.exit());
         btnQuit.setPrefHeight(40);
-
+        btnQuit.setOnAction(e -> Platform.exit());
+        
         window.getChildren().addAll(topRow, btnBack, btnQuit);
 
         overlay.getChildren().add(window);
