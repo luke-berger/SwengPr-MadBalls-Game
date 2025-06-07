@@ -188,7 +188,7 @@ public class TitleScreen {
                 });
 
                 btnOptions.setOnAction(e -> overlayBackgroundOptions.setVisible(true));
-                btnQuit.setOnAction(e -> System.exit(0));
+                btnQuit.setOnAction(e -> Platform.exit());
 
                 // === Root-Layout ===
                 StackPane root = new StackPane();

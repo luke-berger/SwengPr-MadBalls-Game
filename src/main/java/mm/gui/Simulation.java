@@ -5,17 +5,24 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import mm.FxToGameObject;
 import mm.GameObjectConverter;
+import mm.InventoryObjectConverter;
 import mm.ObjectImporter;
 import mm.PhysicsVisualPair;
 import mm.core.physics.ResettableAnimationTimer;
 import mm.model.objects.GameObject;
+import mm.model.objects.InventoryObject;
+import mm.model.objects.Position;
+
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -24,14 +31,38 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Main simulation GUI class for the MadBalls game.
+ * <p>
+ * Handles the simulation area, inventory, sidebar, and menu overlays.
+ * Responsible for setting up the simulation, inventory, and exporting levels.
+ * </p>
+ */
 public class Simulation {
 
+    /** The physics world for the simulation */
     private World world;
+    /** List of pairs of physics objects and their visuals */
     private List<PhysicsVisualPair> pairs;
+    /** The pane where simulation objects are displayed */
     private Pane simSpace;
+    /** Animation timer for the simulation */
     private ResettableAnimationTimer timer;
+    /** The bottom bar of the UI */
     private HBox bottomBar;
+    /** The inventory box container */
+    private StackPane inventoryBox;
+    /** The VBox containing inventory items */
+    private VBox inventoryItemBox;
+    /** The storage for dropped items while playing */
+    private final List<GameObject> droppedObjects = new ArrayList<>();
 
+    /**
+     * Creates and returns the main simulation scene.
+     *
+     * @param primaryStage the primary stage of the application
+     * @return the constructed Scene
+     */
     public Scene getScene(Stage primaryStage) {
         // main layout container
         BorderPane mainPane = new BorderPane();
@@ -42,14 +73,70 @@ public class Simulation {
         simSpace.getStyleClass().add("sim-space");
         mainPane.setCenter(simSpace);
 
+        //Drag inventory objects and place them
+        simSpace.setOnDragOver(event -> {
+            if (event.getGestureSource() != simSpace && event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            }
+            event.consume();
+        });
+
+        simSpace.setOnDragDropped(event -> {
+
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+
+            if (db.hasString()){
+                String name = db.getString(); // Use name instead of type
+                ObjectImporter importer = new ObjectImporter();
+                List<InventoryObject> inventoryObjects = importer.getInventoryObjects();
+                InventoryObject template = inventoryObjects.stream()
+                    .filter(obj -> obj.getName().equals(name)) // Match by name
+                    .findFirst().orElse(null);
+
+                if (template != null){
+                    InventoryObject newObj = new InventoryObject(
+                        template.getName(), template.getType(), template.getCount(),
+                        template.getSize(), template.getColour(), template.getPhysics(),
+                        template.getRadius()
+                    );
+                    double x = event.getX();
+                    double y = event.getY();
+
+                    GameObject simObj = new GameObject(
+                        newObj.getName(), newObj.getType(),
+                        new Position((float) x, (float) y),
+                        newObj.getSize(), newObj.getColour(), newObj.getPhysics()
+                    );
+
+                    // Add the objects that are dropped to be displayed again
+                    droppedObjects.add(simObj);
+
+                    PhysicsVisualPair pair = GameObjectConverter.convert(simObj, world);
+                    if (pair.visual != null) {
+                        simSpace.getChildren().add(pair.visual);
+                        pairs.add(pair);
+                    }
+                    success = true;
+                }
+            }
+            event.setDropCompleted(success);
+            event.consume();
+        });
+
+
         // sidebar with menu buttons
         VBox sideBar = new VBox();
         sideBar.getStyleClass().add("side-bar");
         sideBar.setPrefWidth(200);
-
-        StackPane inventoryBox = new StackPane();
+        
+        // Part of sidebar where items are displayed
+        inventoryBox = new StackPane();
         inventoryBox.getStyleClass().add("inventory-box");
         VBox.setVgrow(inventoryBox, Priority.ALWAYS);
+        inventoryItemBox = new VBox();
+        inventoryBox.getChildren().add(inventoryItemBox);
+        inventoryItemBox.getStyleClass().add("inventoryItemBox");
 
         HBox squareContainer = new HBox();
         squareContainer.getStyleClass().add("square-container");
@@ -121,6 +208,7 @@ public class Simulation {
         mainPane.setBottom(bottomBar);
 
         setupSimulation();
+        setupInventory();
 
         // root stack to layer overlay on top of mainPane
         StackPane rootStack = new StackPane();
@@ -148,6 +236,12 @@ public class Simulation {
         return scene;
     }
 
+    /**
+     * Creates the quick menu overlay for settings, back to title, and quit.
+     *
+     * @param ownerStage the owner stage for the overlay
+     * @return the StackPane overlay
+     */
     private StackPane createQuickMenuOverlay(Stage ownerStage) {
         // semi-transparent background
         StackPane overlay = new StackPane();
@@ -203,6 +297,10 @@ public class Simulation {
         return overlay;
     }
 
+    /**
+     * Sets up the simulation area by loading GameObjects and initializing the physics world.
+     * Adds visual representations of objects to the simulation pane.
+     */
     private void setupSimulation() {
         simSpace.getChildren().removeIf(node -> !(node instanceof Button));
 
@@ -212,7 +310,17 @@ public class Simulation {
         ObjectImporter importer = new ObjectImporter();
         List<GameObject> gameObjects = importer.getGameObjects();
 
+        // Add level objects
         for (GameObject obj : gameObjects) {
+            PhysicsVisualPair pair = GameObjectConverter.convert(obj, world);
+            if (pair.visual != null) {
+                simSpace.getChildren().add(pair.visual);
+                pairs.add(pair);
+            }
+        }
+
+        // Add dropped objects
+        for (GameObject obj : droppedObjects) {
             PhysicsVisualPair pair = GameObjectConverter.convert(obj, world);
             if (pair.visual != null) {
                 simSpace.getChildren().add(pair.visual);
@@ -223,6 +331,42 @@ public class Simulation {
         timer = new ResettableAnimationTimer(world, pairs);
     }
 
+    /**
+     * Sets up the inventory area by loading InventoryObjects and initializing the physics world.
+     * Adds visual representations of inventory items to the inventory pane. 
+     * Making them able to be dropped into the simSpace.
+     */
+    private void setupInventory() {
+
+        ObjectImporter importer = new ObjectImporter();
+        List<InventoryObject> inventoryObjects = importer.getInventoryObjects();
+
+        for (InventoryObject obj: inventoryObjects){
+            PhysicsVisualPair pair = InventoryObjectConverter.convert(obj, world);
+            if (pair.visual != null){
+
+                StackPane wrapper = new StackPane(pair.visual);
+                wrapper.setPrefSize(60, 60);
+
+
+                wrapper.setOnDragDetected(event -> {
+                    Dragboard db = wrapper.startDragAndDrop(TransferMode.COPY);
+                    ClipboardContent content = new ClipboardContent();
+                    content.putString(obj.getName()); // Use unique name
+                    db.setContent(content);
+                    event.consume();
+                });
+
+                inventoryItemBox.getChildren().add(wrapper);
+            }
+        }
+
+    }
+
+    /**
+     * Exports the current level by converting all PhysicsVisualPairs to GameObjects.
+     * Prints a confirmation message to the console.
+     */
     private void exportLevel() {
         ArrayList<GameObject> gameObjects = new ArrayList<>();
         for (PhysicsVisualPair pair : pairs) {

@@ -69,15 +69,16 @@
   ],
   "inventory": [
     {
-      "type": "box",
+      "name": "box1",
+      "type": "rectangle",
       "count": 1,
       "size": {
-        "width": 1.0,
-        "height": 1.0,
-        "radius": 0
+        "width": 100.0,
+        "height": 50.0,
+        "radius": 0.0
       },
       "sprite": null,
-      "colour": "BLACK",
+      "colour": "RED",
       "physics": {
         "bodyType": "DYNAMIC",
         "density": 1.0,
@@ -88,15 +89,16 @@
       }
     },
     {
+      "name": "ball1",
       "type": "circle",
       "count": 1,
       "size": {
         "width": 0.0,
         "height": 0.0,
-        "radius": 1.0
+        "radius": 15.0
       },
       "sprite": null,
-      "colour": "BLACK",
+      "colour": "GREEN",
       "physics": {
         "bodyType": "DYNAMIC",
         "density": 1.0,
@@ -106,21 +108,79 @@
       }
     },
     {
+      "name": "box2",
       "type": "rectangle",
       "count": 1,
       "size": {
-        "width": 1.0,
-        "height": 1.0,
-        "radius": 0
+        "width": 100.0,
+        "height": 100.0,
+        "radius": 0.0
       },
       "sprite": null,
       "colour": "BLACK",
       "physics": {
-        "bodyType": "STATIC",
-        "density": 0.0,
+        "bodyType": "DYNAMIC",
+        "density": 1.0,
         "friction": 1.0,
         "restitution": 1.0,
         "shape": "rectangle"
+      }
+    },
+    {
+      "name": "box3",
+      "type": "rectangle",
+      "count": 1,
+      "size": {
+        "width": 100.0,
+        "height": 100.0,
+        "radius": 0.0
+      },
+      "sprite": null,
+      "colour": "RED",
+      "physics": {
+        "bodyType": "DYNAMIC",
+        "density": 1.0,
+        "friction": 1.0,
+        "restitution": 1.0,
+        "shape": "rectangle"
+      }
+    },
+    {
+      "name": "box4",
+      "type": "rectangle",
+      "count": 1,
+      "size": {
+        "width": 100.0,
+        "height": 100.0,
+        "radius": 0.0
+      },
+      "sprite": null,
+      "colour": "BLACK",
+      "physics": {
+        "bodyType": "DYNAMIC",
+        "density": 1.0,
+        "friction": 1.0,
+        "restitution": 1.0,
+        "shape": "rectangle"
+      }
+    },
+    {
+      "name": "ball2",
+      "type": "circle",
+      "count": 1,
+      "size": {
+        "width": 0.0,
+        "height": 0.0,
+        "radius": 40.0
+      },
+      "sprite": null,
+      "colour": "GREEN",
+      "physics": {
+        "bodyType": "DYNAMIC",
+        "density": 1.0,
+        "friction": 1.0,
+        "restitution": 1.0,
+        "shape": "circle"
       }
     }
   ]
