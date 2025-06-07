@@ -163,6 +163,25 @@
         "restitution": 1.0,
         "shape": "rectangle"
       }
+    },
+    {
+      "name": "ball2",
+      "type": "circle",
+      "count": 1,
+      "size": {
+        "width": 0.0,
+        "height": 0.0,
+        "radius": 40.0
+      },
+      "sprite": null,
+      "colour": "GREEN",
+      "physics": {
+        "bodyType": "DYNAMIC",
+        "density": 1.0,
+        "friction": 1.0,
+        "restitution": 1.0,
+        "shape": "circle"
+      }
     }
   ]
 }
