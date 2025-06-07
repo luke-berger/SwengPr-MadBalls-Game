@@ -371,6 +371,7 @@ public class Simulation {
      */
     private void exportLevel() {
         ArrayList<GameObject> gameObjects = new ArrayList<>();
+        //Takes Objects in Level and Creates Inventoryobjects out of each and appends them to a List.
         for (PhysicsVisualPair pair : pairs) {
             GameObject obj = FxToGameObject.convertBack(pair);
             gameObjects.add(obj);
