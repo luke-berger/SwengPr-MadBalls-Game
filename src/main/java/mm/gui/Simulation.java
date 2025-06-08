@@ -74,14 +74,21 @@ public class Simulation {
         mainPane.setCenter(simSpace);
 
         //Drag inventory objects and place them
+        // Only allow drag over if simulation is paused (not running)
         simSpace.setOnDragOver(event -> {
-            if (event.getGestureSource() != simSpace && event.getDragboard().hasString()) {
+            if ((timer == null || !timer.isRunning()) && event.getGestureSource() != simSpace && event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             }
             event.consume();
         });
 
+        // Only allow drop if simulation is paused (not running)
         simSpace.setOnDragDropped(event -> {
+            if (timer != null && timer.isRunning()) {
+                event.setDropCompleted(false);
+                event.consume();
+                return;
+            }
 
             Dragboard db = event.getDragboard();
             boolean success = false;
@@ -355,7 +362,12 @@ public class Simulation {
                 wrapper.setPrefSize(60, 60);
 
 
+                // In setupInventory, prevent drag start if simulation is running
                 wrapper.setOnDragDetected(event -> {
+                    if (timer != null && timer.isRunning()) {
+                        event.consume();
+                        return;
+                    }
                     Dragboard db = wrapper.startDragAndDrop(TransferMode.COPY);
                     ClipboardContent content = new ClipboardContent();
                     content.putString(obj.getName()); // Use unique name
