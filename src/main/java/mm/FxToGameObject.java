@@ -58,7 +58,7 @@ public class FxToGameObject {
             throw new IllegalArgumentException("Shape-Typ nicht unterstützt: " + shape.getClass());
         }
 
-        physics.setShape(pair.body.getType().toString());
+        physics.setShape(pair.body.getType().toString().toUpperCase());
         Fixture fixture = pair.body.getFixtureList();
         physics.setDensity(fixture.getDensity());
         physics.setRestitution(fixture.getRestitution());

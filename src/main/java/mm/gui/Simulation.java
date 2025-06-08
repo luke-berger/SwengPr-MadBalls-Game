@@ -21,6 +21,7 @@ import mm.PhysicsVisualPair;
 import mm.core.physics.ResettableAnimationTimer;
 import mm.model.objects.GameObject;
 import mm.model.objects.InventoryObject;
+import mm.model.objects.LevelExport;
 import mm.model.objects.Position;
 
 import org.jbox2d.common.Vec2;
@@ -56,6 +57,8 @@ public class Simulation {
     private VBox inventoryItemBox;
     /** The storage for dropped items while playing */
     private final List<GameObject> droppedObjects = new ArrayList<>();
+    /** The storage for dropped items while playing as InventoryObjects */
+    private List<InventoryObject> inventoryObjects = new ArrayList<>();
 
     /**
      * Creates and returns the main simulation scene.
@@ -89,8 +92,8 @@ public class Simulation {
             if (db.hasString()){
                 String name = db.getString(); // Use name instead of type
                 ObjectImporter importer = new ObjectImporter();
-                List<InventoryObject> inventoryObjects = importer.getInventoryObjects();
-                InventoryObject template = inventoryObjects.stream()
+                this.inventoryObjects = importer.getInventoryObjects();
+                InventoryObject template = this.inventoryObjects.stream()
                     .filter(obj -> obj.getName().equals(name)) // Match by name
                     .findFirst().orElse(null);
 
@@ -111,7 +114,6 @@ public class Simulation {
 
                     // Add the objects that are dropped to be displayed again
                     droppedObjects.add(simObj);
-
                     PhysicsVisualPair pair = GameObjectConverter.convert(simObj, world);
                     if (pair.visual != null) {
                         simSpace.getChildren().add(pair.visual);
@@ -370,12 +372,7 @@ public class Simulation {
      * Prints a confirmation message to the console.
      */
     private void exportLevel() {
-        ArrayList<GameObject> gameObjects = new ArrayList<>();
-        //Takes Objects in Level and Creates Inventoryobjects out of each and appends them to a List.
-        for (PhysicsVisualPair pair : pairs) {
-            GameObject obj = FxToGameObject.convertBack(pair);
-            gameObjects.add(obj);
-        }
-        System.out.println("export done!");
+        LevelExport LE = new LevelExport();
+        LE.export(this.pairs, this.inventoryObjects);
     }
 }

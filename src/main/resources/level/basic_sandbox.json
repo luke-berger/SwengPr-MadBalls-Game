@@ -13,12 +13,11 @@
       "sprite": null,
       "colour": "RED",
       "physics": {
-        "bodyType": "DYNAMIC",
         "density": 1.0,
         "friction": 1.0,
         "restitution": 1.0,
 
-        "shape": "box"
+        "shape": "DYNAMIC"
       }
     },
     {
@@ -33,11 +32,10 @@
       "sprite": null,
       "colour": "GREEN",
       "physics": {
-        "bodyType": "DYNAMIC",
         "density": 1.0,
         "friction": 1.0,
         "restitution": 1.0,
-        "shape": "circle"
+        "shape": "DYNAMIC"
       }
     },
     {
@@ -52,11 +50,10 @@
       "sprite": null,
       "colour": "BLACK",
       "physics": {
-        "bodyType": "DYNAMIC",
         "density": 1.0,
         "friction": 1.0,
         "restitution": 1.0,
-        "shape": "rectangle"
+        "shape": "DYNAMIC"
       }
     },
     {
@@ -71,11 +68,10 @@
       "sprite": null,
       "colour": "BLACK",
       "physics": {
-        "bodyType": "STATIC",
         "density": 1.0,
         "friction": 1.0,
         "restitution": 1.0,
-        "shape": "rectangle"
+        "shape": "STATIC"
       }
     }
   ]
