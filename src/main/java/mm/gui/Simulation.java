@@ -157,21 +157,34 @@ public class Simulation {
                 FontIcon icon = null;
 
                 if (row == 0 && col == 0) {
-                    icon = new FontIcon(FontAwesomeSolid.PLAY);
+                    icon = new FontIcon(FontAwesomeSolid.PLAY); // Play
                     btn.setOnAction(e -> timer.start());
 
                 } else if (row == 0 && col == 1) {
-                    icon = new FontIcon(FontAwesomeSolid.STOP);
+                    icon = new FontIcon(FontAwesomeSolid.STOP); // Stop
                     btn.setOnAction(e -> {
                         timer.stop();
                         setupSimulation();
                     });
 
                 } else if (row == 0 && col == 2) {
-                    icon = new FontIcon(FontAwesomeSolid.COGS);
+                    icon = new FontIcon(FontAwesomeSolid.COGS); // Quick settings
                     btn.setOnAction(e -> {
                         overlaySettings.setVisible(true);
                         timer.stop();
+                    });
+
+                } else if (row == 1 && col == 0) {
+                    icon = new FontIcon(FontAwesomeSolid.TRASH_ALT); // Delete all objects
+                    btn.setOnAction(e -> {
+                        System.out.println("delete all objects");
+                        timer.stop();
+                    });
+
+                } else if (row == 1 && col == 1) {
+                    icon = new FontIcon(FontAwesomeSolid.FOLDER_PLUS); // Import level
+                    btn.setOnAction(e -> {
+                        System.out.println("import level");
                     });
 
                 } else if (row == 1 && col == 2) {
