@@ -23,8 +23,12 @@ import mm.model.objects.GameObject;
 import mm.model.objects.InventoryObject;
 import mm.model.objects.Position;
 
+import org.jbox2d.callbacks.ContactImpulse;
+import org.jbox2d.callbacks.ContactListener;
+import org.jbox2d.collision.Manifold;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.contacts.Contact;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 
@@ -405,6 +409,30 @@ public class Simulation {
         }
         System.out.println("export done!");
     }
+    private void listenContact() {
+        world.setContactListener(new ContactListener() {
+            
+            
+
+            @Override
+            public void beginContact(Contact contact) {
+
+                Object a = contact.getFixtureA().getBody().getUserData();
+                Object b = contact.getFixtureB().getBody().getUserData();
+
+            }
+            @Override
+            public void endContact(Contact contact){
+
+            }
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {};
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {};
+
+        });
+    }
+    
     /**
      * Updates the inventory objects while simulating showing that their are not placeable.
      */
