@@ -23,7 +23,7 @@
       }
     },
     {
-      "name": "winZone",
+      "name": "noPlaceZone",
       "type": "rectangle",
       "position": { "x": 400, "y": 800 },
       "size": { "width": 200, "height": 40, "radius": 0 },

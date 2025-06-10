@@ -46,7 +46,7 @@ public class GameObjectConverter {
                 
                 // JavaFX visual
                 Rectangle rect = new Rectangle(width, height);
-                rect.setFill(PatternCreator.createGreenWhiteTapePattern(width, height));
+                rect.setFill(PatternCreator.createWinzone(width, height));
                 rect.setTranslateX(x);
                 rect.setTranslateY(y);
                 visual = rect;
@@ -68,8 +68,32 @@ public class GameObjectConverter {
                 fixture.isSensor = true; 
                 body.createFixture(fixture);
 
-            }else{
+            }else if (obj.getName().equals("noPlaceZone")){
+                // JavaFX visual
+                Rectangle rect = new Rectangle(width, height);
+                rect.setFill(PatternCreator.createNoPlaceZone(width, height));
+                rect.setTranslateX(x);
+                rect.setTranslateY(y);
+                visual = rect;
+
+                 // JBox2D body
+                BodyDef def = new BodyDef();
+                def.type = BodyType.STATIC;
+                def.position.set((x + width / 2) / SCALE, (y + height / 2) / SCALE);
+                body = world.createBody(def);
+                // Unique name for collision detection later on.
+                body.setUserData(obj.getName());
+
+                PolygonShape shape = new PolygonShape();
+                shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
+
+                FixtureDef fixture = new FixtureDef();
+                fixture.shape = shape;
+                // A sensor does not collide but triggers contact events
+                fixture.isSensor = true; 
+                body.createFixture(fixture);
                 
+            } else {
                 // JavaFX visual
                 Rectangle rect = new Rectangle(width, height, Color.valueOf(obj.getColour()) );
                 rect.setTranslateX(x);
