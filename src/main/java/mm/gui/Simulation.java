@@ -424,12 +424,15 @@ public class Simulation {
                 Object a = contact.getFixtureA().getBody().getUserData();
                 Object b = contact.getFixtureB().getBody().getUserData();
 
-                // Replace "winbox" and "ball1" with your actual object names
+                // Add more if - statements for wins with diffrent collisions
                 if ((a != null && b != null)){
                     if ((a.equals("winPlat") && b.equals("ball1")) ||
-                     (a.equals("ball1") && b.equals("winPlat"))) {
-                    System.out.println("WIN! ball1 hit the winPlat!");
-                    };
+                        (a.equals("ball1") && b.equals("winPlat"))) {
+                        System.out.println("WIN! ball1 hit the winPlat!");
+                    }else if ((a.equals("winZone") && b.equals("ball1")) || 
+                        (a.equals("ball1") && b.equals(("winZone")))) {
+                        System.out.println("WIN ball1 is in the winZone!");
+                    }
                 }
             }
             @Override

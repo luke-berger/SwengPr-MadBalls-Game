@@ -23,7 +23,7 @@ public class GameObjectConverter {
      * representation and the Box2D physics body.
      * <p>
      * Supports rectangle and circle shapes. The created visual and body are configured
-     * according to the GameObject's properties.
+     * according to the GameObject's properties. 
      * </p>
      *
      * @param obj   The game object to be converted
@@ -32,7 +32,7 @@ public class GameObjectConverter {
      */
     public static PhysicsVisualPair convert(GameObject obj, World world) {
         Physics physics = obj.getPhysics();
-        String type = obj.getType(); // e.g., "rectangle", "circle"
+        String type = obj.getType();
         Shape visual = null;
         Body body = null;
 
@@ -42,30 +42,59 @@ public class GameObjectConverter {
             float x = obj.getPosition().getX();
             float y = obj.getPosition().getY();
 
-            // JavaFX visual
-            Rectangle rect = new Rectangle(width, height, Color.valueOf(obj.getColour()) );
-            rect.setTranslateX(x);
-            rect.setTranslateY(y);
-            visual = rect;
+            if (obj.getName().equals("winZone")){
+                
+                // JavaFX visual
+                Rectangle rect = new Rectangle(width, height);
+                rect.setFill(PatternCreator.createGreenWhiteTapePattern(width, height));
+                rect.setTranslateX(x);
+                rect.setTranslateY(y);
+                visual = rect;
 
-            // JBox2D body
-            BodyDef def = new BodyDef();
-            def.type = physics.isDynamic() ? BodyType.DYNAMIC : BodyType.STATIC;
-            def.position.set((x + width / 2) / SCALE, (y + height / 2) / SCALE);
-            body = world.createBody(def);
+                 // JBox2D body
+                BodyDef def = new BodyDef();
+                def.type = BodyType.STATIC;
+                def.position.set((x + width / 2) / SCALE, (y + height / 2) / SCALE);
+                body = world.createBody(def);
+                // Unique name for collision detection later on.
+                body.setUserData(obj.getName());
 
-            // Unique name for collision detection later on.
-            body.setUserData(obj.getName());
+                PolygonShape shape = new PolygonShape();
+                shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
 
-            PolygonShape shape = new PolygonShape();
-            shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
+                FixtureDef fixture = new FixtureDef();
+                fixture.shape = shape;
+                // A sensor does not collide but triggers contact events
+                fixture.isSensor = true; 
+                body.createFixture(fixture);
 
-            FixtureDef fixture = new FixtureDef();
-            fixture.shape = shape;
-            fixture.density = physics.getDensity();
-            fixture.friction = physics.getFriction();
-            fixture.restitution = physics.getRestitution();
-            body.createFixture(fixture);
+            }else{
+                
+                // JavaFX visual
+                Rectangle rect = new Rectangle(width, height, Color.valueOf(obj.getColour()) );
+                rect.setTranslateX(x);
+                rect.setTranslateY(y);
+                visual = rect;
+
+                // JBox2D body
+                BodyDef def = new BodyDef();
+                def.type = physics.isDynamic() ? BodyType.DYNAMIC : BodyType.STATIC;
+                def.position.set((x + width / 2) / SCALE, (y + height / 2) / SCALE);
+                body = world.createBody(def);
+
+                // Unique name for collision detection later on.
+                body.setUserData(obj.getName());
+
+                PolygonShape shape = new PolygonShape();
+                shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
+
+                FixtureDef fixture = new FixtureDef();
+                fixture.shape = shape;
+                fixture.density = physics.getDensity();
+                fixture.friction = physics.getFriction();
+                fixture.restitution = physics.getRestitution();
+                body.createFixture(fixture);
+            }
 
         } else if ("circle".equalsIgnoreCase(type)) {
             float radius = obj.getSize().getRadius();
@@ -74,7 +103,6 @@ public class GameObjectConverter {
 
             // JavaFX visual
             Circle circ = new Circle(radius, Color.valueOf(obj.getColour()));
-            
             circ.setTranslateX(x);
             circ.setTranslateY(y);
             visual = circ;
