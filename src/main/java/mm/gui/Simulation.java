@@ -132,8 +132,8 @@ public class Simulation {
                 String name = db.getString(); // Use name instead of type
                 ObjectImporter importer = new ObjectImporter();
 
-                this.inventoryObjects = importer.getInventoryObjects();
-                InventoryObject template = this.inventoryObjects.stream()
+                List<InventoryObject> inventory = importer.getInventoryObjects();
+                InventoryObject template = inventory.stream()
                     .filter(obj -> obj.getName().equals(name)) // Match by name
                     .findFirst().orElse(null);
 
