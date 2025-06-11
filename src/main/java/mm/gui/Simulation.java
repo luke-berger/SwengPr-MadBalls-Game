@@ -23,6 +23,7 @@ import mm.model.objects.GameObject;
 import mm.model.objects.InventoryObject;
 import mm.model.objects.LevelExport;
 import mm.model.objects.Position;
+import mm.Main;
 
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
@@ -79,6 +80,9 @@ public class Simulation {
         // main layout container
         BorderPane mainPane = new BorderPane();
         mainPane.setId("root-pane");
+        mainPane.setPrefSize(1920, 1080);
+        mainPane.prefWidthProperty().bind(primaryStage.widthProperty());
+        mainPane.prefHeightProperty().bind(primaryStage.heightProperty());
 
         // simulation area
         simSpace = new Pane();
@@ -339,11 +343,8 @@ public class Simulation {
         btnBack.setMaxWidth(Double.MAX_VALUE);
         btnBack.setOnAction(e -> {
             overlay.setVisible(false);
-            TitleScreen titleScreen = new TitleScreen();
-            Scene titleScene = titleScreen.createTitleScene(ownerStage);
-            ownerStage.setScene(titleScene);
-            ownerStage.setWidth(1920);
-            ownerStage.setHeight(1080);
+            Scene titleScene = Main.titleScreen.createTitleScene(ownerStage);
+            SceneUtil.switchScene(ownerStage, titleScene);
         });
         btnBack.setPrefHeight(40);
 
