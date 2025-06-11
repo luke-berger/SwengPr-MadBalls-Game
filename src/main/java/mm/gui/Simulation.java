@@ -62,7 +62,7 @@ public class Simulation {
     private VBox inventoryItemBox;
     /** The storage for dropped items while playing */
     private final List<GameObject> droppedObjects = new ArrayList<>();
-    /** The storage for dropped items while playing as InventoryObjects */
+    /** The List of placeable Objects as InventoryObjects */
     private List<InventoryObject> inventoryObjects = new ArrayList<>();
     /** The inventory objects to be manipulated */
     private final List<StackPane> inventroyWrappers = new ArrayList<>();
@@ -130,10 +130,9 @@ public class Simulation {
 
             if (db.hasString()) {
                 String name = db.getString(); // Use name instead of type
-                ObjectImporter importer = new ObjectImporter();
-
-                List<InventoryObject> inventory = importer.getInventoryObjects();
-                InventoryObject template = inventory.stream()
+                //ObjectImporter importer = new ObjectImporter();
+                //List<InventoryObject> inventoryObjects = importer.getInventoryObjects();
+                InventoryObject template = inventoryObjects.stream()
                     .filter(obj -> obj.getName().equals(name)) // Match by name
                     .findFirst().orElse(null);
 
@@ -342,6 +341,7 @@ public class Simulation {
         btnBack.setMaxWidth(Double.MAX_VALUE);
         btnBack.setOnAction(e -> {
             overlay.setVisible(false);
+            droppedObjects.clear();
             Scene titleScene = Main.titleScreen.createTitleScene(ownerStage);
             SceneUtil.switchScene(ownerStage, titleScene);
         });
@@ -415,9 +415,9 @@ public class Simulation {
     private void setupInventory() {
 
         ObjectImporter importer = new ObjectImporter();
-        List<InventoryObject> inventoryObjects = importer.getInventoryObjects();
+        this.inventoryObjects = importer.getInventoryObjects();
 
-        for (InventoryObject obj : inventoryObjects) {
+        for (InventoryObject obj : this.inventoryObjects) {
             PhysicsVisualPair pair = InventoryObjectConverter.convert(obj, world);
             if (pair.visual != null) {
 
