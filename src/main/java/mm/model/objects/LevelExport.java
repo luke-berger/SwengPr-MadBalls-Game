@@ -27,7 +27,7 @@ public class LevelExport {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String path = "src/main/resources/level/";
-            String name = "test" + Integer.toString(nextname++);
+            String name = "fun" + Integer.toString(nextname++);
             File file = new File(path + name + ".json");
             
             mapper.writerWithDefaultPrettyPrinter().writeValue(file, levelOut);

@@ -15,7 +15,7 @@ public class ObjectImporter {
 
     public ObjectImporter() {
         // Correct resource path for all OS
-        InputStream is = getClass().getResourceAsStream("/level/basic_sandbox.json");
+        InputStream is = getClass().getResourceAsStream("/level/fun1.json");
         if (is == null) {
             System.err.println("Level JSON not found in resources!");
             return;

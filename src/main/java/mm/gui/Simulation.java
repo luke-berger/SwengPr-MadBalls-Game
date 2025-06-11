@@ -13,7 +13,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import mm.FxToGameObject;
 import mm.GameObjectConverter;
 import mm.InventoryObjectConverter;
 import mm.ObjectImporter;
@@ -100,16 +99,15 @@ public class Simulation {
                 if (template != null){
                     InventoryObject newObj = new InventoryObject(
                         template.getName(), template.getType(), template.getCount(),
-                        template.getSize(), template.getColour(), template.getPhysics(),
-                        template.getRadius()
+                        template.getAngle(), template.getSize(), template.getColour(), 
+                        template.getPhysics(), template.getRadius()
                     );
                     double x = event.getX();
                     double y = event.getY();
 
-                    float angle = 0.0f;
                     GameObject simObj = new GameObject(
                         newObj.getName(), newObj.getType(),
-                        new Position((float) x, (float) y), angle,
+                        new Position((float) x, (float) y), newObj.getAngle(),
                         newObj.getSize(), newObj.getColour(), newObj.getPhysics()
                     );
 

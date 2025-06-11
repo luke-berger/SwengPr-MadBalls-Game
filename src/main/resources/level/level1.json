@@ -72,6 +72,7 @@
       "name": "box1",
       "type": "rectangle",
       "count": 1,
+      "angle": 0.0,
       "size": {
         "width": 100.0,
         "height": 100.0,
@@ -90,6 +91,7 @@
       "name": "ball1",
       "type": "circle",
       "count": 1,
+      "angle": 0.0,
       "size": {
         "width": 0.0,
         "height": 0.0,
@@ -108,6 +110,7 @@
       "name": "box2",
       "type": "rectangle",
       "count": 1,
+      "angle": 0.0,
       "size": {
         "width": 300.0,
         "height": 20.0,
@@ -126,6 +129,7 @@
       "name": "box3",
       "type": "rectangle",
       "count": 1,
+      "angle": 0.0,
       "size": {
         "width": 100.0,
         "height": 100.0,
@@ -144,6 +148,7 @@
       "name": "box4",
       "type": "rectangle",
       "count": 1,
+      "angle": 0.0,
       "size": {
         "width": 20.0,
         "height": 300.0,
@@ -162,6 +167,7 @@
       "name": "ball2",
       "type": "circle",
       "count": 1,
+      "angle": 0.0,
       "size": {
         "width": 0.0,
         "height": 0.0,
