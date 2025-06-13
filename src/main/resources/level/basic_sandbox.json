@@ -1,4 +1,5 @@
-"levelObjects": [
+{
+  "levelObjects": [
     {
       "name": "winPlat",
       "type": "rectangle",
@@ -14,11 +15,10 @@
       "sprite": null,
       "colour": "RED",
       "physics": {
-        "bodyType": "STATIC",
         "density": 1.0,
         "friction": 1.0,
         "restitution": 1.0,
-        "shape": "box"
+        "shape": "STATIC"
       }
     },
     {
@@ -29,11 +29,10 @@
       "sprite": null,
       "colour": "NOPLACEZONE",
       "physics": {
-        "bodyType": "STATIC",
         "density": 1.0,
         "friction": 1.0,
         "restitution": 0.0,
-        "shape": "rectangle"
+        "shape": "STATIC"
       }
     },
     {
@@ -44,20 +43,19 @@
       "sprite": null,
       "colour": "WINZONE",
       "physics": {
-        "bodyType": "STATIC",
         "density": 1.0,
         "friction": 1.0,
         "restitution": 0.0,
-        "shape": "rectangle"
+        "shape": "STATIC"
       }
     }
   ],
-  "inventory": [
+  "inventoryObjects": [
     {
       "name": "box1",
       "type": "rectangle",
       "count": 1,
-      "angle" : 0.0,
+      "angle": 0.0,
       "size": {
         "width": 100.0,
         "height": 50.0,
@@ -77,7 +75,7 @@
       "name": "ball1",
       "type": "circle",
       "count": 1,
-      "angle" : 0.0,
+      "angle": 0.0,
       "size": {
         "width": 0.0,
         "height": 0.0,
@@ -96,7 +94,7 @@
       "name": "box2",
       "type": "rectangle",
       "count": 1,
-      "angle" : 0.0,
+      "angle": 0.0,
       "size": {
         "width": 100.0,
         "height": 100.0,
@@ -115,7 +113,7 @@
       "name": "box3",
       "type": "rectangle",
       "count": 1,
-      "angle" : 0.0,
+      "angle": 0.0,
       "size": {
         "width": 300.0,
         "height": 20.0,
