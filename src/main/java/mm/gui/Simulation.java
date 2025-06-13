@@ -150,10 +150,11 @@ public class Simulation {
 
                     GameObject simObj = new GameObject(
                         newObj.getName(), newObj.getType(),
-
-                        new Position((float) x - offsetX, (float) y - offsetY),newObj.getAngle(),
-
-                        newObj.getSize(), newObj.getColour(), newObj.getPhysics()
+                        new Position((float) x - offsetX, (float) y - offsetY), 
+                        newObj.getAngle(),
+                        newObj.getSize(), 
+                        newObj.getColour(), 
+                        newObj.getPhysics()
                     );
 
 
