@@ -1,5 +1,9 @@
 package mm;
 
+import mm.model.GameObject;
+import mm.model.Physics;
+import mm.model.Position;
+import mm.model.Size;
 import mm.model.objects.*;
 
 import javafx.scene.shape.*;

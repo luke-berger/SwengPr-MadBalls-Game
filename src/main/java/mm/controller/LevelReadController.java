@@ -1,6 +1,8 @@
-package mm.model.objects;
+package mm.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import mm.model.Level;
 
 import java.io.InputStream;
 
@@ -14,23 +16,23 @@ import java.io.InputStream;
  * Usage example:
  * <pre>
  *     InputStream is = getClass().getResourceAsStream("/level/level1.json");
- *     LevelReader reader = new LevelReader(is);
+ *     LevelReadController reader = new LevelReadController(is);
  *     Level level = reader.readFile();
  * </pre>
  * </p>
  */
-public class LevelReader {
+public class LevelReadController {
     /** Jackson ObjectMapper for JSON deserialization. */
     private ObjectMapper mapper;
     /** Input stream for the level resource. */
     private InputStream inputStream;
 
     /**
-     * Constructs a LevelReader for a given input stream.
+     * Constructs a LevelReadController for a given input stream.
      *
      * @param inputStream the input stream to read the level data from (typically from a resource file)
      */
-    public LevelReader(InputStream inputStream) {
+    public LevelReadController(InputStream inputStream) {
         mapper = new ObjectMapper();
         this.inputStream = inputStream;
     }

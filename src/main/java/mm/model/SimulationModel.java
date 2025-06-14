@@ -11,13 +11,10 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
 import mm.PhysicsVisualPair;
+import mm.controller.GameObjectController;
+import mm.controller.LevelExportController;
 import mm.controller.PhysicsAnimationController;
-import mm.GameObjectConverter;
 import mm.LevelImporter;
-import mm.model.objects.GameObject;
-import mm.model.objects.InventoryObject;
-import mm.model.objects.LevelExport;
-import mm.model.objects.Position;
 
 /**
  * The SimulationModel class encapsulates the core simulation state and logic for the MadBalls game.
@@ -181,7 +178,7 @@ public class SimulationModel {
 
         // Add level objects
         for (GameObject obj : gameObjects) {
-            PhysicsVisualPair pair = GameObjectConverter.convert(obj, world);
+            PhysicsVisualPair pair = GameObjectController.convert(obj, world);
             pairs.add(pair);
             if (obj.getName().equals("noPlaceZone")) {
                 noPlaceZones.add(pair);
@@ -190,7 +187,7 @@ public class SimulationModel {
 
         // Add dropped objects
         for (GameObject obj : droppedObjects) {
-            PhysicsVisualPair pair = GameObjectConverter.convert(obj, world);
+            PhysicsVisualPair pair = GameObjectController.convert(obj, world);
             pairs.add(pair);
             if (obj.getName().equals("noPlaceZone")) {
                 noPlaceZones.add(pair);
@@ -227,11 +224,11 @@ public class SimulationModel {
     /**
      * Exports the current level state to a JSON file.
      * <p>
-     * Uses LevelExport to save the current simulation state, including all objects and inventory.
+     * Uses LevelExportController to save the current simulation state, including all objects and inventory.
      * </p>
      */
     public void exportLevel() {
-        LevelExport LE = new LevelExport();
+        LevelExportController LE = new LevelExportController();
         LE.export(this.pairs, this.inventoryObjects);
     }
 

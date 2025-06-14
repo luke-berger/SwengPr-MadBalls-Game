@@ -1,11 +1,14 @@
-package mm;
+package mm.controller;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import mm.model.objects.GameObject;
-import mm.model.objects.Physics;
+import mm.PatternCreator;
+import mm.PhysicsVisualPair;
+import mm.model.GameObject;
+import mm.model.Physics;
+
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.dynamics.*;
@@ -37,11 +40,11 @@ import org.jbox2d.dynamics.*;
  * <pre>
  *     GameObject obj = ...;
  *     World world = ...;
- *     PhysicsVisualPair pair = GameObjectConverter.convert(obj, world);
+ *     PhysicsVisualPair pair = GameObjectController.convert(obj, world);
  * </pre>
  * </p>
  */
-public class GameObjectConverter {
+public class GameObjectController {
     /**
      * Scale factor for converting between game units (pixels) and physics world units (meters).
      * Used to ensure consistency between the visual and physical representations.

@@ -83,7 +83,7 @@ public class PhysicsAnimationController extends AnimationTimer {
 
         for (PhysicsVisualPair pair : pairs) {
             if (pair.visual != null && pair.body != null) {
-                // SCALE must match the one used in GameObjectConverter
+                // SCALE must match the one used in GameObjectController
                 float SCALE = 50.0f;
                 Vec2 pos = pair.body.getPosition();
                 double angle = Math.toDegrees(pair.body.getAngle());

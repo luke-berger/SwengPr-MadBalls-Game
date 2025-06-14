@@ -18,7 +18,7 @@ import org.jbox2d.dynamics.Body;
  * <p>
  * <b>Usage example:</b>
  * <pre>
- *     PhysicsVisualPair pair = GameObjectConverter.convert(gameObject, world);
+ *     PhysicsVisualPair pair = GameObjectController.convert(gameObject, world);
  *     Shape visual = pair.getVisual();
  *     Body body = pair.getBody();
  * </pre>

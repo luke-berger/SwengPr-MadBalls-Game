@@ -12,8 +12,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import mm.model.objects.InventoryObject;
-import mm.model.objects.Physics;
+import mm.model.InventoryObject;
+import mm.model.Physics;
 
 /**
  * Utility class for converting {@link InventoryObject} instances into their corresponding

@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import mm.controller.TitleScreenController;
-import mm.model.objects.Level;
+import mm.model.Level;
 
 /**
  * Entry point for the MadBalls application.

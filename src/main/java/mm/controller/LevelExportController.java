@@ -1,9 +1,12 @@
-package mm.model.objects;
+package mm.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import mm.FxToGameObject;
 import mm.PhysicsVisualPair;
+import mm.model.GameObject;
+import mm.model.InventoryObject;
+import mm.model.Level;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,12 +23,12 @@ import java.util.List;
  * <p>
  * Usage example:
  * <pre>
- *     LevelExport exporter = new LevelExport();
+ *     LevelExportController exporter = new LevelExportController();
  *     exporter.export(pairs, inventoryObjects);
  * </pre>
  * </p>
  */
-public class LevelExport {
+public class LevelExportController {
     /** Counter for generating unique filenames for exported levels. */
     int nextname = 1;
 

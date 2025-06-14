@@ -1,4 +1,4 @@
-package mm.model.objects;
+package mm.model;
 
 /**
  * Representing the size of an object for JavaFX and physics calculations.

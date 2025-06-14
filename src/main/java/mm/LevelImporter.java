@@ -4,10 +4,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import mm.model.objects.GameObject;
-import mm.model.objects.InventoryObject;
-import mm.model.objects.Level;
-import mm.model.objects.LevelReader;
+import mm.controller.LevelReadController;
+import mm.model.GameObject;
+import mm.model.InventoryObject;
+import mm.model.Level;
 
 /**
  * Utility class for importing level data (GameObjects and InventoryObjects) from a JSON resource file.
@@ -45,7 +45,7 @@ public class LevelImporter {
             System.err.println("Level JSON not found in resources at: " + resourcePath);
             return;
         }
-        LevelReader levelTemplate = new LevelReader(is);
+        LevelReadController levelTemplate = new LevelReadController(is);
         level = levelTemplate.readFile();
 
         if (level == null) {

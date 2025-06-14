@@ -1,4 +1,4 @@
-package mm.model.objects;
+package mm.model;
 
 /**
  * Represents an item that can be stored in an inventory.

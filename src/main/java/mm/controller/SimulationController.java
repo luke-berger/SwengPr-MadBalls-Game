@@ -11,9 +11,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import mm.PhysicsVisualPair;
+import mm.model.GameObject;
+import mm.model.InventoryObject;
 import mm.model.SimulationModel;
-import mm.model.objects.GameObject;
-import mm.model.objects.InventoryObject;
 import mm.view.SimulationView;
 
 import java.util.ArrayList;
@@ -191,7 +191,7 @@ public class SimulationController {
                     GameObject simObj = model.createGameObjectFromInventory(template, (float)x, (float)y);
                     model.addDroppedObject(simObj);
 
-                    PhysicsVisualPair pair = mm.GameObjectConverter.convert(simObj, model.getWorld());
+                    PhysicsVisualPair pair = mm.controller.GameObjectController.convert(simObj, model.getWorld());
                     if (pair.visual != null) {
                         simSpace.getChildren().add(pair.visual);
                         model.getPairs().add(pair);

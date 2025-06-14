@@ -1,4 +1,4 @@
-package mm.model.objects;
+package mm.model;
 
 /**
  * Represents the physics properties for a game object, used for configuring jBox2D bodies.

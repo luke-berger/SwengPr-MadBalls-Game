@@ -1,4 +1,4 @@
-package mm.model.objects;
+package mm.model;
 
 /**
  * Representing the position of an object in a level.

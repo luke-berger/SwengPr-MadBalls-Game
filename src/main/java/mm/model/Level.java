@@ -1,4 +1,4 @@
-package mm.model.objects;
+package mm.model;
 
 import java.util.List;
 

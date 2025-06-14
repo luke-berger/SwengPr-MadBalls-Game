@@ -1,4 +1,4 @@
-package mm.model.objects;
+package mm.model;
 
 /**
  * Represents a game object that can be placed inside a level.
