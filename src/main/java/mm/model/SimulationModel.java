@@ -11,9 +11,9 @@ import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
 import mm.PhysicsVisualPair;
+import mm.controller.PhysicsAnimationController;
 import mm.GameObjectConverter;
 import mm.LevelImporter;
-import mm.core.physics.ResettableAnimationTimer;
 import mm.model.objects.GameObject;
 import mm.model.objects.InventoryObject;
 import mm.model.objects.LevelExport;
@@ -54,8 +54,10 @@ public class SimulationModel {
     private List<InventoryObject> inventoryObjects = new ArrayList<>();
     /** List of no-place zones restricting object placement. */
     private List<PhysicsVisualPair> noPlaceZones = new ArrayList<>();
+    /** List of droped objects but there visual representation */
+    private List<PhysicsVisualPair> droppedVisualPairs = new ArrayList<>();
     /** The animation timer controlling the simulation loop. */
-    private ResettableAnimationTimer timer;
+    private PhysicsAnimationController timer;
 
     /**
      * Constructs a SimulationModel for a specific level.
@@ -83,6 +85,11 @@ public class SimulationModel {
      * @return the list of dropped GameObject instances
      */
     public List<GameObject> getDroppedObjects() { return droppedObjects; }
+    /**
+     * Returns the list of dropped game objects as their representation in visual and body.
+     * @return the list of dropped GameObjects as their PhysicalVisualPair representation.
+     */
+    public List<PhysicsVisualPair> getDroppedPhysicsVisualPairs() {return droppedVisualPairs;}
 
     /**
      * Returns the list of inventory objects available for placement.
@@ -100,7 +107,7 @@ public class SimulationModel {
      * Returns the animation timer for the simulation.
      * @return the ResettableAnimationTimer instance
      */
-    public ResettableAnimationTimer getTimer() { return timer; }
+    public PhysicsAnimationController getTimer() { return timer; }
 
     /**
      * Returns the current level path.
@@ -127,6 +134,12 @@ public class SimulationModel {
     public void setDroppedObjects(List<GameObject> droppedObjects) { this.droppedObjects = droppedObjects; }
 
     /**
+     * Sets the list of dropped PhysicsVisualPairs
+     * @param droppedPhysicsVisualPairs
+     */
+    public void setDroppedVisualPairs (List<PhysicsVisualPair> droppedPhysicsVisualPairs) {this.droppedVisualPairs = droppedPhysicsVisualPairs;}
+
+    /**
      * Sets the list of inventory objects.
      * @param inventoryObjects the list of InventoryObject instances to set
      */
@@ -140,9 +153,9 @@ public class SimulationModel {
 
     /**
      * Sets the animation timer for the simulation.
-     * @param timer the ResettableAnimationTimer to set
+     * @param timer the PhysicsAnimationController to set
      */
-    public void setTimer(ResettableAnimationTimer timer) { this.timer = timer; }
+    public void setTimer(PhysicsAnimationController timer) { this.timer = timer; }
 
     /**
      * Sets the current level path.
@@ -184,7 +197,7 @@ public class SimulationModel {
             }
         }
 
-        timer = new ResettableAnimationTimer(world, pairs);
+        timer = new PhysicsAnimationController(world, pairs);
 
         listenContact();
     }

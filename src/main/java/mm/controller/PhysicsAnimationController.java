@@ -1,4 +1,4 @@
-package mm.core.physics;
+package mm.controller;
 
 import javafx.animation.AnimationTimer;
 import mm.PhysicsVisualPair;
@@ -31,7 +31,7 @@ import java.util.List;
  *     timer.stop();
  * </pre>
  */
-public class ResettableAnimationTimer extends AnimationTimer {
+public class PhysicsAnimationController extends AnimationTimer {
     /** The last timestamp when the timer was handled (nanoseconds). */
     private long lastTime = 0;
     /** The Box2D world to step. */
@@ -47,7 +47,7 @@ public class ResettableAnimationTimer extends AnimationTimer {
      * @param world the Box2D world to step
      * @param pairs the list of {@link PhysicsVisualPair} objects to update
      */
-    public ResettableAnimationTimer(World world, List<PhysicsVisualPair> pairs) {
+    public PhysicsAnimationController(World world, List<PhysicsVisualPair> pairs) {
         this.world = world;
         this.pairs = pairs;
     }
