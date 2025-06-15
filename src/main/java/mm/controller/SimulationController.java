@@ -13,10 +13,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import mm.model.GameObject;
 import mm.model.InventoryObject;
+import mm.model.Physics;
 import mm.model.PhysicsVisualPair;
 import mm.model.SimulationModel;
 import mm.view.SimulationView;
-import mm.view.TitleScreenView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -221,7 +221,7 @@ public class SimulationController {
         if(view.playButton != null){
             view.playButton.setOnAction(e -> {
                 PhysicsAnimationController timer = model.getTimer();
-                if (timer != null && !timer.isRunning()) {
+                if (timer != null && !timer.isRunning()){
                     timer.start();
                 }
             });
@@ -230,51 +230,45 @@ public class SimulationController {
         if (view.stopButton != null){
             view.stopButton.setOnAction(e -> {
                 PhysicsAnimationController timer = model.getTimer();
-                if (timer != null && timer.isRunning()) {
+                if (timer != null && timer.isRunning()){
                     timer.stop();
                     timer.reset();
-                    setupSimulation();
                 }
+                setupSimulation();
             });
         }
         //Open the settings menu.
         if (view.settingsButton != null){
             view.settingsButton.setOnAction(e -> {
                 PhysicsAnimationController timer = model.getTimer();
-                timer.stop();
+                if (timer != null && timer.isRunning()){
+                    timer.stop();
+                }
                 view.getOverlaySettings().setVisible(true);
             });
         }
         // Delete all added objects to the simulation environment.
         if (view.deleteButton != null) {
             view.deleteButton.setOnAction(e -> {
-                Pane simSpace = view.getSimSpace();
-
-                for (PhysicsVisualPair pair : new ArrayList<>(model.getDroppedPhysicsVisualPairs())) {
-                    if (pair.visual != null) {
-                        simSpace.getChildren().remove(pair.visual);
-                    }
-                    model.getPairs().remove(pair);
-                    if (pair.body !=  null && model.getWorld() != null){
-                        model.getWorld().destroyBody(pair.body);
-                    }
-                }
-                model.getDroppedPhysicsVisualPairs().clear();
-                model.getDroppedObjects().clear();
+                model.setDroppedObjects(new ArrayList<>());
+                model.setDroppedVisualPairs(new ArrayList<>());
+                setupSimulation();
             });
         }
 
         //Import level from .json - File (to implment)
         if (view.importButton != null){
             view.importButton.setOnAction(e -> {
-                System.out.println("To be implemented");
+
             });
         }
         if (view.saveButton != null){
             view.saveButton.setOnAction(e ->{
                 PhysicsAnimationController timer = model.getTimer();
-                timer.stop();
-                model.exportLevel();
+                if (timer != null && timer.isRunning()){
+                    timer.stop();
+                    model.exportLevel();
+                }
             });
         }
     }
