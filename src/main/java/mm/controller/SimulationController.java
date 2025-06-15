@@ -151,6 +151,23 @@ public class SimulationController {
     }
 
     /**
+     * Sets the visual state of all inventory item wrappers to indicate whether they are enabled or disabled.
+
+     * @param disabled {@code true} to visually disable inventory items, {@code false} to enable them
+     */
+    private void setInventoryItemsDisabled(boolean disabled) {
+        for (StackPane wrapper : inventoryWrappers) {
+            if (disabled) {
+                if (!wrapper.getStyleClass().contains("inventory-item-disabled")) {
+                    wrapper.getStyleClass().add("inventory-item-disabled");
+                }
+            } else {
+                wrapper.getStyleClass().remove("inventory-item-disabled");
+            }
+        }
+    }
+
+    /**
      * Sets up drag-and-drop functionality for placing inventory objects into the simulation area.
      * <p>
      * Handles drag-over and drag-dropped events on the simulation area, checks placement restrictions,
@@ -224,6 +241,7 @@ public class SimulationController {
                 PhysicsAnimationController timer = model.getTimer();
                 if (timer != null && !timer.isRunning()){
                     timer.start();
+                    setInventoryItemsDisabled(true);
                 }
             });
         }
@@ -234,6 +252,7 @@ public class SimulationController {
                 if (timer != null && timer.isRunning()){
                     timer.stop();
                     timer.reset();
+                    setInventoryItemsDisabled(false);
                 }
                 setupSimulation();
             });
