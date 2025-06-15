@@ -1,5 +1,6 @@
 package mm.controller;
 
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
@@ -56,6 +57,7 @@ public class SimulationController {
     private final SimulationModel model;
     private final SimulationView view;
     private final List<StackPane> inventoryWrappers = new ArrayList<>();
+    private final Stage primaryStage;
 
     /**
      * Constructs the SimulationController, sets up the model and view, and wires up event handlers.
@@ -64,6 +66,7 @@ public class SimulationController {
      * @param levelPath the resource path to the level JSON file
      */
     public SimulationController(Stage primaryStage, String levelPath) {
+        this.primaryStage = primaryStage;
         this.model = new SimulationModel(levelPath);
         this.view = new SimulationView(primaryStage);
 
@@ -290,6 +293,20 @@ public class SimulationController {
                 overlaySettings.setVisible(!overlaySettings.isVisible());
                 event.consume();
             }
+            
         });
+
+        view.overlayCloseButton.setOnAction(e -> {
+            view.getOverlaySettings().setVisible(false);
+        });
+
+        view.overlayBackButton.setOnAction(e -> {
+            
+        });
+
+        view.overlayQuitButton.setOnAction(e -> {
+            Platform.exit();
+        });
+        
     }
 }

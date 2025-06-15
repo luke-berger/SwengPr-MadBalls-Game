@@ -59,12 +59,18 @@ public class SimulationView {
     private Scene scene;
     private StackPane rootStack;
 
+    // Buttons during the simulation.
     public Button playButton;
     public Button stopButton;
     public Button settingsButton;
     public Button deleteButton;
     public Button importButton;
     public Button saveButton;
+
+    // Buttons from quick menu.
+    public Button overlayBackButton;
+    public Button overlayQuitButton;
+    public Button overlayCloseButton;
 
     /**
      * Constructs the SimulationView and builds the UI layout for the simulation screen.
@@ -167,13 +173,7 @@ public class SimulationView {
         scene.getStylesheets().add(
                 getClass().getResource("/styling/simulation.css").toExternalForm());
 
-        // Toggle overlay with ESC (controller should wire up event handler)
-        scene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ESCAPE) {
-                overlaySettings.setVisible(!overlaySettings.isVisible());
-                event.consume();
-            }
-        });
+        
     }
 
     /**
@@ -197,24 +197,24 @@ public class SimulationView {
                 Color.rgb(10, 10, 20, 0.9), new CornerRadii(10), Insets.EMPTY)));
 
         HBox topRow = new HBox();
-        Button btnClose = new Button("✕");
-        btnClose.setStyle(
+        overlayCloseButton = new Button("✕");
+        overlayCloseButton.setStyle(
                 "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px;");
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        topRow.getChildren().addAll(spacer, btnClose);
+        topRow.getChildren().addAll(spacer, overlayCloseButton);
 
-        Button btnBack = new Button("Back to Title Screen");
-        btnBack.getStyleClass().add("menu-button");
-        btnBack.setMaxWidth(Double.MAX_VALUE);
-        btnBack.setPrefHeight(40);
+        overlayBackButton = new Button("Back to Title Screen");
+        overlayBackButton.getStyleClass().add("menu-button");
+        overlayBackButton.setMaxWidth(Double.MAX_VALUE);
+        overlayBackButton.setPrefHeight(40);
 
-        Button btnQuit = new Button("Quit Game");
-        btnQuit.getStyleClass().add("menu-button");
-        btnQuit.setMaxWidth(Double.MAX_VALUE);
-        btnQuit.setPrefHeight(40);
+        overlayQuitButton = new Button("Quit Game");
+        overlayQuitButton.getStyleClass().add("menu-button");
+        overlayQuitButton.setMaxWidth(Double.MAX_VALUE);
+        overlayQuitButton.setPrefHeight(40);
 
-        window.getChildren().addAll(topRow, btnBack, btnQuit);
+        window.getChildren().addAll(topRow, overlayBackButton, overlayQuitButton);
 
         overlay.getChildren().add(window);
         StackPane.setAlignment(window, Pos.CENTER);
