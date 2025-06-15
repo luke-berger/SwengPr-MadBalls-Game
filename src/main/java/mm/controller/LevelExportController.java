@@ -2,11 +2,10 @@ package mm.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import mm.FxToGameObject;
-import mm.PhysicsVisualPair;
 import mm.model.GameObject;
 import mm.model.InventoryObject;
 import mm.model.Level;
+import mm.model.PhysicsVisualPair;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class LevelExportController {
         
         // Convert each PhysicsVisualPair to a GameObject and add to the list
         for (PhysicsVisualPair pair : pairs) {
-            GameObject obj = FxToGameObject.convertBack(pair);
+            GameObject obj = FxToGameObjectController.convertBack(pair);
             gameObjects.add(obj);
         }
         

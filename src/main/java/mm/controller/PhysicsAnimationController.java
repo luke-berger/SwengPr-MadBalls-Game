@@ -1,7 +1,8 @@
 package mm.controller;
 
 import javafx.animation.AnimationTimer;
-import mm.PhysicsVisualPair;
+import mm.model.PhysicsVisualPair;
+
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 

@@ -1,10 +1,10 @@
-package mm;
+package mm.controller;
 
 import mm.model.GameObject;
 import mm.model.Physics;
+import mm.model.PhysicsVisualPair;
 import mm.model.Position;
 import mm.model.Size;
-import mm.model.objects.*;
 
 import javafx.scene.shape.*;
 import javafx.scene.paint.Color;
@@ -19,7 +19,7 @@ import org.jbox2d.dynamics.*;
  * representation. The conversion extracts all relevant properties from the JavaFX {@code Shape}
  * and the JBox2D {@code Body}, such as position, size, color, angle, and physics parameters.
  * </p>
- * <p>
+ * <p>s
  * <b>Supported shapes:</b>
  * <ul>
  *   <li>{@link javafx.scene.shape.Rectangle}</li>
@@ -31,11 +31,11 @@ import org.jbox2d.dynamics.*;
  * <b>Usage example:</b>
  * <pre>
  *     PhysicsVisualPair pair = ...;
- *     GameObject obj = FxToGameObject.convertBack(pair);
+ *     GameObject obj = FxToGameObjectController.convertBack(pair);
  * </pre>
  * </p>
  */
-public class FxToGameObject {
+public class FxToGameObjectController {
     /**
      * Static counter to generate unique names for new {@link GameObject} instances.
      * Each time a new object is created, this counter is incremented and appended to the type.

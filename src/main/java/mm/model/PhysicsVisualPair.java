@@ -1,4 +1,4 @@
-package mm;
+package mm.model;
 
 import javafx.scene.shape.Shape;
 import org.jbox2d.dynamics.Body;

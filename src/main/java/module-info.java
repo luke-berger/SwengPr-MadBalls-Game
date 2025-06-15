@@ -14,6 +14,5 @@ module mm {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.ikonli.fontawesome5;
     
-    opens mm.model.objects to com.fasterxml.jackson.databind;
     opens mm to javafx.graphics;
 }

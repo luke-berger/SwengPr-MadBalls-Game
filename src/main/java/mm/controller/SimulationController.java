@@ -10,9 +10,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import mm.PhysicsVisualPair;
 import mm.model.GameObject;
 import mm.model.InventoryObject;
+import mm.model.PhysicsVisualPair;
 import mm.model.SimulationModel;
 import mm.view.SimulationView;
 
@@ -117,7 +117,7 @@ public class SimulationController {
         model.setupInventory();
 
         for (InventoryObject obj : model.getInventoryObjects()) {
-            PhysicsVisualPair pair = mm.InventoryObjectConverter.convert(obj, model.getWorld());
+            PhysicsVisualPair pair = mm.controller.InventoryObjectController.convert(obj, model.getWorld());
             if (pair.visual != null) {
                 StackPane wrapper = new StackPane(pair.visual);
                 wrapper.setPrefSize(60, 60);

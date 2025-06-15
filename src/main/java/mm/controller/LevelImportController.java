@@ -1,10 +1,9 @@
-package mm;
+package mm.controller;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import mm.controller.LevelReadController;
 import mm.model.GameObject;
 import mm.model.InventoryObject;
 import mm.model.Level;
@@ -25,7 +24,7 @@ import mm.model.Level;
  * </pre>
  * </p>
  */
-public class LevelImporter {
+public class LevelImportController {
 
     /** The loaded Level object containing game and inventory objects. */
     private Level level;
@@ -39,7 +38,7 @@ public class LevelImporter {
      *
      * @param resourcePath the path to the level JSON file in resources (e.g., "/level/level1.json")
      */
-    public LevelImporter(String resourcePath) {
+    public LevelImportController(String resourcePath) {
         InputStream is = getClass().getResourceAsStream(resourcePath);
         if (is == null) {
             System.err.println("Level JSON not found in resources at: " + resourcePath);

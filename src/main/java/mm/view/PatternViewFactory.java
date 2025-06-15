@@ -1,4 +1,4 @@
-package mm;
+package mm.view;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,11 +22,11 @@ import javafx.scene.paint.Color;
  * <b>Usage example:</b>
  * <pre>
  *     Rectangle winZoneRect = new Rectangle(width, height);
- *     winZoneRect.setFill(PatternCreator.createWinzone(width, height));
+ *     winZoneRect.setFill(PatternViewFactory.createWinzone(width, height));
  * </pre>
  * </p>
  */
-public class PatternCreator {
+public class PatternViewFactory {
 
     /**
      * Creates a green-white diagonal tape pattern as an {@link ImagePattern}.

@@ -1,9 +1,8 @@
-package mm;
+package mm.controller;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import mm.controller.TitleScreenController;
 import mm.model.Level;
 
 /**
@@ -21,7 +20,7 @@ import mm.model.Level;
  * sets up the initial scene and window configuration.
  * </p>
  */
-public class Main extends Application {
+public class ApplicationController extends Application {
 
     /**
      * The currently loaded level in the application.

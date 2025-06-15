@@ -4,10 +4,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import mm.PatternCreator;
-import mm.PhysicsVisualPair;
 import mm.model.GameObject;
 import mm.model.Physics;
+import mm.model.PhysicsVisualPair;
+import mm.view.PatternViewFactory;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -79,7 +79,7 @@ public class GameObjectController {
             if (obj.getName().equals("winZone")){
                 // JavaFX visual: special win zone pattern
                 Rectangle rect = new Rectangle(width, height);
-                rect.setFill(PatternCreator.createWinzone(width, height));
+                rect.setFill(PatternViewFactory.createWinzone(width, height));
                 rect.setTranslateX(x);
                 rect.setTranslateY(y);
                 visual = rect;
@@ -103,7 +103,7 @@ public class GameObjectController {
             } else if (obj.getName().equals("noPlaceZone")){
                 // JavaFX visual: special no-place zone pattern
                 Rectangle rect = new Rectangle(width, height);
-                rect.setFill(PatternCreator.createNoPlaceZone(width, height));
+                rect.setFill(PatternViewFactory.createNoPlaceZone(width, height));
                 rect.setTranslateX(x);
                 rect.setTranslateY(y);
                 visual = rect;

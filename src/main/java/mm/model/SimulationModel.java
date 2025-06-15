@@ -10,11 +10,10 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
-import mm.PhysicsVisualPair;
 import mm.controller.GameObjectController;
 import mm.controller.LevelExportController;
+import mm.controller.LevelImportController;
 import mm.controller.PhysicsAnimationController;
-import mm.LevelImporter;
 
 /**
  * The SimulationModel class encapsulates the core simulation state and logic for the MadBalls game.
@@ -173,7 +172,7 @@ public class SimulationModel {
         pairs = new ArrayList<>();
         noPlaceZones = new ArrayList<>();
 
-        LevelImporter importer = new LevelImporter(levelPath);
+        LevelImportController importer = new LevelImportController(levelPath);
         List<GameObject> gameObjects = importer.getGameObjects();
 
         // Add level objects
@@ -202,11 +201,11 @@ public class SimulationModel {
     /**
      * Loads inventory objects for the current level.
      * <p>
-     * This method uses the LevelImporter to load inventory objects from the level file.
+     * This method uses the LevelImportController to load inventory objects from the level file.
      * </p>
      */
     public void setupInventory() {
-        LevelImporter importer = new LevelImporter(levelPath);
+        LevelImportController importer = new LevelImportController(levelPath);
         inventoryObjects = importer.getInventoryObjects();
     }
 

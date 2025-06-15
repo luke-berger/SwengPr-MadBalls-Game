@@ -1,4 +1,4 @@
-package mm;
+package mm.controller;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
@@ -14,6 +14,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import mm.model.InventoryObject;
 import mm.model.Physics;
+import mm.model.PhysicsVisualPair;
+import mm.view.PatternViewFactory;
 
 /**
  * Utility class for converting {@link InventoryObject} instances into their corresponding
@@ -42,11 +44,11 @@ import mm.model.Physics;
  * <pre>
  *     InventoryObject obj = ...;
  *     World world = ...;
- *     PhysicsVisualPair pair = InventoryObjectConverter.convert(obj, world);
+ *     PhysicsVisualPair pair = InventoryObjectController.convert(obj, world);
  * </pre>
  * </p>
  */
-public class InventoryObjectConverter {
+public class InventoryObjectController {
     /** Scale factor for converting between game units and physics world units */
     private static final float SCALE = 50.0f;
     
@@ -77,7 +79,7 @@ public class InventoryObjectConverter {
 
             if (obj.getName().equalsIgnoreCase("winZone")){
                 Rectangle rect = new Rectangle(width, height);
-                rect.setFill(PatternCreator.createWinzone(width, height));
+                rect.setFill(PatternViewFactory.createWinzone(width, height));
                 visual = rect;
 
                 BodyDef def = new BodyDef();
@@ -94,7 +96,7 @@ public class InventoryObjectConverter {
                 
             } else if (obj.getName().equalsIgnoreCase("noPlaceZone")){
                 Rectangle rect = new Rectangle(width, height);
-                rect.setFill(PatternCreator.createNoPlaceZone(width, height));
+                rect.setFill(PatternViewFactory.createNoPlaceZone(width, height));
                 visual = rect;
 
                 BodyDef def = new BodyDef();
