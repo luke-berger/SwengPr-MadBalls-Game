@@ -150,3 +150,31 @@
 .inventory-item-disabled {
   -fx-opacity: 0.5;
 }
+
+.win-window {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.7), 20, 0.3, 0, 4);
+}
+
+.win-crown {
+  -fx-padding: 10;
+}
+
+.win-title {
+  -fx-text-alignment: center;
+}
+
+.circle-button {
+  -fx-background-color: #4a90e2;
+  -fx-background-radius: 50%;
+  -fx-min-width: 50px;
+  -fx-min-height: 50px;
+  -fx-max-width: 50px;
+  -fx-max-height: 50px;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 8, 0, 0, 2);
+}
+
+.circle-button:hover {
+  -fx-scale-x: 1.1;
+  -fx-scale-y: 1.1;
+}

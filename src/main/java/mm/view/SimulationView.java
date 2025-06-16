@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -21,28 +22,41 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
  *
  * <h3>Responsibilities:</h3>
  * <ul>
- *   <li>Builds and arranges the main simulation layout, including the simulation area, sidebar, inventory, and overlays.</li>
- *   <li>Provides access to UI components for the controller to update or attach event handlers.</li>
- *   <li>Manages the quick menu overlay for settings, returning to the title screen, and quitting the game.</li>
- *   <li>Handles basic UI styling and layout, but not business logic or event handling.</li>
+ * <li>Builds and arranges the main simulation layout, including the simulation
+ * area, sidebar, inventory, and overlays.</li>
+ * <li>Provides access to UI components for the controller to update or attach
+ * event handlers.</li>
+ * <li>Manages the quick menu overlay for settings, returning to the title
+ * screen, and quitting the game.</li>
+ * <li>Handles basic UI styling and layout, but not business logic or event
+ * handling.</li>
  * </ul>
  *
  * <h3>UI Structure:</h3>
  * <ul>
- *   <li>{@code BorderPane mainPane} - The root layout for the simulation screen.</li>
- *   <li>{@code Pane simSpace} - The central area where simulation objects are displayed.</li>
- *   <li>{@code VBox sideBar} - The sidebar containing the inventory and menu buttons.</li>
- *   <li>{@code StackPane inventoryBox} - The container for inventory items.</li>
- *   <li>{@code VBox inventoryItemBox} - The box holding individual inventory item nodes.</li>
- *   <li>{@code HBox bottomBar} - The bottom bar for additional controls or information.</li>
- *   <li>{@code StackPane overlaySettings} - The overlay for quick menu actions (settings, back, quit).</li>
- *   <li>{@code StackPane rootStack} - The root stack pane to layer overlays above the main content.</li>
+ * <li>{@code BorderPane mainPane} - The root layout for the simulation
+ * screen.</li>
+ * <li>{@code Pane simSpace} - The central area where simulation objects are
+ * displayed.</li>
+ * <li>{@code VBox sideBar} - The sidebar containing the inventory and menu
+ * buttons.</li>
+ * <li>{@code StackPane inventoryBox} - The container for inventory items.</li>
+ * <li>{@code VBox inventoryItemBox} - The box holding individual inventory item
+ * nodes.</li>
+ * <li>{@code HBox bottomBar} - The bottom bar for additional controls or
+ * information.</li>
+ * <li>{@code StackPane overlaySettings} - The overlay for quick menu actions
+ * (settings, back, quit).</li>
+ * <li>{@code StackPane rootStack} - The root stack pane to layer overlays above
+ * the main content.</li>
  * </ul>
  *
  * <h3>Note:</h3>
  * <ul>
- *   <li>This class does not contain any simulation logic or state management.</li>
- *   <li>Event handlers should be attached by the controller, not in this class.</li>
+ * <li>This class does not contain any simulation logic or state
+ * management.</li>
+ * <li>Event handlers should be attached by the controller, not in this
+ * class.</li>
  * </ul>
  */
 public class SimulationView {
@@ -56,6 +70,7 @@ public class SimulationView {
     private StackPane overlaySettings;
     private Scene scene;
     private StackPane rootStack;
+    private StackPane winScreenOverlay;
 
     // Buttons during the simulation.
     public Button playButton;
@@ -64,6 +79,7 @@ public class SimulationView {
     public Button deleteButton;
     public Button importButton;
     public Button saveButton;
+    public Button crownButton;
 
     // Buttons from quick menu.
     public Button overlayBackButton;
@@ -71,10 +87,12 @@ public class SimulationView {
     public Button overlayCloseButton;
 
     /**
-     * Constructs the SimulationView and builds the UI layout for the simulation screen.
+     * Constructs the SimulationView and builds the UI layout for the simulation
+     * screen.
      * Initializes all main panes, sidebars, inventory containers, and overlays.
      *
-     * @param primaryStage the primary stage of the application, used for binding and overlay sizing
+     * @param primaryStage the primary stage of the application, used for binding
+     *                     and overlay sizing
      */
     public SimulationView(Stage primaryStage) {
         // Main layout container
@@ -134,6 +152,9 @@ public class SimulationView {
                 } else if (row == 1 && col == 2) {
                     icon = new FontIcon(FontAwesomeSolid.SAVE);
                     saveButton = btn;
+                } else if (row == 2 && col == 1) {
+                    icon = new FontIcon(FontAwesomeSolid.CROWN);
+                    crownButton = btn;
                 }
 
                 if (icon != null) {
@@ -161,9 +182,13 @@ public class SimulationView {
         overlaySettings = createQuickMenuOverlay(primaryStage);
         overlaySettings.setVisible(false);
 
+        // Overlay for win screen (initially hidden)
+        winScreenOverlay = createWinScreenOverlay(primaryStage, false);
+        winScreenOverlay.setVisible(false);
+
         // Root stack to layer overlay on top of mainPane
         rootStack = new StackPane();
-        rootStack.getChildren().addAll(mainPane, overlaySettings);
+        rootStack.getChildren().addAll(mainPane, overlaySettings, winScreenOverlay);
         rootStack.prefWidthProperty().bind(primaryStage.widthProperty());
         rootStack.prefHeightProperty().bind(primaryStage.heightProperty());
 
@@ -171,14 +196,15 @@ public class SimulationView {
         scene.getStylesheets().add(
                 getClass().getResource("/styling/simulation.css").toExternalForm());
 
-        
     }
 
     /**
-     * Creates the quick menu overlay for settings, returning to the title screen, and quitting the game.
+     * Creates the quick menu overlay for settings, returning to the title screen,
+     * and quitting the game.
      * The overlay is initially hidden and can be toggled visible by the controller.
      *
-     * @param ownerStage the owner stage for the overlay, used for sizing and binding
+     * @param ownerStage the owner stage for the overlay, used for sizing and
+     *                   binding
      * @return the StackPane overlay containing the quick menu
      */
     private StackPane createQuickMenuOverlay(Stage ownerStage) {
@@ -221,50 +247,178 @@ public class SimulationView {
     }
 
     /**
+     * Creates a win‑screen overlay with a crown icon and optional Next Level
+     * button.
+     *
+     * @param ownerStage     the primary Stage (for sizing/bindings)
+     * @param showNextButton whether to display the Next Level button
+     * @return a StackPane overlay ready to add to your scene root
+     */
+    private StackPane createWinScreenOverlay(Stage ownerStage, boolean showNextButton) {
+        // full‑screen semi‑transparent backdrop
+        StackPane overlay = new StackPane();
+        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
+        overlay.setVisible(false);
+        overlay.prefWidthProperty().bind(ownerStage.widthProperty());
+        overlay.prefHeightProperty().bind(ownerStage.heightProperty());
+
+        // window container
+        VBox window = new VBox(20);
+        window.setAlignment(Pos.TOP_CENTER);
+        window.setPadding(new Insets(30));
+        window.setMaxWidth(600);
+        window.setMaxHeight(250);
+        window.setBackground(new Background(new BackgroundFill(
+                Color.rgb(20, 20, 40, 0.9),
+                new CornerRadii(16), Insets.EMPTY)));
+        window.getStyleClass().add("win-window");
+
+        // crown icon
+        FontIcon crown = new FontIcon(FontAwesomeSolid.CROWN);
+        crown.setIconSize(48);
+        crown.setIconColor(Color.GOLD);
+
+        // title
+        Label title = new Label("Level Complete!");
+        title.setStyle("-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;");
+
+        // bottom button row inside window
+        HBox buttonRow = new HBox(10);
+        buttonRow.setAlignment(Pos.CENTER);
+        buttonRow.setPadding(new Insets(20, 0, 0, 0));
+
+        // Main Menu icon
+        Button btnHomeIcon = new Button();
+        btnHomeIcon.getStyleClass().addAll("circle-button");
+        FontIcon homeIcon = new FontIcon(FontAwesomeSolid.HOME);
+        homeIcon.setIconSize(20);
+        homeIcon.setIconColor(Color.WHITE);
+        btnHomeIcon.setGraphic(homeIcon);
+        btnHomeIcon.setOnAction(e -> {
+            overlay.setVisible(false);
+        });
+
+        // Main Menu label to the right
+        Label lblMainMenu = new Label("Main Menu");
+        lblMainMenu.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+        HBox mainMenuBox = new HBox(8, btnHomeIcon, lblMainMenu);
+        mainMenuBox.setAlignment(Pos.CENTER);
+
+        // Next Level icon
+        Button btnNextIcon = new Button();
+        btnNextIcon.getStyleClass().addAll("circle-button");
+        FontIcon nextIcon = new FontIcon(FontAwesomeSolid.ARROW_RIGHT);
+        nextIcon.setIconSize(20);
+        nextIcon.setIconColor(Color.WHITE);
+        btnNextIcon.setGraphic(nextIcon);
+        btnNextIcon.setOnAction(e -> {
+            overlay.setVisible(false);
+            System.out.println("Next level!");
+        });
+
+        // Next Level label to the left
+        Label lblNext = new Label("Next Level");
+        lblNext.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
+        HBox nextBox = new HBox(8, lblNext, btnNextIcon);
+        nextBox.setAlignment(Pos.CENTER);
+
+        // spacer between them
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        // Add elements to buttonRow based on showNextButton
+        if (showNextButton) {
+            buttonRow.getChildren().addAll(mainMenuBox, spacer, nextBox);
+        } else {
+            buttonRow.getChildren().add(mainMenuBox); // Only add the main menu box
+        }
+
+        // assemble
+        window.getChildren().addAll(crown, title, buttonRow);
+        overlay.getChildren().add(window);
+        StackPane.setAlignment(window, Pos.CENTER);
+
+        return overlay;
+    }
+
+    /**
      * Returns the main simulation scene containing all UI components.
+     * 
      * @return the JavaFX Scene for the simulation screen
      */
-    public Scene getScene() { return scene; }
+    public Scene getScene() {
+        return scene;
+    }
 
     /**
      * Returns the simulation area pane where game objects are displayed.
+     * 
      * @return the Pane representing the simulation area
      */
-    public Pane getSimSpace() { return simSpace; }
+    public Pane getSimSpace() {
+        return simSpace;
+    }
 
     /**
      * Returns the inventory box container.
+     * 
      * @return the StackPane containing the inventory items
      */
-    public StackPane getInventoryBox() { return inventoryBox; }
+    public StackPane getInventoryBox() {
+        return inventoryBox;
+    }
 
     /**
      * Returns the VBox containing inventory item nodes.
+     * 
      * @return the VBox for inventory items
      */
-    public VBox getInventoryItemBox() { return inventoryItemBox; }
+    public VBox getInventoryItemBox() {
+        return inventoryItemBox;
+    }
 
     /**
      * Returns the sidebar VBox containing inventory and menu buttons.
+     * 
      * @return the VBox representing the sidebar
      */
-    public VBox getSideBar() { return sideBar; }
+    public VBox getSideBar() {
+        return sideBar;
+    }
 
     /**
      * Returns the bottom bar HBox for additional controls or information.
+     * 
      * @return the HBox representing the bottom bar
      */
-    public HBox getBottomBar() { return bottomBar; }
+    public HBox getBottomBar() {
+        return bottomBar;
+    }
 
     /**
      * Returns the overlay settings StackPane for quick menu actions.
+     * 
      * @return the StackPane for the quick menu overlay
      */
-    public StackPane getOverlaySettings() { return overlaySettings; }
+    public StackPane getOverlaySettings() {
+        return overlaySettings;
+    }
+
+    /**
+     * Returns the win screen overlay StackPane.
+     * 
+     * @return the StackPane for the win screen overlay
+     */
+    public StackPane getWinScreenOverlay() {
+        return winScreenOverlay;
+    }
 
     /**
      * Returns the root stack pane that layers overlays above the main content.
+     * 
      * @return the StackPane root of the simulation view
      */
-    public StackPane getRootStack() { return rootStack; }
+    public StackPane getRootStack() {
+        return rootStack;
+    }
 }
