@@ -296,7 +296,8 @@ public class SimulationModel {
             template.getAngle(),
             template.getSize(),
             template.getColour(),
-            template.getPhysics()
+            template.getPhysics(),
+            template.isWinning()
         );
     }
 
