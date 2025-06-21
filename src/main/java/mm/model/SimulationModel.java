@@ -390,12 +390,14 @@ public class SimulationModel {
         float offsetY = (float) (template.getSize().getHeight() / 2.0);
 
         return new GameObject(
-                template.getName(), template.getType(),
-                new Position(x - offsetX, y - offsetY),
-                template.getAngle(),
-                template.getSize(),
-                template.getColour(),
-                template.getPhysics());
+            template.getName(), template.getType(),
+            new Position(x - offsetX, y - offsetY),
+            template.getAngle(),
+            template.getSize(),
+            template.getColour(),
+            template.getPhysics(),
+            template.isWinning()
+        );
     }
 
     /**

@@ -117,7 +117,7 @@ public class FxToGameObjectController {
         physics.setFriction(fixture.getFriction());
         
         // Create and return the new GameObject
-        gameObject = new GameObject(name, type, position, angle, size, colour, physics);
+        gameObject = new GameObject(name, type, position, angle, size, colour, physics, false);
         return gameObject;
     }
 }
