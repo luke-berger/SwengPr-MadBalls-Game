@@ -158,9 +158,6 @@ public class SimulationView {
                 } else if (row == 1 && col == 2) {
                     icon = new FontIcon(FontAwesomeSolid.SAVE);
                     saveButton = btn;
-                } else if (row == 2 && col == 1) {
-                    icon = new FontIcon(FontAwesomeSolid.CROWN);
-                    crownButton = btn;
                 }
 
                 if (icon != null) {
@@ -189,7 +186,7 @@ public class SimulationView {
         overlaySettings.setVisible(false);
 
         // Overlay for win screen (initially hidden)
-        winScreenOverlay = createWinScreenOverlay(primaryStage, true);
+        winScreenOverlay = createWinScreenOverlay(primaryStage, false);
         winScreenOverlay.setVisible(false);
 
         // Root stack to layer overlay on top of mainPane
