@@ -164,6 +164,9 @@ public class SimulationView {
                 } else if (row == 1 && col == 2) {
                     icon = new FontIcon(FontAwesomeSolid.SAVE);
                     saveButton = btn;
+                } else if (row == 2 && col == 0) {
+                    icon = new FontIcon(FontAwesomeSolid.CROWN);
+                    crownButton = btn;
                 }
 
                 if (icon != null) {
@@ -192,7 +195,7 @@ public class SimulationView {
         overlaySettings.setVisible(false);
 
         // Overlay for win screen (initially hidden)
-        winScreenOverlay = createWinScreenOverlay(primaryStage, false);
+        winScreenOverlay = createWinScreenOverlay(primaryStage, isPuzzleMode);
         winScreenOverlay.setVisible(false);
 
         // Root stack to layer overlay on top of mainPane
@@ -363,7 +366,6 @@ public class SimulationView {
 
             buttonRow.getChildren().addAll(mainMenuBox, spacer1, exportBox, spacer2, nextBox);
         } else {
-
             buttonRow.getChildren().addAll(mainMenuBox, spacer1, resumeBox);
         }
 
