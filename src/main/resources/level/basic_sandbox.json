@@ -96,6 +96,26 @@
         "restitution": 0.2,
         "shape": "DYNAMIC"
       }
+    },
+    {
+      "name": "noPlaceZone",
+      "type": "rectangle",
+      "size": {
+        "width": 200.0,
+        "height": 40.0,
+        "radius": 0.0
+      },
+      "angle": 0.0,
+      "sprite": null,
+      "colour": "noplaceZone",
+      "physics": {
+        "density": 1.0,
+        "friction": 1.0,
+        "restitution": 0.0,
+        "shape": "STATIC"
+      },
+      "winning": true,
+      "count": 1
     }
   ]
 }
