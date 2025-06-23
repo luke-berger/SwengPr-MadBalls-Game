@@ -78,6 +78,7 @@ public class PhysicsAnimationController extends AnimationTimer {
             return;
         }
 
+
         float timeStep = (now - lastTime) / 1_000_000_000.0f;
         world.step(timeStep, 8, 3);
         lastTime = now;
@@ -88,6 +89,13 @@ public class PhysicsAnimationController extends AnimationTimer {
                 float SCALE = 50.0f;
                 Vec2 pos = pair.body.getPosition();
                 double angle = Math.toDegrees(pair.body.getAngle());
+
+                String tmp_name = (String) pair.body.getUserData();
+                if (tmp_name.equalsIgnoreCase("ballon")) {
+                    float up = /*-6.15f;*/-1 / pair.body.getFixtureList().getDensity();
+                    Vec2 boyancy = new Vec2(0f, up);
+                    pair.body.applyForceToCenter(boyancy);
+                }
 
                 // For rectangles, set center
                 if (pair.visual instanceof javafx.scene.shape.Rectangle) {

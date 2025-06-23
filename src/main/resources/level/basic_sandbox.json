@@ -55,83 +55,43 @@
       "restitution" : 1.0,
       "shape" : "STATIC"
     },
-    "winning" : true,
-    "count" : 1
-  }, {
-    "name" : "noPlaceZone",
-    "type" : "rectangle",
-    "size" : {
-      "width" : 200.0,
-      "height" : 40.0,
-      "radius" : 0.0
+    {
+      "name": "box3",
+      "type": "rectangle",
+      "count": 1,
+      "angle": 0.0,
+      "size": {
+        "width": 300.0,
+        "height": 20.0,
+        "radius": 0.0
+      },
+      "sprite": null,
+      "colour": "BLACK",
+      "physics": {
+        "density": 1.0,
+        "friction": 1.0,
+        "restitution": 0.1,
+        "shape": "STATIC"
+      }
     },
-    "angle" : 0.0,
-    "sprite" : null,
-    "colour" : "NOPLACEZONE",
-    "physics" : {
-      "density" : 1.0,
-      "friction" : 1.0,
-      "restitution" : 0.0,
-      "shape" : "STATIC"
-    },
-    "winning" : false,
-    "count" : 1
-  }, {
-    "name" : "ball1",
-    "type" : "circle",
-    "size" : {
-      "width" : 0.0,
-      "height" : 0.0,
-      "radius" : 15.0
-    },
-    "angle" : 0.0,
-    "sprite" : null,
-    "colour" : "GREEN",
-    "physics" : {
-      "density" : 1.0,
-      "friction" : 1.0,
-      "restitution" : 1.0,
-      "shape" : "DYNAMIC"
-    },
-    "winning" : true,
-    "count" : 1
-  }, {
-    "name" : "box2",
-    "type" : "rectangle",
-    "size" : {
-      "width" : 100.0,
-      "height" : 100.0,
-      "radius" : 0.0
-    },
-    "angle" : 0.0,
-    "sprite" : null,
-    "colour" : "BLACK",
-    "physics" : {
-      "density" : 1.0,
-      "friction" : 1.0,
-      "restitution" : 1.0,
-      "shape" : "DYNAMIC"
-    },
-    "winning" : false,
-    "count" : 1
-  }, {
-    "name" : "box3",
-    "type" : "rectangle",
-    "size" : {
-      "width" : 300.0,
-      "height" : 20.0,
-      "radius" : 0.0
-    },
-    "angle" : 0.0,
-    "sprite" : null,
-    "colour" : "BLACK",
-    "physics" : {
-      "density" : 1.0,
-      "friction" : 1.0,
-      "restitution" : 1.0,
-      "shape" : "STATIC"
-    },
-    "winning" : false,
-    "count" : 1
-  } ]
+    {
+      "name": "ballon",
+      "type": "circle",
+      "count": 1,
+      "angle": 0.0,
+      "size": {
+        "width": 0.0,
+        "height": 0.0,
+        "radius": 50.0
+      },
+      "sprite": null,
+      "colour": "PURPLE",
+      "physics": {
+        "density": 0.15,
+        "friction":1.0,
+        "restitution": 0.2,
+        "shape": "DYNAMIC"
+      }
+    }
+  ]
 }
