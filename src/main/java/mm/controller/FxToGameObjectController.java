@@ -54,7 +54,7 @@ public class FxToGameObjectController {
     public static GameObject convertBack(PhysicsVisualPair pair) {
         GameObject gameObject = null;
 
-        String name;
+        String name = (String) pair.body.getUserData();
         Position position = new Position(0,0);
         // Angle is converted from radians (JBox2D) to degrees
         float angle = (float) Math.toDegrees(pair.body.getAngle());
@@ -72,20 +72,10 @@ public class FxToGameObjectController {
             Color tmp = (Color) shape.getFill();
             colour = (tmp != null) ? tmp.toString():"BLACK";
         }
-        
-
 
         // Handle Rectangle shapes
         if (shape instanceof Rectangle) {
             type = "Rectangle";
-            // Generate a unique name for the object
-            if (pair.body.getUserData().equals("noPlaceZone")) {
-                name = "noPlaceZone";
-            } else if (pair.body.getUserData().equals("winZone")) {
-                name = "winZone";
-            } else {
-                name = type + Integer.toString(nextname++);
-            }
             javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) shape;
             float x = (float) rect.getTranslateX();
             float y = (float) rect.getTranslateY();
@@ -102,7 +92,6 @@ public class FxToGameObjectController {
         // Handle Circle shapes
         } else if (shape instanceof Circle) {
             type = "Circle";
-            name = type + Integer.toString(nextname++);
             javafx.scene.shape.Circle circle = (javafx.scene.shape.Circle) shape;
             float x = (float) circle.getTranslateX();
             float y = (float) circle.getTranslateY();
