@@ -121,7 +121,7 @@
       "physics": {
         "density": 1.0,
         "friction": 1.0,
-        "restitution": 1.0,
+        "restitution": 0.1,
         "shape": "STATIC"
       }
     },
@@ -138,9 +138,9 @@
       "sprite": null,
       "colour": "PURPLE",
       "physics": {
-        "density": 0.18,
+        "density": 0.15,
         "friction":1.0,
-        "restitution": 0.5,
+        "restitution": 0.2,
         "shape": "DYNAMIC"
       }
     }
