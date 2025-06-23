@@ -1,59 +1,63 @@
 {
-  "levelObjects" : [ ],
-  "inventoryObjects" : [ {
-    "name" : "box1",
-    "type" : "rectangle",
-    "size" : {
-      "width" : 100.0,
-      "height" : 50.0,
-      "radius" : 0.0
+  "levelObjects": [],
+  "inventoryObjects": [
+    {
+      "name": "box1",
+      "type": "rectangle",
+      "size": {
+        "width": 100.0,
+        "height": 50.0,
+        "radius": 0.0
+      },
+      "angle": 0.0,
+      "sprite": null,
+      "colour": "RED",
+      "physics": {
+        "density": 1.0,
+        "friction": 1.0,
+        "restitution": 1.0,
+        "shape": "DYNAMIC"
+      },
+      "winning": false,
+      "count": 1
     },
-    "angle" : 0.0,
-    "sprite" : null,
-    "colour" : "RED",
-    "physics" : {
-      "density" : 1.0,
-      "friction" : 1.0,
-      "restitution" : 1.0,
-      "shape" : "DYNAMIC"
+    {
+      "name": "winZone",
+      "type": "rectangle",
+      "size": {
+        "width": 200.0,
+        "height": 40.0,
+        "radius": 0.0
+      },
+      "angle": 0.0,
+      "sprite": null,
+      "colour": "WINZONE",
+      "physics": {
+        "density": 1.0,
+        "friction": 1.0,
+        "restitution": 0.0,
+        "shape": "STATIC"
+      },
+      "winning": true,
+      "count": 1
     },
-    "winning" : false,
-    "count" : 1
-  }, {
-    "name" : "winZone",
-    "type" : "rectangle",
-    "size" : {
-      "width" : 200.0,
-      "height" : 40.0,
-      "radius" : 0.0
-    },
-    "angle" : 0.0,
-    "sprite" : null,
-    "colour" : "WINZONE",
-    "physics" : {
-      "density" : 1.0,
-      "friction" : 1.0,
-      "restitution" : 0.0,
-      "shape" : "STATIC"
-    },
-    "winning" : true,
-    "count" : 1
-  }, {
-    "name" : "winPlat",
-    "type" : "rectangle",
-    "size" : {
-      "width" : 50.0,
-      "height" : 10.0,
-      "radius" : 0.0
-    },
-    "angle" : 0.0,
-    "sprite" : null,
-    "colour" : "RED",
-    "physics" : {
-      "density" : 1.0,
-      "friction" : 1.0,
-      "restitution" : 1.0,
-      "shape" : "STATIC"
+    {
+      "name": "winPlat",
+      "type": "rectangle",
+      "size": {
+        "width": 50.0,
+        "height": 10.0,
+        "radius": 0.0
+      },
+      "angle": 0.0,
+      "sprite": null,
+      "colour": "RED",
+      "physics": {
+        "density": 1.0,
+        "friction": 1.0,
+        "restitution": 1.0,
+        "shape": "STATIC"
+      }
     },
     {
       "name": "box3",
@@ -88,7 +92,7 @@
       "colour": "PURPLE",
       "physics": {
         "density": 0.15,
-        "friction":1.0,
+        "friction": 1.0,
         "restitution": 0.2,
         "shape": "DYNAMIC"
       }

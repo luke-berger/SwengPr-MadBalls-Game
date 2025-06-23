@@ -14,7 +14,6 @@ import mm.controller.GameObjectController;
 import mm.controller.LevelExportController;
 import mm.controller.LevelImportController;
 import mm.controller.PhysicsAnimationController;
-import mm.view.SimulationView;
 
 /**
  * The SimulationModel class encapsulates the core simulation state and logic
