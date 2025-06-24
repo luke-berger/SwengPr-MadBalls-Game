@@ -173,7 +173,11 @@ public class SimulationController {
                     content.putString(obj.getName());
                     db.setContent(content);
 
-                    javafx.scene.image.WritableImage snapshot = pair.visual.snapshot(null, null);
+                    // Create a snapshot with transparent background
+                    javafx.scene.SnapshotParameters snapshotParameters = new javafx.scene.SnapshotParameters();
+                    snapshotParameters.setFill(javafx.scene.paint.Color.TRANSPARENT); // Set transparent background
+                    javafx.scene.image.WritableImage snapshot = pair.visual.snapshot(snapshotParameters, null);
+
                     db.setDragView(snapshot, snapshot.getWidth() / 2, snapshot.getHeight() / 2);
 
                     event.consume();
