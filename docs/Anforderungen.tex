@@ -136,9 +136,9 @@
         Aus diesen Storycards und den oben gegebenen Features erstellten wir nun ein Anwendungsfalldiagramm:
         \begin{figure}[h]
             \centering
-            \includegraphics[width=\linewidth]{Sources/Use-Case.png}
+            \includegraphics[width=\linewidth]{Sources/UseCase_MadBalls.png}
             \caption{Anwendungsfalldiagramm}
-            \label{fig:Use-Case}
+            \label{fig:UseCase}
         \end{figure}
         
 \newpage
@@ -146,40 +146,41 @@
     \section{Verzeichnisstruktur:}
         Die bisher aus den Anforderungen hervorgegangene Struktur haben wir in einem Ordnerbaum dargestellt:
         \dirtree{%
-           .1 project\_root/.
-            .2 src/.
-              .3 core/.
-                .4 physics/.
-                .4 simulation/.
-              .3 editor/.
-                .4 tools/.
-                .4 ui/.
-              .3 game/.
-                .4 level/.
-                .4 inventory/.
-              .3 ui/.
-                .4 menu/.
-                .4 widgets/.
-            .2 assets/.
-              .3 textures/.
-              .3 backgrounds/.
-              .3 fonts/.
-            .2 levels/.
-            .2 docs/.
-              .3 requirements.pdf.
-              .3 sanity-checks/.
-              .3 design/.
-            .2 scripts/.
-              .3 build.sh.
-            .2 tests/.
-              .3 core/.
-              .3 editor/.
-              .3 game/.
-            .2 .gitignore. 
-            .2 README.md. 
-            .2 pom.xml.   
+.1 project\_root/.
+.2 docs/.
+.3 design/.
+.3 sanity-checks/.
+.4 sanity\_check\_code/.
+.4 SanityCheck\_JavaFX.pdf.
+.4 SanityCheck\_Jbox2d.pdf.
+.3 Anforderungsdokument.pdf.
+.3 Anforderungen.tex.
+.3 MadBalls\_Features.pdf.
+.3 MadBalls\_StoryCards.pdf.
+.3 MB\_Gantt-Diagramm.png.
+.3 OpenIssueReport.pdf.
+.2 src/.
+.3 main/.
+.4 java/.
+.5 mm/.
+.6 controller/.
+.6 model/.
+.6 view/.
+.5 module-info.java.
+.4 resources/.
+.5 level/.
+.5 pictures/.
+.5 styling/.
+.3 test/.
+.2 target/.
+.2 .gitignore. 
+.2 CustomRules.xml.
+.2 pom.xml.   
+.2 README.md. 
         }
-    
+
+    \section{Architektur:}
+        Wie in der Ordnerstruktur sichtbar folgt unser Projekt dem Model-View-Controller-Pattern, in dem in View-Directory alle View-Klassen sind, die Graphische Oberflächen erstellen. Im Model-Directory werden alle Klassen, die auf den Leveldaten arbeiten und/oder Simulationslogik definieren, erstellt. In Controller werden die einzelnen Model-Klassen und View-Klassen kontrolliert. Die Logik die die Models mit Views verknüpft und Datenfluss ermöglicht ist auch im Controller-Directory zu finden. 
 
     \section{Glossar:}
     \begin{itemize}
