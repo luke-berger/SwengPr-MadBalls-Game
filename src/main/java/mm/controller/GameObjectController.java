@@ -22,7 +22,6 @@ import org.jbox2d.dynamics.*;
  * The conversion process uses the properties of the {@code GameObject} (such as type, size, position, color, and physics)
  * to create the appropriate visual and physical representations.
  * </p>
- * <p>
  * <b>Supported types:</b>
  * <ul>
  *   <li>Rectangle</li>
@@ -34,15 +33,12 @@ import org.jbox2d.dynamics.*;
  *   <li>"noPlaceZone": Rendered with a special pattern and created as a static sensor body.</li>
  * </ul>
  * <b>Other objects</b> are rendered and simulated according to their properties.
- * </p>
- * <p>
  * <b>Usage example:</b>
  * <pre>
  *     GameObject obj = ...;
  *     World world = ...;
  *     PhysicsVisualPair pair = GameObjectController.convert(obj, world);
  * </pre>
- * </p>
  */
 public class GameObjectController {
     /**
