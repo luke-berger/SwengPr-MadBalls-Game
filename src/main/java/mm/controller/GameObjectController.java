@@ -67,13 +67,13 @@ public class GameObjectController {
         Shape visual = null;
         Body body = null;
 
+        float x = obj.getPosition().getX();
+        float y = obj.getPosition().getY();
+        
         if ("rectangle".equalsIgnoreCase(type)) {
             float width = obj.getSize().getWidth();
             float height = obj.getSize().getHeight();
-            float x = obj.getPosition().getX();
-            float y = obj.getPosition().getY();
-
-
+            
             Rectangle rect = new Rectangle(width, height);
             if (obj.getName().equalsIgnoreCase("noPlaceZone")) {
                 rect.setFill(PatternViewFactory.createNoPlaceZone(width, height));
@@ -94,11 +94,6 @@ public class GameObjectController {
             def.angle = (float) Math.toRadians(obj.getAngle());
             body = world.createBody(def); 
             body.setUserData(obj.getName());
-            //sets name to winwobject for winning object
-            if (!obj.getName().equalsIgnoreCase("winplat") || !obj.getName().equalsIgnoreCase("winZone")) {
-                String name = (obj.isWinning()) ? "winObject" : obj.getName();
-                body.setUserData(name);
-            }
 
             PolygonShape shape = new PolygonShape();
             shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
@@ -108,12 +103,13 @@ public class GameObjectController {
             fixture.density = physics.getDensity();
             fixture.friction = physics.getFriction();
             fixture.restitution = physics.getRestitution();
+            if(obj.getName().equalsIgnoreCase("noplacezone") || obj.getName().equalsIgnoreCase("winzone")) {
+                fixture.isSensor = true;
+            }
             body.createFixture(fixture);
 
         } else if ("circle".equalsIgnoreCase(type)) {
             float radius = obj.getSize().getRadius();
-            float x = obj.getPosition().getX();
-            float y = obj.getPosition().getY();
 
             // JavaFX visual: colored circle
             Circle circ = new Circle(radius, Color.valueOf(obj.getColour()));
@@ -128,11 +124,6 @@ public class GameObjectController {
             def.angle = (float) Math.toRadians(obj.getAngle());
             body = world.createBody(def);
             body.setUserData(obj.getName());
-            //sets name to winwobject for winning object
-            if (!obj.getName().equalsIgnoreCase("winplat") || !obj.getName().equalsIgnoreCase("winZone")) {
-                String name = (obj.isWinning()) ? "winObject" : obj.getName();
-                body.setUserData(name);
-            }
 
             CircleShape shape = new CircleShape();
             shape.setRadius(radius / SCALE);
@@ -144,122 +135,12 @@ public class GameObjectController {
             fixture.restitution = physics.getRestitution();
             body.createFixture(fixture);
         }
-
-        return new PhysicsVisualPair(visual, body);
-    }
-
-/*
-        if (obj.getName().equals("winZone")){
-                // JavaFX visual: special win zone pattern
-                Rectangle rect = new Rectangle(width, height);
-                rect.setFill(PatternViewFactory.createWinzone(width, height));
-                rect.setTranslateX(x);
-                rect.setTranslateY(y);
-                visual = rect;
-
-                // JBox2D body: static sensor for win zone
-                BodyDef def = new BodyDef();
-                def.type = BodyType.STATIC;
-                def.position.set((x + width / 2) / SCALE, (y + height / 2) / SCALE);
-                def.angle = (float) Math.toRadians(obj.getAngle());  
-                body = world.createBody(def);
-                body.setUserData(obj.getName());
-
-                PolygonShapnulle shape = new PolygonShape();
-                shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
-
-                FixtureDef fixture = new FixtureDef();
-                fixture.shape = shape;
-                fixture.isSensor = true; // Sensor triggers contact events but does not collide
-                body.createFixture(fixture);
-
-            } else if (obj.getName().equals("noPlaceZone")){
-                // JavaFX visual: special no-place zone pattern
-                Rectangle rect = new Rectangle(width, height);
-                rect.setFill(PatternViewFactory.createNoPlaceZone(width, height));
-                rect.setTranslateX(x);
-                rect.setTranslateY(y);
-                visual = rect;
-
-                // JBox2D body: static sensor for no-place zone
-                BodyDef def = new BodyDef();
-                def.type = BodyType.STATIC;
-                def.position.set((x + width / 2) / SCALE, (y + height / 2) / SCALE);
-                def.angle = (float) Math.toRadians(obj.getAngle());
-                body = world.createBody(def);
-                body.setUserData(obj.getName());
-
-                PolygonShape shape = new PolygonShape();
-                shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
-
-                FixtureDef fixture = new FixtureDef();
-                fixture.shape = shape;
-                fixture.isSensor = true; // Sensor triggers contact events but does not collide
-                body.createFixture(fixture);
-
-            } else {
-                // JavaFX visual: colored rectangle
-                Rectangle rect = new Rectangle(width, height, Color.valueOf(obj.getColour()) );
-                rect.setTranslateX(x);
-                rect.setTranslateY(y);
-                visual = rect;
-
-                // JBox2D body: dynamic or static based on physics shape property
-                BodyDef def = new BodyDef();
-                def.type = physics.getShape().equalsIgnoreCase("Dynamic") ? BodyType.DYNAMIC : BodyType.STATIC;
-                def.position.set((x + width / 2) / SCALE, (y + height / 2) / SCALE);
-                def.angle = (float) Math.toRadians(obj.getAngle());
-                body = world.createBody(def); 
-                body.setUserData(obj.getName());
-                //sets name to winwobject for winning object
-                if (!obj.getName().equals("winplat")) {
-                    String name = (obj.isWinning()) ? "winobject" : obj.getName();
-                    body.setUserData(name);
-                }
-
-                PolygonShape shape = new PolygonShape();
-                shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
-
-                FixtureDef fixture = new FixtureDef();
-                fixture.shape = shape;
-                fixture.density = physics.getDensity();
-                fixture.friction = physics.getFriction();
-                fixture.restitution = physics.getRestitution();
-                body.createFixture(fixture);
-            }
-
-
-        private static void createRectObj(Rectangle rect, GameObject obj) {
-        Physics physics = obj.getPhysics();
-
-        Shape visual = null;
-        Body body = null;
-
-        rect.setTranslateX(x);
-        rect.setTranslateY(y);
-        visual = rect;
-
-        // JBox2D body: dynamic or static based on physics shape property
-        BodyDef def = new BodyDef();
-        def.type = physics.getShape().equalsIgnoreCase("Dynamic") ? BodyType.DYNAMIC : BodyType.STATIC;
-        def.position.set((x + width / 2) / SCALE, (y + height / 2) / SCALE);
-        def.angle = (float) Math.toRadians(obj.getAngle());
-        body = world.createBody(def); 
-        body.setUserData(obj.getName());
         //sets name to winwobject for winning object
-        if (!obj.getName().equals("winplat")) {
-            String name = (obj.isWinning()) ? "winobject" : obj.getName();
+        if (!obj.getName().equalsIgnoreCase("winplat") || !obj.getName().equalsIgnoreCase("winZone")) {
+            String name = (obj.isWinning()) ? "winObject" : obj.getName();
             body.setUserData(name);
         }
 
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
-
-        FixtureDef fixture = new FixtureDef();
-        fixture.shape = shape;
-        fixture.density = physics.getDensity();
-        fixture.friction = physics.getFriction();
-        fixture.restitution = physics.getRestitution();
-        body.createFixture(fixture);
-    }*/
+        return new PhysicsVisualPair(visual, body);
+    }
 }
