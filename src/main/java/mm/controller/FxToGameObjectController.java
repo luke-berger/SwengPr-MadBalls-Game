@@ -57,7 +57,7 @@ public class FxToGameObjectController {
         String colour = null;
         String type;
         Physics physics = new Physics();
-        boolean winning = pair.body.getUserData().equals("winobject");
+        boolean winning = pair.body.getUserData().equals("winObject");
 
         // The JavaFX Shape representing the visual part of the object
         Shape shape = pair.visual;

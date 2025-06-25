@@ -1,6 +1,7 @@
 package mm.controller;
 
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -22,7 +23,6 @@ import org.jbox2d.dynamics.*;
  * The conversion process uses the properties of the {@code GameObject} (such as type, size, position, color, and physics)
  * to create the appropriate visual and physical representations.
  * </p>
- * <p>
  * <b>Supported types:</b>
  * <ul>
  *   <li>Rectangle</li>
@@ -34,15 +34,12 @@ import org.jbox2d.dynamics.*;
  *   <li>"noPlaceZone": Rendered with a special pattern and created as a static sensor body.</li>
  * </ul>
  * <b>Other objects</b> are rendered and simulated according to their properties.
- * </p>
- * <p>
  * <b>Usage example:</b>
  * <pre>
  *     GameObject obj = ...;
  *     World world = ...;
  *     PhysicsVisualPair pair = GameObjectController.convert(obj, world);
  * </pre>
- * </p>
  */
 public class GameObjectController {
     /**
@@ -76,7 +73,83 @@ public class GameObjectController {
             float x = obj.getPosition().getX();
             float y = obj.getPosition().getY();
 
-            if (obj.getName().equals("winZone")){
+
+            Rectangle rect = new Rectangle(width, height);
+            if (obj.getName().equalsIgnoreCase("noPlaceZone")) {
+                rect.setFill(PatternViewFactory.createNoPlaceZone(width, height));
+            } else if (obj.getName().equalsIgnoreCase("winZone")) {
+                rect.setFill(PatternViewFactory.createWinzone(width, height));
+            } else {
+                rect.setFill(Color.valueOf(obj.getColour()));
+                //add SpriteCodeImplementation here
+            }
+            rect.setTranslateX(x);
+            rect.setTranslateY(y);
+            visual = rect;
+
+            // JBox2D body: dynamic or static based on physics shape property
+            BodyDef def = new BodyDef();
+            def.type = physics.getShape().equalsIgnoreCase("Dynamic") ? BodyType.DYNAMIC : BodyType.STATIC;
+            def.position.set((x + width / 2) / SCALE, (y + height / 2) / SCALE);
+            def.angle = (float) Math.toRadians(obj.getAngle());
+            body = world.createBody(def); 
+            body.setUserData(obj.getName());
+            //sets name to winwobject for winning object
+            if (!obj.getName().equalsIgnoreCase("winplat") || !obj.getName().equalsIgnoreCase("winZone")) {
+                String name = (obj.isWinning()) ? "winObject" : obj.getName();
+                body.setUserData(name);
+            }
+
+            PolygonShape shape = new PolygonShape();
+            shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
+
+            FixtureDef fixture = new FixtureDef();
+            fixture.shape = shape;
+            fixture.density = physics.getDensity();
+            fixture.friction = physics.getFriction();
+            fixture.restitution = physics.getRestitution();
+            body.createFixture(fixture);
+
+        } else if ("circle".equalsIgnoreCase(type)) {
+            float radius = obj.getSize().getRadius();
+            float x = obj.getPosition().getX();
+            float y = obj.getPosition().getY();
+
+            // JavaFX visual: colored circle
+            Circle circ = new Circle(radius, Color.valueOf(obj.getColour()));
+            circ.setTranslateX(x);
+            circ.setTranslateY(y);
+            visual = circ;
+
+            // JBox2D body: dynamic or static based on physics shape property
+            BodyDef def = new BodyDef();
+            def.type = (physics.getShape().equalsIgnoreCase("DYNAMIC")) ? BodyType.DYNAMIC : BodyType.STATIC;
+            def.position.set(x / SCALE, y / SCALE);
+            def.angle = (float) Math.toRadians(obj.getAngle());
+            body = world.createBody(def);
+            body.setUserData(obj.getName());
+            //sets name to winwobject for winning object
+            if (!obj.getName().equalsIgnoreCase("winplat") || !obj.getName().equalsIgnoreCase("winZone")) {
+                String name = (obj.isWinning()) ? "winObject" : obj.getName();
+                body.setUserData(name);
+            }
+
+            CircleShape shape = new CircleShape();
+            shape.setRadius(radius / SCALE);
+
+            FixtureDef fixture = new FixtureDef();
+            fixture.shape = shape;
+            fixture.density = physics.getDensity();
+            fixture.friction = physics.getFriction();
+            fixture.restitution = physics.getRestitution();
+            body.createFixture(fixture);
+        }
+
+        return new PhysicsVisualPair(visual, body);
+    }
+
+/*
+        if (obj.getName().equals("winZone")){
                 // JavaFX visual: special win zone pattern
                 Rectangle rect = new Rectangle(width, height);
                 rect.setFill(PatternViewFactory.createWinzone(width, height));
@@ -92,7 +165,7 @@ public class GameObjectController {
                 body = world.createBody(def);
                 body.setUserData(obj.getName());
 
-                PolygonShape shape = new PolygonShape();
+                PolygonShapnulle shape = new PolygonShape();
                 shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
 
                 FixtureDef fixture = new FixtureDef();
@@ -155,41 +228,38 @@ public class GameObjectController {
                 body.createFixture(fixture);
             }
 
-        } else if ("circle".equalsIgnoreCase(type)) {
-            float radius = obj.getSize().getRadius();
-            float x = obj.getPosition().getX();
-            float y = obj.getPosition().getY();
 
-            // JavaFX visual: colored circle
-            Circle circ = new Circle(radius, Color.valueOf(obj.getColour()));
-            circ.setTranslateX(x);
-            circ.setTranslateY(y);
-            visual = circ;
+        private static void createRectObj(Rectangle rect, GameObject obj) {
+        Physics physics = obj.getPhysics();
 
-            // JBox2D body: dynamic or static based on physics shape property
-            BodyDef def = new BodyDef();
-            def.type = (physics.getShape().equals("DYNAMIC")) ? BodyType.DYNAMIC : BodyType.STATIC;
-            def.position.set(x / SCALE, y / SCALE);
-            def.angle = (float) Math.toRadians(obj.getAngle());
-            body = world.createBody(def);
-            body.setUserData(obj.getName());
-            //sets name to winwobject for winning object
-            if (!obj.getName().equals("winplat")) {
-                String name = (obj.isWinning()) ? "winobject" : obj.getName();
-                body.setUserData(name);
-            }
+        Shape visual = null;
+        Body body = null;
 
-            CircleShape shape = new CircleShape();
-            shape.setRadius(radius / SCALE);
+        rect.setTranslateX(x);
+        rect.setTranslateY(y);
+        visual = rect;
 
-            FixtureDef fixture = new FixtureDef();
-            fixture.shape = shape;
-            fixture.density = physics.getDensity();
-            fixture.friction = physics.getFriction();
-            fixture.restitution = physics.getRestitution();
-            body.createFixture(fixture);
+        // JBox2D body: dynamic or static based on physics shape property
+        BodyDef def = new BodyDef();
+        def.type = physics.getShape().equalsIgnoreCase("Dynamic") ? BodyType.DYNAMIC : BodyType.STATIC;
+        def.position.set((x + width / 2) / SCALE, (y + height / 2) / SCALE);
+        def.angle = (float) Math.toRadians(obj.getAngle());
+        body = world.createBody(def); 
+        body.setUserData(obj.getName());
+        //sets name to winwobject for winning object
+        if (!obj.getName().equals("winplat")) {
+            String name = (obj.isWinning()) ? "winobject" : obj.getName();
+            body.setUserData(name);
         }
 
-        return new PhysicsVisualPair(visual, body);
-    }
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(width / 2 / SCALE, height / 2 / SCALE);
+
+        FixtureDef fixture = new FixtureDef();
+        fixture.shape = shape;
+        fixture.density = physics.getDensity();
+        fixture.friction = physics.getFriction();
+        fixture.restitution = physics.getRestitution();
+        body.createFixture(fixture);
+    }*/
 }
