@@ -20,13 +20,6 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
  * and update the main panes and controls. All simulation logic and state
  * should be handled by the controller and model, following the MVC pattern.
  * </p>
- * 
- * Refactored to address PMD violations:
- * - Reduced field count by grouping related buttons
- * - Broken down complex constructor into smaller methods
- * - Eliminated duplicate string literals
- * - Reduced cyclomatic complexity and NCSS count
- */
 public class SimulationView {
 
     // Style constants to avoid duplicate literals
