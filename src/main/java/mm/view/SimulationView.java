@@ -20,107 +20,126 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
  * and update the main panes and controls. All simulation logic and state
  * should be handled by the controller and model, following the MVC pattern.
  * </p>
- *
- * <h2>Responsibilities:</h2>
- * <ul>
- * <li>Builds and arranges the main simulation layout, including the simulation
- * area, sidebar, inventory, and overlays.</li>
- * <li>Provides access to UI components for the controller to update or attach
- * event handlers.</li>
- * <li>Manages the quick menu overlay for settings, returning to the title
- * screen, and quitting the game.</li>
- * <li>Handles basic UI styling and layout, but not business logic or event
- * handling.</li>
- * </ul>
- *
- * <h2>UI Structure:</h2>
- * <ul>
- * <li>{@code BorderPane mainPane} - The root layout for the simulation
- * screen.</li>
- * <li>{@code Pane simSpace} - The central area where simulation objects are
- * displayed.</li>
- * <li>{@code VBox sideBar} - The sidebar containing the inventory and menu
- * buttons.</li>
- * <li>{@code StackPane inventoryBox} - The container for inventory items.</li>
- * <li>{@code VBox inventoryItemBox} - The box holding individual inventory item
- * nodes.</li>
- * <li>{@code HBox bottomBar} - The bottom bar for additional controls or
- * information.</li>
- * <li>{@code StackPane overlaySettings} - The overlay for quick menu actions
- * (settings, back, quit).</li>
- * <li>{@code StackPane rootStack} - The root stack pane to layer overlays above
- * the main content.</li>
- * </ul>
- *
- * <h2>Note:</h2>
- * <ul>
- * <li>This class does not contain any simulation logic or state
- * management.</li>
- * <li>Event handlers should be attached by the controller, not in this
- * class.</li>
- * </ul>
+ * 
+ * Refactored to address PMD violations:
+ * - Reduced field count by grouping related buttons
+ * - Broken down complex constructor into smaller methods
+ * - Eliminated duplicate string literals
+ * - Reduced cyclomatic complexity and NCSS count
  */
 public class SimulationView {
 
+    // Style constants to avoid duplicate literals
+    private static final String CIRCLE_BUTTON_CLASS = "circle-button";
+    private static final String WHITE_LABEL_STYLE = "-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;";
+    private static final String MENU_BUTTON_CLASS = "menu-button";
+    private static final String OVERLAY_BACKGROUND = "rgba(0, 0, 0, 0.6)";
+    
+    // Core layout components
     private BorderPane mainPane;
     private Pane simSpace;
     private HBox bottomBar;
-    private StackPane inventoryBox;
-    private VBox inventoryItemBox;
     private VBox sideBar;
     private StackPane overlaySettings;
+    private StackPane winScreenOverlay;
     private Scene scene;
     private StackPane rootStack;
-    private StackPane winScreenOverlay;
+    
+    // Inventory components
+    private StackPane inventoryBox;
+    private VBox inventoryItemBox;
 
-    // Buttons during the simulation.
-    public Button playButton;
-    public Button stopButton;
-    public Button settingsButton;
-    public Button deleteButton;
-    public Button importButton;
-    public Button saveButton;
-    public Button crownButton;
-    public Button btnWinHome;
-    public Button btnWinNext;
-    public Button btnWinExport;
-
-    // Buttons from quick menu.
-    public Button overlayBackButton;
-    public Button overlayQuitButton;
-    public Button overlayCloseButton;
+    // Control buttons - grouped by functionality to reduce field count
+    private final SimulationButtons simulationButtons = new SimulationButtons();
+    private final OverlayButtons overlayButtons = new OverlayButtons();
+    private final WinScreenButtons winScreenButtons = new WinScreenButtons();
 
     /**
-     * Constructs the SimulationView and builds the UI layout for the simulation
-     * screen.
-     * Initializes all main panes, sidebars, inventory containers, and overlays.
-     *
-     * @param primaryStage the primary stage of the application, used for binding
-     *                     and overlay sizing
+     * Inner class to hold simulation control buttons, reducing field count.
+     */
+    public static class SimulationButtons {
+        public Button playButton;
+        public Button stopButton;
+        public Button settingsButton;
+        public Button deleteButton;
+        public Button importButton;
+        public Button saveButton;
+        public Button crownButton;
+    }
+
+    /**
+     * Inner class to hold overlay menu buttons, reducing field count.
+     */
+    public static class OverlayButtons {
+        public Button overlayBackButton;
+        public Button overlayQuitButton;
+        public Button overlayCloseButton;
+    }
+
+    /**
+     * Inner class to hold win screen buttons, reducing field count.
+     */
+    public static class WinScreenButtons {
+        public Button btnWinHome;
+        public Button btnWinNext;
+        public Button btnWinExport;
+    }
+
+    /**
+     * Constructs the SimulationView and builds the UI layout for the simulation screen.
+     * Reduced cyclomatic complexity by breaking down into smaller methods.
      */
     public SimulationView(Stage primaryStage, boolean isPuzzleMode, boolean atPuzzlesEnd) {
-        // Main layout container
+        initializeMainComponents();
+        createSideBarWithMenuButtons(isPuzzleMode);
+        setupMainLayout();
+        createOverlays(primaryStage, isPuzzleMode, atPuzzlesEnd);
+        setupRootStackAndScene(primaryStage);
+    }
+
+    /**
+     * Initializes the main UI components.
+     */
+    private void initializeMainComponents() {
         mainPane = new BorderPane();
         mainPane.setId("root-pane");
 
-        // Simulation area
         simSpace = new Pane();
         simSpace.getStyleClass().add("sim-space");
-        mainPane.setCenter(simSpace);
 
-        // Sidebar with menu buttons
+        bottomBar = new HBox();
+        bottomBar.getStyleClass().add("bottom-bar");
+        bottomBar.setPrefHeight(150);
+    }
+
+    /**
+     * Creates the sidebar with inventory and menu buttons.
+     */
+    private void createSideBarWithMenuButtons(boolean isPuzzleMode) {
         sideBar = new VBox();
         sideBar.getStyleClass().add("side-bar");
         sideBar.setPrefWidth(200);
 
-        // Inventory box
+        createInventoryComponents();
+        createMenuGrid(isPuzzleMode);
+    }
+
+    /**
+     * Creates the inventory box and item container.
+     */
+    private void createInventoryComponents() {
         inventoryBox = new StackPane();
         inventoryBox.getStyleClass().add("inventory-box");
         VBox.setVgrow(inventoryBox, Priority.ALWAYS);
         inventoryItemBox = new VBox();
         inventoryBox.getChildren().add(inventoryItemBox);
         inventoryItemBox.getStyleClass().add("inventoryItemBox");
+    }
 
+    /**
+     * Creates the menu grid with control buttons.
+     */
+    private void createMenuGrid(boolean isPuzzleMode) {
         HBox squareContainer = new HBox();
         squareContainer.getStyleClass().add("square-container");
         squareContainer.setAlignment(Pos.CENTER);
@@ -131,72 +150,104 @@ public class SimulationView {
         GridPane grid = new GridPane();
         grid.getStyleClass().add("menu-grid");
 
-        // Populate grid with buttons/icons (no event handlers here)
+        populateMenuGrid(grid, isPuzzleMode);
+
+        menuSquare.getChildren().add(grid);
+        squareContainer.getChildren().add(menuSquare);
+        sideBar.getChildren().addAll(inventoryBox, squareContainer);
+    }
+
+    /**
+     * Populates the menu grid with buttons and icons.
+     */
+    private void populateMenuGrid(GridPane grid, boolean isPuzzleMode) {
+        String resetIcon = isPuzzleMode ? "REDO_ALT" : "TRASH_ALT";
+
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                Button btn = new Button();
-                btn.getStyleClass().add("menu-button");
-                FontIcon icon = null;
-                String resetIcon;
-                if (!isPuzzleMode) {
-                    resetIcon = "TRASH_ALT";
-                } else {
-                    resetIcon = "REDO_ALT";
-                }
-
-                if (row == 0 && col == 0) {
-                    icon = new FontIcon(FontAwesomeSolid.PLAY);
-                    playButton = btn;
-                } else if (row == 0 && col == 1) {
-                    icon = new FontIcon(FontAwesomeSolid.STOP);
-                    stopButton = btn;
-                } else if (row == 0 && col == 2) {
-                    icon = new FontIcon(FontAwesomeSolid.COGS);
-                    settingsButton = btn;
-                } else if (row == 1 && col == 0) {
-                    icon = new FontIcon(FontAwesomeSolid.valueOf(resetIcon));
-                    deleteButton = btn;
-                } else if (row == 1 && col == 1 && !isPuzzleMode) {
-                    icon = new FontIcon(FontAwesomeSolid.FOLDER_PLUS);
-                    importButton = btn;
-                } else if (row == 1 && col == 2) {
-                    icon = new FontIcon(FontAwesomeSolid.SAVE);
-                    saveButton = btn;
-                } else if (row == 2 && col == 0) {
-                    icon = new FontIcon(FontAwesomeSolid.CROWN);
-                    crownButton = btn;
-                }
-
+                Button btn = createMenuButton();
+                FontIcon icon = createIconForPosition(row, col, resetIcon, isPuzzleMode, btn);
+                
                 if (icon != null) {
-                    icon.setIconSize(16);
-                    icon.setIconColor(Color.WHITE);
+                    setupIcon(icon);
                     btn.setGraphic(icon);
                 }
 
                 grid.add(btn, col, row);
             }
         }
+    }
 
-        menuSquare.getChildren().add(grid);
-        squareContainer.getChildren().add(menuSquare);
-        sideBar.getChildren().addAll(inventoryBox, squareContainer);
+    /**
+     * Creates a standard menu button.
+     */
+    private Button createMenuButton() {
+        Button btn = new Button();
+        btn.getStyleClass().add(MENU_BUTTON_CLASS);
+        return btn;
+    }
+
+    /**
+     * Creates the appropriate icon for a grid position and assigns the button reference.
+     */
+    private FontIcon createIconForPosition(int row, int col, String resetIcon, boolean isPuzzleMode, Button btn) {
+        if (row == 0 && col == 0) {
+            simulationButtons.playButton = btn;
+            return new FontIcon(FontAwesomeSolid.PLAY);
+        } else if (row == 0 && col == 1) {
+            simulationButtons.stopButton = btn;
+            return new FontIcon(FontAwesomeSolid.STOP);
+        } else if (row == 0 && col == 2) {
+            simulationButtons.settingsButton = btn;
+            return new FontIcon(FontAwesomeSolid.COGS);
+        } else if (row == 1 && col == 0) {
+            simulationButtons.deleteButton = btn;
+            return new FontIcon(FontAwesomeSolid.valueOf(resetIcon));
+        } else if (row == 1 && col == 1 && !isPuzzleMode) {
+            simulationButtons.importButton = btn;
+            return new FontIcon(FontAwesomeSolid.FOLDER_PLUS);
+        } else if (row == 1 && col == 2) {
+            simulationButtons.saveButton = btn;
+            return new FontIcon(FontAwesomeSolid.SAVE);
+        } else if (row == 2 && col == 0) {
+            simulationButtons.crownButton = btn;
+            return new FontIcon(FontAwesomeSolid.CROWN);
+        }
+        return null;
+    }
+
+    /**
+     * Configures the standard properties for menu icons.
+     */
+    private void setupIcon(FontIcon icon) {
+        icon.setIconSize(16);
+        icon.setIconColor(Color.WHITE);
+    }
+
+    /**
+     * Sets up the main layout by arranging components.
+     */
+    private void setupMainLayout() {
+        mainPane.setCenter(simSpace);
         mainPane.setRight(sideBar);
-
-        // Bottom bar
-        bottomBar = new HBox();
-        bottomBar.getStyleClass().add("bottom-bar");
-        bottomBar.setPrefHeight(150);
         mainPane.setBottom(bottomBar);
+    }
 
-        // Overlay for settings (initially hidden)
-        overlaySettings = createQuickMenuOverlay(primaryStage);
+    /**
+     * Creates both overlay components.
+     */
+    private void createOverlays(Stage primaryStage, boolean isPuzzleMode, boolean atPuzzlesEnd) {
+        overlaySettings = createQuickMenuOverlay();
         overlaySettings.setVisible(false);
 
-        // Overlay for win screen (initially hidden)
         winScreenOverlay = createWinScreenOverlay(primaryStage, isPuzzleMode, atPuzzlesEnd);
         winScreenOverlay.setVisible(false);
+    }
 
-        // Root stack to layer overlay on top of mainPane
+    /**
+     * Sets up the root stack pane and scene.
+     */
+    private void setupRootStackAndScene(Stage primaryStage) {
         rootStack = new StackPane();
         rootStack.getChildren().addAll(mainPane, overlaySettings, winScreenOverlay);
         rootStack.prefWidthProperty().bind(primaryStage.widthProperty());
@@ -205,50 +256,19 @@ public class SimulationView {
         scene = new Scene(rootStack);
         scene.getStylesheets().add(
                 getClass().getResource("/styling/simulation.css").toExternalForm());
-
     }
 
     /**
      * Creates the quick menu overlay for settings, returning to the title screen,
-     * and quitting the game.
-     * The overlay is initially hidden and can be toggled visible by the controller.
-     *
-     * @param ownerStage the owner stage for the overlay, used for sizing and
-     *                   binding
-     * @return the StackPane overlay containing the quick menu
+     * and quitting the game. Reduced NCSS count by breaking into smaller methods.
      */
-    private StackPane createQuickMenuOverlay(Stage ownerStage) {
+    private StackPane createQuickMenuOverlay() {
         StackPane overlay = new StackPane();
         overlay.setStyle("-fx-background-color: rgba(30, 30, 50, 0.7);");
         overlay.setPickOnBounds(true);
 
-        VBox window = new VBox(20);
-        window.setAlignment(Pos.TOP_CENTER);
-        window.setPadding(new Insets(15));
-        window.setMaxWidth(300);
-        window.setMaxHeight(180);
-        window.setBackground(new Background(new BackgroundFill(
-                Color.rgb(10, 10, 20, 0.9), new CornerRadii(10), Insets.EMPTY)));
-
-        HBox topRow = new HBox();
-        overlayCloseButton = new Button("✕");
-        overlayCloseButton.setStyle(
-                "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px;");
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        topRow.getChildren().addAll(spacer, overlayCloseButton);
-
-        overlayBackButton = new Button("Back to Title Screen");
-        overlayBackButton.getStyleClass().add("menu-button");
-        overlayBackButton.setMaxWidth(Double.MAX_VALUE);
-        overlayBackButton.setPrefHeight(40);
-
-        overlayQuitButton = new Button("Quit Game");
-        overlayQuitButton.getStyleClass().add("menu-button");
-        overlayQuitButton.setMaxWidth(Double.MAX_VALUE);
-        overlayQuitButton.setPrefHeight(40);
-
-        window.getChildren().addAll(topRow, overlayBackButton, overlayQuitButton);
+        VBox window = createOverlayWindow();
+        setupOverlayButtons(window);
 
         overlay.getChildren().add(window);
         StackPane.setAlignment(window, Pos.CENTER);
@@ -257,20 +277,69 @@ public class SimulationView {
     }
 
     /**
-     * Creates a win‑screen overlay with a crown icon and optional Next Level
-     * button.
-     *
-     * @param ownerStage     the primary Stage (for sizing/bindings)
-     * @param showNextButton whether to display the Next Level button
-     * @return a StackPane overlay ready to add to your scene root
+     * Creates the overlay window container.
+     */
+    private VBox createOverlayWindow() {
+        VBox window = new VBox(20);
+        window.setAlignment(Pos.TOP_CENTER);
+        window.setPadding(new Insets(15));
+        window.setMaxWidth(300);
+        window.setMaxHeight(180);
+        window.setBackground(new Background(new BackgroundFill(
+                Color.rgb(10, 10, 20, 0.9), new CornerRadii(10), Insets.EMPTY)));
+        return window;
+    }
+
+    /**
+     * Sets up the overlay buttons and adds them to the window.
+     */
+    private void setupOverlayButtons(VBox window) {
+        HBox topRow = new HBox();
+        overlayButtons.overlayCloseButton = new Button("✕");
+        overlayButtons.overlayCloseButton.setStyle(
+                "-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 14px;");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        topRow.getChildren().addAll(spacer, overlayButtons.overlayCloseButton);
+
+        overlayButtons.overlayBackButton = new Button("Back to Title Screen");
+        overlayButtons.overlayBackButton.getStyleClass().add(MENU_BUTTON_CLASS);
+        overlayButtons.overlayBackButton.setMaxWidth(Double.MAX_VALUE);
+        overlayButtons.overlayBackButton.setPrefHeight(40);
+
+        overlayButtons.overlayQuitButton = new Button("Quit Game");
+        overlayButtons.overlayQuitButton.getStyleClass().add(MENU_BUTTON_CLASS);
+        overlayButtons.overlayQuitButton.setMaxWidth(Double.MAX_VALUE);
+        overlayButtons.overlayQuitButton.setPrefHeight(40);
+
+        window.getChildren().addAll(topRow, overlayButtons.overlayBackButton, overlayButtons.overlayQuitButton);
+    }
+
+    /**
+     * Creates a win‑screen overlay with a crown icon and optional Next Level button.
+     * Reduced NCSS count by breaking into smaller methods.
      */
     private StackPane createWinScreenOverlay(Stage ownerStage, boolean isPuzzleMode, boolean atPuzzlesEnd) {
         StackPane overlay = new StackPane();
-        overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
+        overlay.setStyle("-fx-background-color: " + OVERLAY_BACKGROUND + ";");
         overlay.setVisible(false);
         overlay.prefWidthProperty().bind(ownerStage.widthProperty());
         overlay.prefHeightProperty().bind(ownerStage.heightProperty());
 
+        VBox window = createWinWindow(atPuzzlesEnd);
+        HBox buttonRow = createWinButtonRow(isPuzzleMode, atPuzzlesEnd, overlay);
+
+        window.getChildren().add(buttonRow);
+        overlay.getChildren().add(window);
+        StackPane.setAlignment(window, Pos.CENTER);
+
+        return overlay;
+    }
+
+    /**
+     * Creates the win screen window with crown and title.
+     */
+    private VBox createWinWindow(boolean atPuzzlesEnd) {
         VBox window = new VBox(20);
         window.setAlignment(Pos.TOP_CENTER);
         window.setPadding(new Insets(30));
@@ -281,184 +350,105 @@ public class SimulationView {
                 new CornerRadii(16), Insets.EMPTY)));
         window.getStyleClass().add("win-window");
 
-        // crown icon
         FontIcon crown = new FontIcon(FontAwesomeSolid.CROWN);
         crown.setIconSize(48);
         crown.setIconColor(Color.GOLD);
 
-        Label title = new Label("Level Complete!");
-        if (!atPuzzlesEnd) {
-            title = new Label("Level Complete!");
-        } else {
-            title = new Label("Puzzle Series Complete!");
-        }
+        String titleText = atPuzzlesEnd ? "Puzzle Series Complete!" : "Level Complete!";
+        Label title = new Label(titleText);
         title.setStyle("-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;");
 
+        window.getChildren().addAll(crown, title);
+        return window;
+    }
+
+    /**
+     * Creates the button row for the win screen based on mode and puzzle status.
+     */
+    private HBox createWinButtonRow(boolean isPuzzleMode, boolean atPuzzlesEnd, StackPane overlay) {
         HBox buttonRow = new HBox(10);
         buttonRow.setAlignment(Pos.CENTER);
         buttonRow.setPadding(new Insets(20, 0, 0, 0));
 
-        // Main Menu icon
-        btnWinHome = new Button();
-        btnWinHome.getStyleClass().addAll("circle-button");
-        FontIcon homeIcon = new FontIcon(FontAwesomeSolid.HOME);
-        homeIcon.setIconSize(20);
-        homeIcon.setIconColor(Color.WHITE);
-        btnWinHome.setGraphic(homeIcon);
-        btnWinHome.setOnAction(e -> overlay.setVisible(false));
-
-        Label lblMainMenu = new Label("Main Menu");
-        lblMainMenu.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
-        HBox mainMenuBox = new HBox(8, btnWinHome, lblMainMenu);
-        mainMenuBox.setAlignment(Pos.CENTER);
-
-        // Next Level icon
-        btnWinNext = new Button();
-        btnWinNext.getStyleClass().addAll("circle-button");
-        FontIcon nextIcon = new FontIcon(FontAwesomeSolid.ARROW_RIGHT);
-        nextIcon.setIconSize(20);
-        nextIcon.setIconColor(Color.WHITE);
-        btnWinNext.setGraphic(nextIcon);
-        btnWinNext.setOnAction(e -> {
-            overlay.setVisible(false);
-            System.out.println("Next level!");
-        });
-
-        Label lblNext = new Label("Next Level");
-        lblNext.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
-        HBox nextBox = new HBox(8, lblNext, btnWinNext);
-        nextBox.setAlignment(Pos.CENTER);
-
-        Region spacer1 = new Region();
-        Region spacer2 = new Region();
-        HBox.setHgrow(spacer1, Priority.ALWAYS);
-        HBox.setHgrow(spacer2, Priority.ALWAYS);
-
-        // Resume Editing Button
-        Button btnResume = new Button();
-        btnResume.getStyleClass().addAll("circle-button");
-        FontIcon editIcon = new FontIcon(FontAwesomeSolid.PENCIL_ALT);
-        editIcon.setIconSize(20);
-        editIcon.setIconColor(Color.WHITE);
-        btnResume.setGraphic(editIcon);
-        btnResume.setOnAction(e -> overlay.setVisible(false));
-
-        Label lblResume = new Label("Resume Editing");
-        lblResume.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
-        HBox resumeBox = new HBox(8, lblResume, btnResume);
-        resumeBox.setAlignment(Pos.CENTER);
-
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        btnWinExport = new Button();
-        btnWinExport.getStyleClass().addAll("circle-button");
-        FontIcon exportIcon = new FontIcon(FontAwesomeSolid.FILE_EXPORT);
-        exportIcon.setIconSize(20);
-        exportIcon.setIconColor(Color.WHITE);
-        btnWinExport.setGraphic(exportIcon);
-        btnWinExport.setOnAction(e -> {
-            System.out.println("Export Level clicked!");
-        });
-
-        Label lblExport = new Label("Export Level");
-        lblExport.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
-        HBox exportBox = new HBox(8, btnWinExport, lblExport);
-        exportBox.setAlignment(Pos.CENTER);
+        HBox mainMenuBox = createWinButton(FontAwesomeSolid.HOME, "Main Menu", overlay);
+        HBox exportBox = createWinButton(FontAwesomeSolid.FILE_EXPORT, "Export Level", null);
 
         if (isPuzzleMode && !atPuzzlesEnd) {
-            buttonRow.getChildren().addAll(mainMenuBox, spacer1, exportBox, spacer2, nextBox);
+            HBox nextBox = createWinButton(FontAwesomeSolid.ARROW_RIGHT, "Next Level", overlay);
+            addButtonsWithSpacing(buttonRow, mainMenuBox, exportBox, nextBox);
         } else if (isPuzzleMode && atPuzzlesEnd) {
-            buttonRow.getChildren().addAll(mainMenuBox, spacer1, exportBox);
+            addButtonsWithSpacing(buttonRow, mainMenuBox, exportBox);
         } else {
-            buttonRow.getChildren().addAll(mainMenuBox, spacer1, resumeBox);
+            HBox resumeBox = createWinButton(FontAwesomeSolid.PENCIL_ALT, "Resume Editing", overlay);
+            addButtonsWithSpacing(buttonRow, mainMenuBox, resumeBox);
         }
 
-        window.getChildren().addAll(crown, title, buttonRow);
-        overlay.getChildren().add(window);
-        StackPane.setAlignment(window, Pos.CENTER);
-
-        return overlay;
+        return buttonRow;
     }
 
     /**
-     * Returns the main simulation scene containing all UI components.
-     * 
-     * @return the JavaFX Scene for the simulation screen
+     * Creates a win screen button with icon and label.
      */
-    public Scene getScene() {
-        return scene;
+    private HBox createWinButton(FontAwesomeSolid iconType, String labelText, StackPane overlay) {
+        Button btn = new Button();
+        btn.getStyleClass().add(CIRCLE_BUTTON_CLASS);
+        FontIcon icon = new FontIcon(iconType);
+        icon.setIconSize(20);
+        icon.setIconColor(Color.WHITE);
+        btn.setGraphic(icon);
+
+        if (overlay != null) {
+            btn.setOnAction(e -> overlay.setVisible(false));
+        }
+
+        // Store button references
+        if ("Main Menu".equals(labelText)) {
+            winScreenButtons.btnWinHome = btn;
+        } else if ("Next Level".equals(labelText)) {
+            winScreenButtons.btnWinNext = btn;
+        } else if ("Export Level".equals(labelText)) {
+            winScreenButtons.btnWinExport = btn;
+        }
+
+        Label label = new Label(labelText);
+        label.setStyle(WHITE_LABEL_STYLE);
+        
+        HBox buttonBox = new HBox(8, btn, label);
+        if ("Next Level".equals(labelText)) {
+            buttonBox = new HBox(8, label, btn); // Reverse order for next button
+        }
+        buttonBox.setAlignment(Pos.CENTER);
+
+        return buttonBox;
     }
 
     /**
-     * Returns the simulation area pane where game objects are displayed.
-     * 
-     * @return the Pane representing the simulation area
+     * Adds buttons to the button row with proper spacing.
      */
-    public Pane getSimSpace() {
-        return simSpace;
+    private void addButtonsWithSpacing(HBox buttonRow, HBox... buttons) {
+        for (int i = 0; i < buttons.length; i++) {
+            buttonRow.getChildren().add(buttons[i]);
+            if (i < buttons.length - 1) {
+                Region spacer = new Region();
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+                buttonRow.getChildren().add(spacer);
+            }
+        }
     }
 
-    /**
-     * Returns the inventory box container.
-     * 
-     * @return the StackPane containing the inventory items
-     */
-    public StackPane getInventoryBox() {
-        return inventoryBox;
-    }
+    // Getter methods for accessing components
+    public Scene getScene() { return scene; }
+    public Pane getSimSpace() { return simSpace; }
+    public StackPane getInventoryBox() { return inventoryBox; }
+    public VBox getInventoryItemBox() { return inventoryItemBox; }
+    public VBox getSideBar() { return sideBar; }
+    public HBox getBottomBar() { return bottomBar; }
+    public StackPane getOverlaySettings() { return overlaySettings; }
+    public StackPane getWinScreenOverlay() { return winScreenOverlay; }
+    public StackPane getRootStack() { return rootStack; }
 
-    /**
-     * Returns the VBox containing inventory item nodes.
-     * 
-     * @return the VBox for inventory items
-     */
-    public VBox getInventoryItemBox() {
-        return inventoryItemBox;
-    }
-
-    /**
-     * Returns the sidebar VBox containing inventory and menu buttons.
-     * 
-     * @return the VBox representing the sidebar
-     */
-    public VBox getSideBar() {
-        return sideBar;
-    }
-
-    /**
-     * Returns the bottom bar HBox for additional controls or information.
-     * 
-     * @return the HBox representing the bottom bar
-     */
-    public HBox getBottomBar() {
-        return bottomBar;
-    }
-
-    /**
-     * Returns the overlay settings StackPane for quick menu actions.
-     * 
-     * @return the StackPane for the quick menu overlay
-     */
-    public StackPane getOverlaySettings() {
-        return overlaySettings;
-    }
-
-    /**
-     * Returns the win screen overlay StackPane.
-     * 
-     * @return the StackPane for the win screen overlay
-     */
-    public StackPane getWinScreenOverlay() {
-        return winScreenOverlay;
-    }
-
-    /**
-     * Returns the root stack pane that layers overlays above the main content.
-     * 
-     * @return the StackPane root of the simulation view
-     */
-    public StackPane getRootStack() {
-        return rootStack;
-    }
+    // Button accessor methods
+    public SimulationButtons getSimulationButtons() { return simulationButtons; }
+    public OverlayButtons getOverlayButtons() { return overlayButtons; }
+    public WinScreenButtons getWinScreenButtons() { return winScreenButtons; }
 }
