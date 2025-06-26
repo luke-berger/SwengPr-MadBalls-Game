@@ -63,6 +63,8 @@ public class SimulationModel {
     private PhysicsAnimationController timer;
     /** Flag indicating if the win screen is currently visible. */
     private boolean winScreenVisible = false;
+    /** Listener for win condition events in the simulation. */
+    private WinListener winListener;
 
     /**
      * Constructs a SimulationModel for a specific level.
@@ -323,11 +325,11 @@ public class SimulationModel {
                 Object b = contact.getFixtureB().getBody().getUserData();
 
                 if (a != null && b != null) {
-                    if ((a.equals("winObject") && (b.equals("winPlat") || b.equals("winZone"))) ||
-                            (b.equals("winObject") && (a.equals("winPlat") || a.equals("winZone")))) {
+                    if (a.equals("winObject") && (b.equals("winPlat") || b.equals("winZone")) ||
+                            b.equals("winObject") && (a.equals("winPlat") || a.equals("winZone"))) {
 
                         System.out.println("WIN! ball1 reached the win condition!");
-                        assert(winListener != null);
+                        assert winListener != null;
                         if (winListener != null) {
                             timer.stop();
                             winScreenVisible = true;
@@ -351,12 +353,23 @@ public class SimulationModel {
         });
     }
 
-    // Callback-Interface
+    /**
+     * Interface for listening to win events in the simulation.
+     * <p>
+     * Implementations of this interface can receive notifications when the
+     * win condition is met (e.g., when the ball reaches the win platform or zone).
+     * </p>
+     */
     public interface WinListener {
+        /**
+         * Called when the win condition is triggered.
+         * <p>
+         * This method is invoked when a collision is detected between the win object
+         * and a win platform or win zone, indicating that the level has been completed.
+         * </p>
+         */
         void onWin();
     }
-
-    private WinListener winListener;
 
     public void setWinListener(WinListener listener) {
         this.winListener = listener;
