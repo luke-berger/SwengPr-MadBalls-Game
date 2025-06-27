@@ -491,10 +491,10 @@ public class SimulationModel {
                 template.getName(), 
                 template.getType(),
                 new Position(x - offsetX, y - offsetY),
-                template.getSize(),
-                template.getPhysics());
+                template.getSize());
         
         // Set additional properties using setters
+        gameObject.setPhysics(template.getPhysics());
         gameObject.setAngle(template.getAngle());
         gameObject.setColour(template.getColour());
         gameObject.setSprite(template.getSprite());

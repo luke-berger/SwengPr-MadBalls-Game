@@ -25,6 +25,8 @@ import javafx.scene.paint.Color;
  * </pre>
  */
 public class PatternViewFactory {
+    /** The width of each diagonal stripe in the pattern. */
+    private static final int STRIPE_WIDTH = 16;
     /**
      * Creates a diagonal tape pattern as an {@link ImagePattern} with the specified color.
      * <p>
@@ -62,16 +64,14 @@ public class PatternViewFactory {
      * @param color  The primary color for the stripes
      */
     private static void drawDiagonalStripes(GraphicsContext gc, float width, float height, Color color) {
-        final int stripeWidth = 16;
-        
         // Calculate the range needed to cover the entire area with diagonal stripes
         int startPosition = (int) -height;
         int endPosition = (int) width;
         
         // Use integer loop to avoid float precision issues
-        for (int i = startPosition; i < endPosition; i += stripeWidth) {
-            drawColoredStripe(gc, i, height, stripeWidth, color);
-            drawWhiteStripe(gc, i, height, stripeWidth);
+        for (int i = startPosition; i < endPosition; i += STRIPE_WIDTH) {
+            drawColoredStripe(gc, i, height, color);
+            drawWhiteStripe(gc, i, height);
         }
     }
 
@@ -81,16 +81,15 @@ public class PatternViewFactory {
      * Creates a parallelogram shape representing one colored stripe in the pattern.
      * </p>
      *
-     * @param gc          The GraphicsContext to draw on
-     * @param position    The horizontal starting position of the stripe
-     * @param height      The height of the drawing area
-     * @param stripeWidth The width of each stripe
-     * @param color       The color to fill the stripe
+     * @param gc       The GraphicsContext to draw on
+     * @param position The horizontal starting position of the stripe
+     * @param height   The height of the drawing area
+     * @param color    The color to fill the stripe
      */
-    private static void drawColoredStripe(GraphicsContext gc, int position, float height, int stripeWidth, Color color) {
+    private static void drawColoredStripe(GraphicsContext gc, int position, float height, Color color) {
         gc.setFill(color);
         gc.fillPolygon(
-            new double[]{position, position + stripeWidth / 2.0, position + stripeWidth, position + stripeWidth / 2.0},
+            new double[]{position, position + STRIPE_WIDTH / 2.0, position + STRIPE_WIDTH, position + STRIPE_WIDTH / 2.0},
             new double[]{0, 0, height, height},
             4
         );
@@ -103,15 +102,14 @@ public class PatternViewFactory {
      * positioned to alternate with the colored stripes.
      * </p>
      *
-     * @param gc          The GraphicsContext to draw on
-     * @param position    The horizontal starting position reference
-     * @param height      The height of the drawing area
-     * @param stripeWidth The width of each stripe
+     * @param gc       The GraphicsContext to draw on
+     * @param position The horizontal starting position reference
+     * @param height   The height of the drawing area
      */
-    private static void drawWhiteStripe(GraphicsContext gc, int position, float height, int stripeWidth) {
+    private static void drawWhiteStripe(GraphicsContext gc, int position, float height) {
         gc.setFill(Color.WHITE);
         gc.fillPolygon(
-            new double[]{position + stripeWidth / 2.0, position + stripeWidth, position + 1.5 * stripeWidth, position + stripeWidth},
+            new double[]{position + STRIPE_WIDTH / 2.0, position + STRIPE_WIDTH, position + 1.5 * STRIPE_WIDTH, position + STRIPE_WIDTH},
             new double[]{0, 0, height, height},
             4
         );

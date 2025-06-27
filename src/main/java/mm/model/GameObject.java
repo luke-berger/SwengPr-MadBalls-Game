@@ -45,20 +45,6 @@ public class GameObject extends AbstractObject {
     }
 
     /**
-     * Constructs a GameObject with essential properties including physics.
-     *
-     * @param name the unique identifier for the object
-     * @param type the type or category of the object
-     * @param position the position where to place the object
-     * @param size the size (width, height) of the object
-     * @param physics the physics properties for simulation
-     */
-    public GameObject(String name, String type, Position position, Size size, Physics physics) {
-        super(name, type, size, physics);
-        this.position = position;
-    }
-
-    /**
      * Returns the position of the object.
      *
      * @return the position of the object

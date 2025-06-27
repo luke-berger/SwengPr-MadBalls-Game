@@ -40,25 +40,23 @@ public class InventoryObject extends AbstractObject {
      *
      * @param name the name of the item
      * @param type the type/category of the item
-     * @param count the count of this item (should be >= 1)
      * @param size the size (width, height) of the object
      */
-    public InventoryObject(String name, String type, int count, Size size) {
+    public InventoryObject(String name, String type, Size size) {
         super(name, type, size);
-        this.count = count;
+        this.count = 1; // Default count for new inventory items
     }
 
     /**
-     * Constructs an InventoryObject with essential properties including physics.
+     * Constructs an InventoryObject with a specific count.
      *
      * @param name the name of the item
      * @param type the type/category of the item
-     * @param count the count of this item (should be >= 1)
      * @param size the size (width, height) of the object
-     * @param physics the physics information for simulation
+     * @param count the count of this item (should be >= 1)
      */
-    public InventoryObject(String name, String type, int count, Size size, Physics physics) {
-        super(name, type, size, physics);
+    public InventoryObject(String name, String type, Size size, int count) {
+        super(name, type, size);
         this.count = count;
     }
     /**

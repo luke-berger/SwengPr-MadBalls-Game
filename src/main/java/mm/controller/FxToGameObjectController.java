@@ -55,9 +55,10 @@ public class FxToGameObjectController {
         Physics physics = extractPhysics(pair.body);
 
         // Create GameObject with basic constructor
-        GameObject gameObject = new GameObject(name, type, position, size, physics);
+        GameObject gameObject = new GameObject(name, type, position, size);
         
         // Set additional properties using setters
+        gameObject.setPhysics(physics);
         gameObject.setAngle(angle);
         gameObject.setColour(colour);
         gameObject.setWinning(winning);
