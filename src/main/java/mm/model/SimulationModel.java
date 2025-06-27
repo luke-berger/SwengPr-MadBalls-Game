@@ -486,14 +486,21 @@ public class SimulationModel {
         float offsetX = (float) (template.getSize().getWidth() / 2.0);
         float offsetY = (float) (template.getSize().getHeight() / 2.0);
 
-        return new GameObject(
-                template.getName(), template.getType(),
+        // Create GameObject with basic constructor
+        GameObject gameObject = new GameObject(
+                template.getName(), 
+                template.getType(),
                 new Position(x - offsetX, y - offsetY),
-                template.getAngle(),
                 template.getSize(),
-                template.getColour(),
-                template.getPhysics(),
-                template.isWinning());
+                template.getPhysics());
+        
+        // Set additional properties using setters
+        gameObject.setAngle(template.getAngle());
+        gameObject.setColour(template.getColour());
+        gameObject.setSprite(template.getSprite());
+        gameObject.setWinning(template.isWinning());
+        
+        return gameObject;
     }
 
     /**

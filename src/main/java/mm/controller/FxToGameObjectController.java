@@ -54,7 +54,15 @@ public class FxToGameObjectController {
         String type = extractShapeProperties(shape, position, size);
         Physics physics = extractPhysics(pair.body);
 
-        return new GameObject(name, type, position, angle, size, colour, physics, winning);
+        // Create GameObject with basic constructor
+        GameObject gameObject = new GameObject(name, type, position, size, physics);
+        
+        // Set additional properties using setters
+        gameObject.setAngle(angle);
+        gameObject.setColour(colour);
+        gameObject.setWinning(winning);
+        
+        return gameObject;
     }
 
     /**
