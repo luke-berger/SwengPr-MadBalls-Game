@@ -506,15 +506,26 @@ public class SimulationController {
             visual.setTranslateX(newX);
             visual.setTranslateY(newY);
 
-            // Update the GameObject's position (for export, etc.)
+            // Update the GameObject's position to match the visual position
             simObj.getPosition().setX((float) newX);
             simObj.getPosition().setY((float) newY);
 
-            // JBoxd change the point of animation
-            pair.body.setTransform(
-                new org.jbox2d.common.Vec2((float) (newX / 50.0), (float) (newY / 50.0)), 
-                pair.body.getAngle()
-            );
+            // Update physics body position - for rectangles, the body should be centered
+            if (visual instanceof javafx.scene.shape.Rectangle) {
+                javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) visual;
+                float centerX = (float) (newX + rect.getWidth() / 2);
+                float centerY = (float) (newY + rect.getHeight() / 2);
+                pair.body.setTransform(
+                    new org.jbox2d.common.Vec2(centerX / 50.0f, centerY / 50.0f), 
+                    pair.body.getAngle()
+                );
+            } else if (visual instanceof javafx.scene.shape.Circle) {
+                // For circles, the position is already at the center
+                pair.body.setTransform(
+                    new org.jbox2d.common.Vec2((float) (newX / 50.0), (float) (newY / 50.0)), 
+                    pair.body.getAngle()
+                );
+            }
 
             event.consume();
         });
