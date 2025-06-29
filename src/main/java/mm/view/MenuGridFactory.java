@@ -7,6 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
@@ -157,11 +158,16 @@ public class MenuGridFactory {
      * Creates icons for the bottom row of the grid (currently only crown button).
      */
     private FontIcon createBottomRowIcon(int col, Button btn) {
-        if (col == 0) {
-            simulationButtons.crownButton = btn;
-            return new FontIcon(FontAwesomeSolid.CROWN);
+        switch (col) {
+            case 1:
+                simulationButtons.undoButton = btn;
+                return new FontIcon(FontAwesomeSolid.REPLY);
+            case 2:
+                simulationButtons.redoButton = btn;
+                return new FontIcon(FontAwesomeSolid.SHARE);
+            default:
+            return null;
         }
-        return null;
     }
 
     /**
