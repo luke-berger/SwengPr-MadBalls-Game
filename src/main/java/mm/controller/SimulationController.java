@@ -519,7 +519,6 @@ public class SimulationController {
      *   <li>Only objects that originated from the inventory (i.e., dropped objects) should use this handler.</li>
      *   <li>The method updates the {@link GameObject}'s position and the {@link PhysicsVisualPair}'s Box2D body.</li>
      *   <li>Visual feedback includes cursor changes and can be extended for more effects (e.g., opacity, shadows).</li>
-     *   <li>Optionally, checks for placement restrictions (such as no-place zones) can be added.</li>
      * </ul>
      *
      * @param pair   the {@link PhysicsVisualPair} containing the visual node and Box2D body to be moved
@@ -555,8 +554,6 @@ public class SimulationController {
             
             double newX = event.getSceneX() - dragDelta[0];
             double newY = event.getSceneY() - dragDelta[1];
-
-            // Optionally: Check for no-place zones here if needed
 
             visual.setTranslateX(newX);
             visual.setTranslateY(newY);
