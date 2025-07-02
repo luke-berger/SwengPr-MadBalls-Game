@@ -161,6 +161,7 @@ public class SimulationController {
                 // If we found a matching dropped object, restore its properties and add handlers
                 if (matchedDroppedObject != null) {
                     pair.visual.setRotate(matchedDroppedObject.getAngle());
+
                     addMoveHandlersToDroppedVisual(pair, matchedDroppedObject);
                     gameObjectToPairMap.put(matchedDroppedObject, pair);
                 }
@@ -574,9 +575,19 @@ public class SimulationController {
             float currentAngle = simObj.getAngle();
             float newAngle = currentAngle + 15;
 
+            // Update visual rotation
             pair.visual.setRotate(newAngle);
+            
+            // Update GameObject angle
             simObj.setAngle(newAngle);
 
+            // Update physics body rotation - convert degrees to radians
+            pair.body.setTransform(
+                pair.body.getPosition(), 
+                (float) Math.toRadians(newAngle)
+            );
+
+            event.consume();
         });
     }
 }
