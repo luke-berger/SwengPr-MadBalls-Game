@@ -16,6 +16,17 @@ public class MoveObjectController implements Command {
     private final float oldAngle;
     private final float newAngle;
     
+    /**
+     * Constructs a new MoveObjectController command.
+     * Creates defensive copies of position objects to prevent external modification.
+     * 
+     * @param gameObject The game object to be moved
+     * @param pair The physics-visual pair containing both physics body and visual representation
+     * @param oldPosition The original position before the move operation
+     * @param newPosition The target position after the move operation
+     * @param oldAngle The original rotation angle in degrees before the move
+     * @param newAngle The target rotation angle in degrees after the move
+     */
     public MoveObjectController(GameObject gameObject, PhysicsVisualPair pair, 
                            Position oldPosition, Position newPosition,
                            float oldAngle, float newAngle) {

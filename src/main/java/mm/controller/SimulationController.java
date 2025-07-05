@@ -422,10 +422,13 @@ public class SimulationController {
                     if (pair.visual != null) {
                         pair.visual.setRotate(simObj.getAngle());
                         
-                        // Create and execute add command - this will handle inventory count
-                        AddObjectController addCommand = new AddObjectController(
-                            model, simSpace, simObj, pair, gameObjectToPairMap, this::refreshInventoryDisplay
+                        // Create parameter object for AddObjectController
+                        AddObjectController.AddObjectParams params = new AddObjectController.AddObjectParams(
+                            model, simSpace, gameObjectToPairMap, this::refreshInventoryDisplay
                         );
+                        
+                        // Create and execute add command - this will handle inventory count
+                        AddObjectController addCommand = new AddObjectController(params, simObj, pair);
                         model.getUndoRedoManager().executeCommand(addCommand);
                         
                         addMoveHandlersToDroppedVisual(pair, simObj);
@@ -741,7 +744,7 @@ public class SimulationController {
                 (Math.abs(dragStartPosition.getX() - currentPosition.getX()) > 1.0f ||
                  Math.abs(dragStartPosition.getY() - currentPosition.getY()) > 1.0f ||
                  Math.abs(dragStartAngle - currentAngle) > 1.0f)) {
-                
+        
                 MoveObjectController moveCommand = new MoveObjectController(
                     simObj, pair, dragStartPosition, currentPosition, dragStartAngle, currentAngle
                 );

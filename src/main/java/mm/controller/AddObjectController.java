@@ -18,15 +18,39 @@ public class AddObjectController implements Command {
     private final Map<GameObject, PhysicsVisualPair> gameObjectToPairMap;
     private final Runnable refreshInventoryCallback;
     
-    public AddObjectController(SimulationModel model, Pane simSpace, GameObject gameObject, 
-                           PhysicsVisualPair pair, Map<GameObject, PhysicsVisualPair> gameObjectToPairMap,
-                           Runnable refreshInventoryCallback) {
-        this.model = model;
-        this.simSpace = simSpace;
+    /**
+     * Parameter object containing all dependencies for AddObjectController.
+     */
+    public static class AddObjectParams {
+        public final SimulationModel model;
+        public final Pane simSpace;
+        public final Map<GameObject, PhysicsVisualPair> gameObjectToPairMap;
+        public final Runnable refreshInventoryCallback;
+        
+        public AddObjectParams(SimulationModel model, Pane simSpace, 
+                              Map<GameObject, PhysicsVisualPair> gameObjectToPairMap,
+                              Runnable refreshInventoryCallback) {
+            this.model = model;
+            this.simSpace = simSpace;
+            this.gameObjectToPairMap = gameObjectToPairMap;
+            this.refreshInventoryCallback = refreshInventoryCallback;
+        }
+    }
+
+    /**
+     * Constructs a new AddObjectController command.
+     * 
+     * @param params The parameter object containing simulation dependencies
+     * @param gameObject The game object to be added to the simulation
+     * @param pair The physics-visual pair containing both physics body and visual representation
+     */
+    public AddObjectController(AddObjectParams params, GameObject gameObject, PhysicsVisualPair pair) {
+        this.model = params.model;
+        this.simSpace = params.simSpace;
+        this.gameObjectToPairMap = params.gameObjectToPairMap;
+        this.refreshInventoryCallback = params.refreshInventoryCallback;
         this.gameObject = gameObject;
         this.pair = pair;
-        this.gameObjectToPairMap = gameObjectToPairMap;
-        this.refreshInventoryCallback = refreshInventoryCallback;
     }
     
     @Override
