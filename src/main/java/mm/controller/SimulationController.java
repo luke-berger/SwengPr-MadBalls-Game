@@ -487,8 +487,10 @@ public class SimulationController {
                     timer.stop();
                     timer.reset();
                     
+                    // Clear undo/redo history when stopping simulation to prevent inconsistent state
+                    model.getUndoRedoManager().clear();
+                    
                     // Reset simulation to state before play was pressed
-                    model.restoreInventoryCounts();
                     model.setDroppedObjects(model.getDroppedObjects());
                     model.setDroppedVisualPairs(model.getDroppedPhysicsVisualPairs());
                     gameObjectToPairMap.clear();
