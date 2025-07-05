@@ -39,30 +39,53 @@ import mm.controller.UndoRedoController;
  * <li>Setting up collision listeners for win conditions</li>
  * </ul>
  */
-
 public class SimulationModel {
 
-    /** The path to the current level JSON file. */
-    private String levelPath;
-    /** The Box2D physics world instance. */
-    private World world;
-    /** List of pairs of physics objects and their visual representations. */
-    private List<PhysicsVisualPair> pairs = new ArrayList<>();
-    /** List of game objects that have been dropped into the simulation. */
-    private List<GameObject> droppedObjects = new ArrayList<>();
-    /** List of inventory objects available for placement. */
-    private List<InventoryObject> inventoryObjects = new ArrayList<>();
-    /** List of no-place zones restricting object placement. */
-    private List<PhysicsVisualPair> noPlaceZones = new ArrayList<>();
-    /** List of droped objects but there visual representation */
-    private List<PhysicsVisualPair> droppedVisualPairs = new ArrayList<>();
-    /** The animation timer controlling the simulation loop. */
-    private PhysicsAnimationController timer;
-    /** Flag indicating if the win screen is currently visible. */
-    private boolean winScreenVisible = false;
-    /** Listener for win condition events in the simulation. */
-    private WinListener winListener;
-    private final UndoRedoController UndoRedoController = new UndoRedoController();
+    private final PhysicsComponents physics = new PhysicsComponents();
+    private final GameObjectCollections gameObjects = new GameObjectCollections();
+    private final SimulationState state = new SimulationState();
+    private final UndoRedoController undoRedoController = new UndoRedoController();
+
+    /**
+     * Container for physics-related simulation components.
+     */
+    public static class PhysicsComponents {
+        /** The Box2D physics world instance. */
+        public World world;
+        /** List of pairs of physics objects and their visual representations. */
+        public List<PhysicsVisualPair> pairs = new ArrayList<>();
+        /** The animation timer controlling the simulation loop. */
+        public PhysicsAnimationController timer;
+    }
+
+    /**
+     * Container for game object collections.
+     */
+    public static class GameObjectCollections {
+        /** List of game objects that have been dropped into the simulation. */
+        public List<GameObject> droppedObjects = new ArrayList<>();
+        /** List of inventory objects available for placement. */
+        public List<InventoryObject> inventoryObjects = new ArrayList<>();
+        /** List of no-place zones restricting object placement. */
+        public List<PhysicsVisualPair> noPlaceZones = new ArrayList<>();
+        /** List of dropped objects but their visual representation */
+        public List<PhysicsVisualPair> droppedVisualPairs = new ArrayList<>();
+    }
+
+    /**
+     * Container for simulation state and configuration.
+     */
+    public static class SimulationState {
+        /** The path to the current level JSON file. */
+        public String levelPath;
+        /** Flag indicating if the win screen is currently visible. */
+        public boolean winScreenVisible = false;
+        /** Listener for win condition events in the simulation. */
+        public WinListener winListener;
+    }
+
+    // Grouped component containers
+    
 
     /**
      * Constructs a SimulationModel for a specific level.
@@ -70,7 +93,7 @@ public class SimulationModel {
      *                  "/level/level1.json")
      */
     public SimulationModel(String levelPath) {
-        this.levelPath = levelPath;
+        this.state.levelPath = levelPath;
     }
 
     /**
@@ -79,7 +102,7 @@ public class SimulationModel {
      * @return the physics world
      */
     public World getWorld() {
-        return world;
+        return physics.world;
     }
 
     /**
@@ -88,7 +111,7 @@ public class SimulationModel {
      * @return the list of PhysicsVisualPair objects
      */
     public List<PhysicsVisualPair> getPairs() {
-        return pairs;
+        return physics.pairs;
     }
 
     /**
@@ -97,7 +120,7 @@ public class SimulationModel {
      * @return the list of dropped GameObject instances
      */
     public List<GameObject> getDroppedObjects() {
-        return droppedObjects;
+        return gameObjects.droppedObjects;
     }
 
     /**
@@ -108,7 +131,7 @@ public class SimulationModel {
      *         representation.
      */
     public List<PhysicsVisualPair> getDroppedPhysicsVisualPairs() {
-        return droppedVisualPairs;
+        return gameObjects.droppedVisualPairs;
     }
 
     /**
@@ -117,7 +140,7 @@ public class SimulationModel {
      * @return the list of InventoryObject instances
      */
     public List<InventoryObject> getInventoryObjects() {
-        return inventoryObjects;
+        return gameObjects.inventoryObjects;
     }
 
     /**
@@ -126,7 +149,7 @@ public class SimulationModel {
      * @return the list of PhysicsVisualPair objects representing no-place zones
      */
     public List<PhysicsVisualPair> getNoPlaceZones() {
-        return noPlaceZones;
+        return gameObjects.noPlaceZones;
     }
 
     /**
@@ -135,7 +158,7 @@ public class SimulationModel {
      * @return the ResettableAnimationTimer instance
      */
     public PhysicsAnimationController getTimer() {
-        return timer;
+        return physics.timer;
     }
 
     /**
@@ -144,7 +167,7 @@ public class SimulationModel {
      * @return the level path string
      */
     public String getLevelPath() {
-        return levelPath;
+        return state.levelPath;
     }
 
     /**
@@ -153,7 +176,7 @@ public class SimulationModel {
      * @return true if the win screen is visible, false otherwise
      */
     public boolean isWinScreenVisible() {
-        return winScreenVisible;
+        return state.winScreenVisible;
     }
 
     /**
@@ -162,7 +185,7 @@ public class SimulationModel {
      * @param world the physics world to set
      */
     public void setWorld(World world) {
-        this.world = world;
+        this.physics.world = world;
     }
 
     /**
@@ -171,7 +194,7 @@ public class SimulationModel {
      * @param pairs the list of PhysicsVisualPair objects to set
      */
     public void setPairs(List<PhysicsVisualPair> pairs) {
-        this.pairs = pairs;
+        this.physics.pairs = pairs;
     }
 
     /**
@@ -180,7 +203,7 @@ public class SimulationModel {
      * @param droppedObjects the list of GameObject instances to set
      */
     public void setDroppedObjects(List<GameObject> droppedObjects) {
-        this.droppedObjects = droppedObjects;
+        this.gameObjects.droppedObjects = droppedObjects;
     }
 
     /**
@@ -189,7 +212,7 @@ public class SimulationModel {
      * @param droppedPhysicsVisualPairs
      */
     public void setDroppedVisualPairs(List<PhysicsVisualPair> droppedPhysicsVisualPairs) {
-        this.droppedVisualPairs = droppedPhysicsVisualPairs;
+        this.gameObjects.droppedVisualPairs = droppedPhysicsVisualPairs;
     }
 
     /**
@@ -198,7 +221,7 @@ public class SimulationModel {
      * @param inventoryObjects the list of InventoryObject instances to set
      */
     public void setInventoryObjects(List<InventoryObject> inventoryObjects) {
-        this.inventoryObjects = inventoryObjects;
+        this.gameObjects.inventoryObjects = inventoryObjects;
     }
 
     /**
@@ -208,7 +231,7 @@ public class SimulationModel {
      *                     zones
      */
     public void setNoPlaceZones(List<PhysicsVisualPair> noPlaceZones) {
-        this.noPlaceZones = noPlaceZones;
+        this.gameObjects.noPlaceZones = noPlaceZones;
     }
 
     /**
@@ -217,7 +240,7 @@ public class SimulationModel {
      * @param timer the PhysicsAnimationController to set
      */
     public void setTimer(PhysicsAnimationController timer) {
-        this.timer = timer;
+        this.physics.timer = timer;
     }
 
     /**
@@ -226,7 +249,7 @@ public class SimulationModel {
      * @param levelPath the level path string to set
      */
     public void setLevelPath(String levelPath) {
-        this.levelPath = levelPath;
+        this.state.levelPath = levelPath;
     }
 
     /**
@@ -241,32 +264,32 @@ public class SimulationModel {
      * </p>
      */
     public void setupSimulation() {
-        world = new World(new Vec2(0.0f, 9.8f));
-        pairs = new ArrayList<>();
-        noPlaceZones = new ArrayList<>();
+        physics.world = new World(new Vec2(0.0f, 9.8f));
+        physics.pairs = new ArrayList<>();
+        gameObjects.noPlaceZones = new ArrayList<>();
 
-        LevelImportController importer = new LevelImportController(levelPath);
-        List<GameObject> gameObjects = importer.getGameObjects();
+        LevelImportController importer = new LevelImportController(state.levelPath);
+        List<GameObject> levelGameObjects = importer.getGameObjects();
 
         // Add level objects
-        for (GameObject obj : gameObjects) {
-            PhysicsVisualPair pair = GameObjectController.convert(obj, world);
-            pairs.add(pair);
+        for (GameObject obj : levelGameObjects) {
+            PhysicsVisualPair pair = GameObjectController.convert(obj, physics.world);
+            physics.pairs.add(pair);
             if (obj.getName().equals("noPlaceZone")) {
-                noPlaceZones.add(pair);
+                gameObjects.noPlaceZones.add(pair);
             }
         }
 
         // Add dropped objects
-        for (GameObject obj : droppedObjects) {
-            PhysicsVisualPair pair = GameObjectController.convert(obj, world);
-            pairs.add(pair);
+        for (GameObject obj : gameObjects.droppedObjects) {
+            PhysicsVisualPair pair = GameObjectController.convert(obj, physics.world);
+            physics.pairs.add(pair);
             if (obj.getName().equals("noPlaceZone")) {
-                noPlaceZones.add(pair);
+                gameObjects.noPlaceZones.add(pair);
             }
         }
 
-        timer = new PhysicsAnimationController(world, pairs);
+        physics.timer = new PhysicsAnimationController(physics.world, physics.pairs);
 
         listenContact();
     }
@@ -279,8 +302,8 @@ public class SimulationModel {
      * </p>
      */
     public void setupInvetoryData() {
-        LevelImportController importer = new LevelImportController(levelPath);
-        inventoryObjects = importer.getInventoryObjects();
+        LevelImportController importer = new LevelImportController(state.levelPath);
+        gameObjects.inventoryObjects = importer.getInventoryObjects();
     }
 
     /**
@@ -292,7 +315,7 @@ public class SimulationModel {
      * @param obj the GameObject to add as dropped
      */
     public void addDroppedObject(GameObject obj) {
-        droppedObjects.add(obj);
+        gameObjects.droppedObjects.add(obj);
     }
 
     /**
@@ -304,7 +327,7 @@ public class SimulationModel {
      */
     public void exportLevel() {
         LevelExportController LE = new LevelExportController();
-        LE.export(this.pairs, this.inventoryObjects);
+        LE.export(this.physics.pairs, this.gameObjects.inventoryObjects);
     }
 
     /**
@@ -315,7 +338,7 @@ public class SimulationModel {
      * </p>
      */
     private void listenContact() {
-        world.setContactListener(new ContactListener() {
+        physics.world.setContactListener(new ContactListener() {
             @Override
             public void beginContact(Contact contact) {
                 handleContactBegin(contact);
@@ -419,19 +442,19 @@ public class SimulationModel {
         System.out.println("WIN! ball1 reached the win condition!");
         
         // Defensive check - listener should always be set, but handle gracefully if not
-        if (winListener == null) {
+        if (state.winListener == null) {
             System.err.println("Warning: Win condition triggered but no listener is registered");
             return;
         }
 
         // Stop the physics simulation
-        timer.stop();
+        physics.timer.stop();
         
         // Update UI state
-        winScreenVisible = true;
+        state.winScreenVisible = true;
         
         // Notify the listener
-        winListener.onWin();
+        state.winListener.onWin();
     }
 
     /**
@@ -451,9 +474,17 @@ public class SimulationModel {
          */
         void onWin();
     }
-
+    /**
+     * Sets the win listener for the simulation.
+     * <p>
+     * The win listener will be notified when a win condition is triggered,
+     * such as when the win object collides with a win platform or win zone.
+     * </p>
+     * 
+     * @param listener the WinListener to be notified of win events
+     */
     public void setWinListener(WinListener listener) {
-        this.winListener = listener;
+        this.state.winListener = listener;
     }
 
     /**
@@ -463,7 +494,7 @@ public class SimulationModel {
      * @return the InventoryObject with the given name, or null if not found
      */
     public InventoryObject findInventoryObjectByName(String name) {
-        for (InventoryObject obj : inventoryObjects) {
+        for (InventoryObject obj : gameObjects.inventoryObjects) {
             if (obj.getName().equals(name)) {
                 return obj;
             }
@@ -513,7 +544,7 @@ public class SimulationModel {
      * @return true if the position is inside a no-place zone, false otherwise
      */
     public boolean isInNoPlaceZone(double x, double y) {
-        for (PhysicsVisualPair zone : noPlaceZones) {
+        for (PhysicsVisualPair zone : gameObjects.noPlaceZones) {
             if (zone.visual instanceof javafx.scene.shape.Rectangle) {
                 javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) zone.visual;
                 double zoneX = rect.getTranslateX();
@@ -536,7 +567,7 @@ public class SimulationModel {
      * </p>
      */
     public void restoreInventoryCounts() {
-        for (GameObject droppedObj : droppedObjects) {
+        for (GameObject droppedObj : gameObjects.droppedObjects) {
             InventoryObject inventoryTemplate = findInventoryObjectByName(droppedObj.getName());
             if (inventoryTemplate != null) {
                 inventoryTemplate.setCount(inventoryTemplate.getCount() + 1);
@@ -548,7 +579,7 @@ public class SimulationModel {
      * Gets the undo/redo manager for this simulation.
      */
     public UndoRedoController getUndoRedoManager() {
-        return UndoRedoController;
+        return undoRedoController;
     }
     
     /**
@@ -556,7 +587,7 @@ public class SimulationModel {
      * Used when undoing object placement.
      */
     public void incrementInventoryCount(String itemName) {
-        for (InventoryObject obj : inventoryObjects) {
+        for (InventoryObject obj : gameObjects.inventoryObjects) {
             if (obj.getName().equals(itemName)) {
                 obj.setCount(obj.getCount() + 1);
                 break;
@@ -569,7 +600,7 @@ public class SimulationModel {
      * Used when redoing object placement.
      */
     public void decrementInventoryCount(String itemName) {
-        for (InventoryObject obj : inventoryObjects) {
+        for (InventoryObject obj : gameObjects.inventoryObjects) {
             if (obj.getName().equals(itemName)) {
                 int currentCount = obj.getCount();
                 if (currentCount > 0) {

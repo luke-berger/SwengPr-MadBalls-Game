@@ -452,7 +452,19 @@ public class SimulationController {
         // Get button groups from the refactored view
         SimulationView.SimulationButtons simButtons = view.getSimulationButtons();
         
-        // Start simulation.
+        setupPlayButton(simButtons);
+        setupStopButton(simButtons);
+        setupSettingsButton(simButtons);
+        setupUndoRedoButtons(simButtons);
+        setupDeleteButton(simButtons);
+        setupFileButtons(simButtons);
+        setupCrownButton(simButtons);
+    }
+    
+    /**
+     * Sets up the play button action.
+     */
+    private void setupPlayButton(SimulationView.SimulationButtons simButtons) {
         if (simButtons.playButton != null) {
             simButtons.playButton.setOnAction(e -> {
                 PhysicsAnimationController timer = model.getTimer();
@@ -462,8 +474,12 @@ public class SimulationController {
                 }
             });
         }
-        
-        // Stop and reset simulation.
+    }
+    
+    /**
+     * Sets up the stop button action.
+     */
+    private void setupStopButton(SimulationView.SimulationButtons simButtons) {
         if (simButtons.stopButton != null) {
             simButtons.stopButton.setOnAction(e -> {
                 PhysicsAnimationController timer = model.getTimer();
@@ -481,8 +497,12 @@ public class SimulationController {
                 refreshInventoryDisplay(); // Refresh inventory to show updated counts
             });
         }
-        
-        // Open the settings menu.
+    }
+    
+    /**
+     * Sets up the settings button action.
+     */
+    private void setupSettingsButton(SimulationView.SimulationButtons simButtons) {
         if (simButtons.settingsButton != null) {
             simButtons.settingsButton.setOnAction(e -> {
                 PhysicsAnimationController timer = model.getTimer();
@@ -492,8 +512,12 @@ public class SimulationController {
                 view.getOverlaySettings().setVisible(true);
             });
         }
-        
-        // Undo button
+    }
+    
+    /**
+     * Sets up the undo and redo button actions.
+     */
+    private void setupUndoRedoButtons(SimulationView.SimulationButtons simButtons) {
         if (simButtons.undoButton != null) {
             simButtons.undoButton.setOnAction(e -> {
                 if (isInteractionAllowed()) {
@@ -502,7 +526,6 @@ public class SimulationController {
             });
         }
         
-        // Redo button
         if (simButtons.redoButton != null) {
             simButtons.redoButton.setOnAction(e -> {
                 if (isInteractionAllowed()) {
@@ -510,8 +533,12 @@ public class SimulationController {
                 }
             });
         }
-        
-        // Delete all added objects to the simulation environment.
+    }
+    
+    /**
+     * Sets up the delete button action.
+     */
+    private void setupDeleteButton(SimulationView.SimulationButtons simButtons) {
         if (simButtons.deleteButton != null) {
             simButtons.deleteButton.setOnAction(e -> {
                 // Clear undo/redo history when deleting all objects
@@ -528,8 +555,12 @@ public class SimulationController {
                 refreshInventoryDisplay();
             });
         }
-
-        // Import level from .json - File (to implement)
+    }
+    
+    /**
+     * Sets up the import and save button actions.
+     */
+    private void setupFileButtons(SimulationView.SimulationButtons simButtons) {
         if (simButtons.importButton != null) {
             simButtons.importButton.setOnAction(e -> {
                 FileChooser fileChooser = new FileChooser();
@@ -553,7 +584,12 @@ public class SimulationController {
                 }
             });
         }
-        
+    }
+    
+    /**
+     * Sets up the crown button action.
+     */
+    private void setupCrownButton(SimulationView.SimulationButtons simButtons) {
         if (simButtons.crownButton != null) {
             simButtons.crownButton.setOnAction(e -> {
                 view.getWinScreenOverlay().setVisible(true);
