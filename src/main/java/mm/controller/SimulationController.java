@@ -486,15 +486,16 @@ public class SimulationController {
                 if (timer != null && timer.isRunning()) {
                     timer.stop();
                     timer.reset();
+                    
+                    // Reset simulation to state before play was pressed
+                    model.restoreInventoryCounts();
+                    model.setDroppedObjects(model.getDroppedObjects());
+                    model.setDroppedVisualPairs(model.getDroppedPhysicsVisualPairs());
+                    gameObjectToPairMap.clear();
                     setInventoryItemsDisabled(false);
+                    setupSimulation();
+                    refreshInventoryDisplay();
                 }
-                // Restore inventory counts and refresh
-                model.restoreInventoryCounts();
-                model.setDroppedObjects(new ArrayList<>());
-                model.setDroppedVisualPairs(new ArrayList<>());
-                gameObjectToPairMap.clear();
-                setupSimulation();
-                refreshInventoryDisplay(); // Refresh inventory to show updated counts
             });
         }
     }
