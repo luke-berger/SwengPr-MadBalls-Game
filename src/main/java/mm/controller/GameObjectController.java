@@ -152,6 +152,10 @@ public class GameObjectController {
         rect.setTranslateY(y);
         rect.setRotate(obj.getAngle()); // Apply the rotation from the GameObject
 
+        if (isZoneObject(obj.getName())){
+            rect.setViewOrder(100);
+        }
+
         return rect;
     }
 
