@@ -571,30 +571,71 @@ public class SimulationModel {
      */
     public boolean isInWinZone(double x, double y) {
         for (PhysicsVisualPair pair : physics.pairs) {
-            Object userData = pair.body.getUserData();
-            if ("winZone".equals(userData) || "winPlat".equals(userData)) {
-                if (pair.visual instanceof javafx.scene.shape.Rectangle) {
-                    javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) pair.visual;
-                    double zoneX = rect.getTranslateX();
-                    double zoneY = rect.getTranslateY();
-                    double zoneW = rect.getWidth();
-                    double zoneH = rect.getHeight();
-                    if (x >= zoneX && x <= zoneX + zoneW && y >= zoneY && y <= zoneY + zoneH) {
-                        return true;
-                    }
-                } else if (pair.visual instanceof javafx.scene.shape.Circle) {
-                    javafx.scene.shape.Circle circle = (javafx.scene.shape.Circle) pair.visual;
-                    double centerX = circle.getTranslateX();
-                    double centerY = circle.getTranslateY();
-                    double radius = circle.getRadius();
-                    double distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
-                    if (distance <= radius) {
-                        return true;
-                    }
-                }
+            if (isWinZonePair(pair) && isPositionInPair(pair, x, y)) {
+                return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if a physics-visual pair represents a win zone.
+     * 
+     * @param pair The pair to check
+     * @return true if the pair is a win zone or win platform
+     */
+    private boolean isWinZonePair(PhysicsVisualPair pair) {
+        Object userData = pair.body.getUserData();
+        return "winZone".equals(userData) || "winPlat".equals(userData);
+    }
+
+    /**
+     * Checks if a position is inside the visual bounds of a physics-visual pair.
+     * 
+     * @param pair The pair to check against
+     * @param x The x-coordinate
+     * @param y The y-coordinate
+     * @return true if the position is inside the pair's visual bounds
+     */
+    private boolean isPositionInPair(PhysicsVisualPair pair, double x, double y) {
+        if (pair.visual instanceof javafx.scene.shape.Rectangle) {
+            return isPositionInRectangle((javafx.scene.shape.Rectangle) pair.visual, x, y);
+        } else if (pair.visual instanceof javafx.scene.shape.Circle) {
+            return isPositionInCircle((javafx.scene.shape.Circle) pair.visual, x, y);
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a position is inside a rectangle.
+     * 
+     * @param rect The rectangle to check
+     * @param x The x-coordinate
+     * @param y The y-coordinate
+     * @return true if the position is inside the rectangle
+     */
+    private boolean isPositionInRectangle(javafx.scene.shape.Rectangle rect, double x, double y) {
+        double zoneX = rect.getTranslateX();
+        double zoneY = rect.getTranslateY();
+        double zoneW = rect.getWidth();
+        double zoneH = rect.getHeight();
+        return x >= zoneX && x <= zoneX + zoneW && y >= zoneY && y <= zoneY + zoneH;
+    }
+
+    /**
+     * Checks if a position is inside a circle.
+     * 
+     * @param circle The circle to check
+     * @param x The x-coordinate
+     * @param y The y-coordinate
+     * @return true if the position is inside the circle
+     */
+    private boolean isPositionInCircle(javafx.scene.shape.Circle circle, double x, double y) {
+        double centerX = circle.getTranslateX();
+        double centerY = circle.getTranslateY();
+        double radius = circle.getRadius();
+        double distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+        return distance <= radius;
     }
 
     /**

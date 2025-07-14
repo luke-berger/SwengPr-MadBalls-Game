@@ -19,6 +19,38 @@ public class CollisionDetection {
     CollisionDetection(SimulationModel model) {
         this.model = model;
     }
+
+    /**
+     * Helper class to represent a rectangle for collision detection.
+     */
+    private static class CollisionRectangle {
+        final double centerX;
+        final double centerY;
+        final double width;
+        final double height;
+        
+        CollisionRectangle(double centerX, double centerY, double width, double height) {
+            this.centerX = centerX;
+            this.centerY = centerY;
+            this.width = width;
+            this.height = height;
+        }
+    }
+
+    /**
+     * Helper class to represent a circle for collision detection.
+     */
+    private static class CollisionCircle {
+        final double centerX;
+        final double centerY;
+        final double radius;
+        
+        CollisionCircle(double centerX, double centerY, double radius) {
+            this.centerX = centerX;
+            this.centerY = centerY;
+            this.radius = radius;
+        }
+    }
     
     /**
      * Checks if moving an object to a new position would cause it to overlap with other objects.
@@ -138,17 +170,17 @@ public class CollisionDetection {
         
         double movingWidth = movingRect.getWidth();
         double movingHeight = movingRect.getHeight();
-        double otherCenterX = otherCircle.getTranslateX();
-        double otherCenterY = otherCircle.getTranslateY();
-        double otherRadius = otherCircle.getRadius();
-        
         double rectCenterX = newX + movingWidth / 2;
         double rectCenterY = newY + movingHeight / 2;
         
-        return isRectangleCircleCollision(
-            rectCenterX, rectCenterY, movingWidth, movingHeight,
-            otherCenterX, otherCenterY, otherRadius
+        CollisionRectangle rect = new CollisionRectangle(rectCenterX, rectCenterY, movingWidth, movingHeight);
+        CollisionCircle circle = new CollisionCircle(
+            otherCircle.getTranslateX(), 
+            otherCircle.getTranslateY(), 
+            otherCircle.getRadius()
         );
+        
+        return isRectangleCircleCollision(rect, circle);
     }
     
     /**
@@ -175,53 +207,47 @@ public class CollisionDetection {
                                                    PhysicsVisualPair otherPair, double newX, double newY) {
         javafx.scene.shape.Rectangle otherRect = (javafx.scene.shape.Rectangle) otherPair.visual;
         
-        double movingRadius = movingCircle.getRadius();
         double otherX = otherRect.getTranslateX();
         double otherY = otherRect.getTranslateY();
         double otherWidth = otherRect.getWidth();
         double otherHeight = otherRect.getHeight();
         
-        double rectCenterX = otherX + otherWidth / 2;
-        double rectCenterY = otherY + otherHeight / 2;
-        
-        return isRectangleCircleCollision(
-            rectCenterX, rectCenterY, otherWidth, otherHeight,
-            newX, newY, movingRadius
+        CollisionRectangle rect = new CollisionRectangle(
+            otherX + otherWidth / 2, 
+            otherY + otherHeight / 2, 
+            otherWidth, 
+            otherHeight
         );
+        CollisionCircle circle = new CollisionCircle(newX, newY, movingCircle.getRadius());
+        
+        return isRectangleCircleCollision(rect, circle);
     }
     
     /**
      * Core algorithm for rectangle-circle collision detection.
      * 
-     * @param rectCenterX X position of the rectangle's center
-     * @param rectCenterY Y position of the rectangle's center
-     * @param rectWidth Width of the rectangle
-     * @param rectHeight Height of the rectangle
-     * @param circleX X position of the circle's center
-     * @param circleY Y position of the circle's center
-     * @param circleRadius Radius of the circle
+     * @param rect The rectangle for collision detection
+     * @param circle The circle for collision detection
      * @return true if the rectangle and circle would collide, false otherwise
      */
-    private boolean isRectangleCircleCollision(double rectCenterX, double rectCenterY, 
-                                              double rectWidth, double rectHeight,
-                                              double circleX, double circleY, double circleRadius) {
-        double deltaX = Math.abs(rectCenterX - circleX);
-        double deltaY = Math.abs(rectCenterY - circleY);
+    private boolean isRectangleCircleCollision(CollisionRectangle rect, CollisionCircle circle) {
+        double deltaX = Math.abs(rect.centerX - circle.centerX);
+        double deltaY = Math.abs(rect.centerY - circle.centerY);
         
         // Early exit if clearly no collision
-        if (deltaX > (rectWidth / 2 + circleRadius) || deltaY > (rectHeight / 2 + circleRadius)) {
+        if (deltaX > (rect.width / 2 + circle.radius) || deltaY > (rect.height / 2 + circle.radius)) {
             return false;
         }
         
         // Collision if circle center is within rectangle bounds
-        if (deltaX <= (rectWidth / 2) || deltaY <= (rectHeight / 2)) {
+        if (deltaX <= (rect.width / 2) || deltaY <= (rect.height / 2)) {
             return true;
         }
         
         // Check corner collision
-        double cornerDistanceSquared = Math.pow(deltaX - rectWidth / 2, 2) + 
-                                      Math.pow(deltaY - rectHeight / 2, 2);
-        return cornerDistanceSquared <= Math.pow(circleRadius, 2);
+        double cornerDistanceSquared = Math.pow(deltaX - rect.width / 2, 2) + 
+                                      Math.pow(deltaY - rect.height / 2, 2);
+        return cornerDistanceSquared <= Math.pow(circle.radius, 2);
     }
     
     /**
