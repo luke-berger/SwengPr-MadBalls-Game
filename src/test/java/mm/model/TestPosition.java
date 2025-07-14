@@ -20,4 +20,13 @@ public class TestPosition {
         assertEquals(testFloat2, testPosition.getY());
     }
 
+    @Test
+    public void testPositionSetterGetter() {
+        Position testPosition = new Position();
+        float testFloat = 0.123f;
+        testPosition.setX(testFloat);
+        testPosition.setY(testFloat);
+        assertEquals(testFloat, testPosition.getX(), 0.00001f);
+        assertEquals(testFloat, testPosition.getY(), 0.00001f);
+    }
 }
