@@ -239,8 +239,8 @@
                 <configuration>
                     <excludes>
                         <!-- Ignore GUI classes for coverage -->
-                        <exclude>mm/gui/**/*</exclude>
-                        <exclude>mm/Main.class</exclude>
+                        <exclude>mm/view/**/*</exclude>
+                        <exclude>mm/controller/ApplicationController.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
