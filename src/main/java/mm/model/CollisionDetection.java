@@ -62,7 +62,8 @@ public class CollisionDetection {
      * @return true if the new position would cause an overlap, false otherwise
      */
     public boolean wouldCauseOverlap(PhysicsVisualPair movingPair, double newX, double newY) {
-        List<PhysicsVisualPair> allPairs = model.getDroppedPhysicsVisualPairs();
+        // Check against ALL pairs in the simulation, not just dropped ones
+        List<PhysicsVisualPair> allPairs = model.getPairs();
         
         for (PhysicsVisualPair otherPair : allPairs) {
             if (shouldSkipCollisionCheck(movingPair, otherPair)) {
