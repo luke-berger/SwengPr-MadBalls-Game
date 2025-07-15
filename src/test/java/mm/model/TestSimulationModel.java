@@ -1,5 +1,8 @@
 package mm.model;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -7,6 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jbox2d.dynamics.*;
+import org.jbox2d.dynamics.contacts.Contact;
+import org.jbox2d.callbacks.ContactImpulse;
+import org.jbox2d.callbacks.ContactListener;
+import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.junit.jupiter.api.Test;
@@ -18,7 +25,42 @@ import mm.model.SimulationModel.SimulationState;
 
 public class TestSimulationModel {
     @Test
-    public void testSimulationModel() {
+    public void testSimulationModelConstructor() {
+        String testString = "test!";
+        SimulationModel testModel = new SimulationModel(testString);
+        assertNotNull(testModel);
+        assertNotNull(testModel.getUndoRedoManager());
+        //absicht, dass eskeine getter Setter für andere Final attribute gibt? 
+        assertNotNull(testModel.getLevelPath());
+        assertEquals(SimulationModel.class, testModel.getClass());
+    }
+
+    @Test
+    public void testPhysicsVisualPairGetterSetter() {
+        String testString = "test!";
+        SimulationModel testModel = new SimulationModel(testString);
+        assertEquals(testString, testModel.getLevelPath());
+
+        World testWorld = new World(new Vec2(0.0f, -9.81f));
+        testModel.setWorld(testWorld);
+        assertEquals(testWorld, testModel.getWorld());
+
+        PhysicsVisualPair testPair = generateTestPair(testWorld);
+        List<PhysicsVisualPair> testPairs = new ArrayList<>();
+        testPairs.add(testPair);
+        testModel.setPairs(testPairs);
+        testModel.setDroppedVisualPairs(testPairs);
+        assertEquals(testPairs, testModel.getPairs());
+        assertEquals(testPairs, testModel.getDroppedPhysicsVisualPairs());
+
+        GameObject testGameObj = new GameObject();
+        List<GameObject> testDroppedObjects= new ArrayList<>();
+        testDroppedObjects.add(testGameObj);
+        testModel.setDroppedObjects(testDroppedObjects);
+        assertEquals(testDroppedObjects, testModel.getDroppedObjects());
+        testModel.getDroppedObjects().clear();
+        testModel.addDroppedObject(testGameObj);
+        assertEquals(testGameObj, testModel.getDroppedObjects().get(0));
 
     }
 
