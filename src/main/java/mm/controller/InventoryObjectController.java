@@ -260,7 +260,7 @@ public class InventoryObjectController {
         float height = obj.getSize().getHeight();
         float wallThickness = 10.0f;
         
-        javafx.scene.shape.Polygon bucket = new javafx.scene.shape.Polygon();
+        Polygon bucket = new Polygon();
         
         // Define U-shape vertices (relative to center, matching physics body)
         Double[] points = {

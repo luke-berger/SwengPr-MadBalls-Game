@@ -8,7 +8,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.image.Image;
 import mm.model.GameObject;
-import mm.model.InventoryObject;
 import mm.model.Physics;
 import mm.model.PhysicsVisualPair;
 import mm.view.PatternViewFactory;
