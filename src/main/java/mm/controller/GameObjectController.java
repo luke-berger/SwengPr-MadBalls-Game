@@ -61,6 +61,21 @@ public class GameObjectController {
      * Used to ensure consistency between the visual and physical representations.
      */
     private static final float SCALE = 50.0f;
+    
+    /**
+     * Constant for win zone object name.
+     */
+    private static final String WIN_ZONE = "winZone";
+    
+    /**
+     * Constant for no place zone object name.
+     */
+    private static final String NO_PLACE_ZONE = "noPlaceZone";
+    
+    /**
+     * Constant for win platform object name.
+     */
+    private static final String WIN_PLAT = "winplat";
 
     /**
      * Converts a {@link GameObject} to a {@link PhysicsVisualPair}, which contains
@@ -129,36 +144,80 @@ public class GameObjectController {
         float y = obj.getPosition().getY();
 
         Rectangle rect = new Rectangle(width, height);
+        
+        // Set fill based on object properties
+        setRectangleFill(rect, obj, width, height);
+        
+        // Position and rotate the rectangle in the scene
+        rect.setTranslateX(x);
+        rect.setTranslateY(y);
+        rect.setRotate(obj.getAngle());
 
-        if (obj.getSprite() != null) {
-            Image image = null;
-            try {
-                image = new Image(GameObjectController.class.getResource(obj.getSprite()).toExternalForm());
-            } catch (Exception ignored) {
-            }
-            if (image != null && !image.isError()) {
+        if (isZoneObject(obj.getName())) {
+            rect.setViewOrder(100);
+        }
+
+        return rect;
+    }
+
+    /**
+     * Sets the fill for a rectangle based on the GameObject's properties.
+     * Handles sprite images, special zone patterns, and fallback colors.
+     * 
+     * @param rect The rectangle to set the fill for
+     * @param obj The GameObject containing fill properties
+     * @param width The width for pattern creation
+     * @param height The height for pattern creation
+     */
+    private static void setRectangleFill(Rectangle rect, GameObject obj, float width, float height) {
+        // Try to load sprite image first
+        if (obj.getSprite() != null && trySetSpriteImage(rect, obj)) {
+            return; // Successfully set sprite image
+        }
+        
+        // Fall back to special zone patterns or solid colors
+        setFallbackFill(rect, obj, width, height);
+    }
+
+    /**
+     * Attempts to set a sprite image as the rectangle fill.
+     * 
+     * @param rect The rectangle to set the fill for
+     * @param obj The GameObject containing sprite information
+     * @return true if sprite was successfully loaded and set, false otherwise
+     */
+    private static boolean trySetSpriteImage(Rectangle rect, GameObject obj) {
+        try {
+            Image image = new Image(GameObjectController.class.getResource(obj.getSprite()).toExternalForm());
+            if (!image.isError()) {
                 rect.setFill(new ImagePattern(image));
-            } else if (obj.getName().equalsIgnoreCase("noPlaceZone")) {
-                rect.setFill(PatternViewFactory.createPlaceZone(width, height, Color.RED));
-            } else if (obj.getName().equalsIgnoreCase("winZone")) {
-                rect.setFill(PatternViewFactory.createPlaceZone(width, height, Color.GREEN));
-            } else {
-                rect.setFill(Color.valueOf(obj.getColour()));
+                return true;
             }
-        } else if (obj.getName().equalsIgnoreCase("noPlaceZone")) {
+        } catch (Exception ignored) {
+            // Sprite loading failed, will use fallback
+        }
+        return false;
+    }
+
+    /**
+     * Sets fallback fill for rectangles when sprite loading fails or no sprite is specified.
+     * Handles special zone patterns and solid colors.
+     * 
+     * @param rect The rectangle to set the fill for
+     * @param obj The GameObject containing color and name information
+     * @param width The width for pattern creation
+     * @param height The height for pattern creation
+     */
+    private static void setFallbackFill(Rectangle rect, GameObject obj, float width, float height) {
+        String name = obj.getName();
+        
+        if (name.equalsIgnoreCase(NO_PLACE_ZONE)) {
             rect.setFill(PatternViewFactory.createPlaceZone(width, height, Color.RED));
-        } else if (obj.getName().equalsIgnoreCase("winZone")) {
+        } else if (name.equalsIgnoreCase(WIN_ZONE)) {
             rect.setFill(PatternViewFactory.createPlaceZone(width, height, Color.GREEN));
         } else {
             rect.setFill(Color.valueOf(obj.getColour()));
         }
-
-        // Position and rotate the rectangle in the scene
-        rect.setTranslateX(x);
-        rect.setTranslateY(y);
-        rect.setRotate(obj.getAngle()); // Apply the rotation from the GameObject
-
-        return rect;
     }
 
     /**
@@ -461,7 +520,7 @@ public class GameObjectController {
     private static void applyWinningObjectLogic(GameObject obj, Body body) {
         // Original logic: (!winplat OR !winZone) - this is always true due to OR
         // This preserves the original behavior but may need review
-        if (!obj.getName().equalsIgnoreCase("winplat") || !obj.getName().equalsIgnoreCase("winZone")) {
+        if (!obj.getName().equalsIgnoreCase(WIN_PLAT) || !obj.getName().equalsIgnoreCase("winZone")) {
             String name = obj.isWinning() ? "winObject" : obj.getName();
             body.setUserData(name);
         }

@@ -46,6 +46,8 @@ public class SimulationModel {
     private final SimulationState state = new SimulationState();
     private final UndoRedoController undoRedoController = new UndoRedoController();
 
+    private final CollisionDetection collisionService;
+
     /**
      * Container for physics-related simulation components.
      */
@@ -94,6 +96,7 @@ public class SimulationModel {
      */
     public SimulationModel(String levelPath) {
         this.state.levelPath = levelPath;
+        this.collisionService = new CollisionDetection(this);
     }
 
     /**
@@ -560,6 +563,82 @@ public class SimulationModel {
     }
 
     /**
+     * Checks if a given position is inside any win zone.
+     *
+     * @param x the x-coordinate to check
+     * @param y the y-coordinate to check
+     * @return true if the position is inside a win zone, false otherwise
+     */
+    public boolean isInWinZone(double x, double y) {
+        for (PhysicsVisualPair pair : physics.pairs) {
+            if (isWinZonePair(pair) && isPositionInPair(pair, x, y)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a physics-visual pair represents a win zone.
+     * 
+     * @param pair The pair to check
+     * @return true if the pair is a win zone or win platform
+     */
+    private boolean isWinZonePair(PhysicsVisualPair pair) {
+        Object userData = pair.body.getUserData();
+        return "winZone".equals(userData) || "winPlat".equals(userData);
+    }
+
+    /**
+     * Checks if a position is inside the visual bounds of a physics-visual pair.
+     * 
+     * @param pair The pair to check against
+     * @param x The x-coordinate
+     * @param y The y-coordinate
+     * @return true if the position is inside the pair's visual bounds
+     */
+    private boolean isPositionInPair(PhysicsVisualPair pair, double x, double y) {
+        if (pair.visual instanceof javafx.scene.shape.Rectangle) {
+            return isPositionInRectangle((javafx.scene.shape.Rectangle) pair.visual, x, y);
+        } else if (pair.visual instanceof javafx.scene.shape.Circle) {
+            return isPositionInCircle((javafx.scene.shape.Circle) pair.visual, x, y);
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a position is inside a rectangle.
+     * 
+     * @param rect The rectangle to check
+     * @param x The x-coordinate
+     * @param y The y-coordinate
+     * @return true if the position is inside the rectangle
+     */
+    private boolean isPositionInRectangle(javafx.scene.shape.Rectangle rect, double x, double y) {
+        double zoneX = rect.getTranslateX();
+        double zoneY = rect.getTranslateY();
+        double zoneW = rect.getWidth();
+        double zoneH = rect.getHeight();
+        return x >= zoneX && x <= zoneX + zoneW && y >= zoneY && y <= zoneY + zoneH;
+    }
+
+    /**
+     * Checks if a position is inside a circle.
+     * 
+     * @param circle The circle to check
+     * @param x The x-coordinate
+     * @param y The y-coordinate
+     * @return true if the position is inside the circle
+     */
+    private boolean isPositionInCircle(javafx.scene.shape.Circle circle, double x, double y) {
+        double centerX = circle.getTranslateX();
+        double centerY = circle.getTranslateY();
+        double radius = circle.getRadius();
+        double distance = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+        return distance <= radius;
+    }
+
+    /**
      * Restores inventory counts for all dropped objects.
      * <p>
      * This method should be called when clearing all dropped objects to return
@@ -609,5 +688,18 @@ public class SimulationModel {
                 break;
             }
         }
+    }
+
+    /**
+     * Checks if moving an object would cause a collision.
+     * Delegates to the collision detection service.
+     * 
+     * @param movingPair The physics-visual pair being moved
+     * @param newX The proposed new X position
+     * @param newY The proposed new Y position
+     * @return true if collision would occur, false otherwise
+     */
+    public boolean wouldCauseOverlap(PhysicsVisualPair movingPair, double newX, double newY) {
+        return collisionService.wouldCauseOverlap(movingPair, newX, newY);
     }
 }
