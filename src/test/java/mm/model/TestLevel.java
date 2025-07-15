@@ -8,7 +8,20 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test-Klasse für die Level-Klasse.
+ * Testet die Funktionalität des Level-Objekts inklusive der Verwaltung von
+ * GameObjects und InventoryObjects.
+ * 
+ * @version 1.0
+ */
 public class TestLevel {
+    
+    /**
+     * Testet die grundlegende Funktionalität der Level-Klasse.
+     * Überprüft die Objekterstellung und die Setter/Getter-Methoden für
+     * LevelObjects und InventoryObjects.
+     */
     @Test
     public void testLevel() {
         Level testLevel = new Level();

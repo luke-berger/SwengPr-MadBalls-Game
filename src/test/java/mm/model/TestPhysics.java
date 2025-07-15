@@ -5,7 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test-Klasse für die Physics-Klasse.
+ * Testet die Funktionalität der Physics-Klasse inklusive aller Setter/Getter-Methoden
+ * für physikalische Eigenschaften.
+ * 
+ * @version 1.0
+ */
 public class TestPhysics {
+    
+    /**
+     * Testet die grundlegende Funktionalität der Physics-Klasse.
+     * Überprüft die Objekterstellung und stellt sicher, dass das Objekt nicht null ist.
+     */
     @Test
     public void testPhysics() {
         Physics testPhysics = new Physics();
@@ -13,6 +25,10 @@ public class TestPhysics {
         assertNotEquals(null, testPhysics.getClass());
     }
 
+    /**
+     * Testet alle Setter- und Getter-Methoden der Physics-Klasse.
+     * Überprüft Density, Friction, Restitution und Shape-Eigenschaften.
+     */
     @Test
     public void testSetterGetter() {
         float testDensity = 0.123f;
