@@ -2,35 +2,15 @@
   "levelObjects": [],
   "inventoryObjects": [
     {
-      "name": "box1",
-      "type": "rectangle",
-      "size": {
-        "width": 100.0,
-        "height": 100.0,
-        "radius": 0.0
-      },
-      "angle": 90.0,
-      "sprite": null,
-      "colour": "BROWN",
-      "physics": {
-        "density": 1.0,
-        "friction": 0.4,
-        "restitution": 0.1,
-        "shape": "DYNAMIC"
-      },
-      "winning": false,
-      "count": 1
-    },
-    {
       "name": "Domino",
       "type": "rectangle",
       "size": {
-        "width": 20.0,
+        "width": 25.0,
         "height": 100.0,
         "radius": 0.0
       },
       "angle": 0.0,
-      "sprite": null,
+      "sprite": "/objectSkins/Legacy/crazyDomino.png",
       "colour": "BROWN",
       "physics": {
         "density": 1.0,
@@ -89,7 +69,7 @@
         "height": 20.0,
         "radius": 0.0
       },
-      "sprite": "/objectSkins/madPlatform.png",
+      "sprite": "/objectSkins/Legacy/crazyPlatform.png",
       "colour": "BLACK",
       "physics": {
         "density": 1.0,
@@ -108,7 +88,7 @@
         "height": 0.0,
         "radius": 50.0
       },
-      "sprite": "/objectSkins/madLog.png",
+      "sprite": "/objectSkins/Legacy/crazyLog.png",
       "colour": "GREEN",
       "physics": {
         "density": 1.0,
@@ -127,7 +107,7 @@
         "height": 0.0,
         "radius": 10.0
       },
-      "sprite": "/objectSkins/madTennis.png",
+      "sprite": "/objectSkins/Legacy/crazyTennis.png",
       "colour": "YELLOW",
       "physics": {
         "density": 0.1,
@@ -146,7 +126,7 @@
         "height": 0.0,
         "radius": 35.0
       },
-      "sprite": "/objectSkins/madBowling.png",
+      "sprite": "/objectSkins/Legacy/crazyBowling.png",
       "colour": "GREY",
       "physics": {
         "density": 0.9,
@@ -165,7 +145,7 @@
         "height": 0.0,
         "radius": 25.0
       },
-      "sprite": "/objectSkins/madBall.png",
+      "sprite": "/objectSkins/Legacy/crazyBall.png",
       "colour": "BLACK",
       "physics": {
         "density": 0.5,
@@ -185,7 +165,7 @@
         "height": 0.0,
         "radius": 50.0
       },
-      "sprite": "/objectSkins/madBalloon.png",
+      "sprite": "/objectSkins/Legacy/crazyBalloon.png",
       "colour": "#800080",
       "physics": {
         "density": 0.15,
@@ -215,6 +195,26 @@
       "count": 1
     },
     {
+      "name": "box1",
+      "type": "rectangle",
+      "size": {
+        "width": 70.0,
+        "height": 70.0,
+        "radius": 0.0
+      },
+      "angle": 0.0,
+      "sprite": "/objectSkins/Legacy/crazyBox.png",
+      "colour": "BROWN",
+      "physics": {
+        "density": 1.0,
+        "friction": 0.4,
+        "restitution": 0.1,
+        "shape": "DYNAMIC"
+      },
+      "winning": false,
+      "count": 1
+    },
+    {
       "name": "bucket",
       "type": "bucket",
       "size": {
@@ -224,7 +224,7 @@
       },
       "angle": 0.0,
       "sprite": null,
-      "colour": "BROWN",
+      "colour": "GREY",
       "physics": {
         "density": 1.0,
         "friction": 0.4,
