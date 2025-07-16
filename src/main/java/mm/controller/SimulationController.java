@@ -125,64 +125,126 @@ public class SimulationController {
 
         model.setupSimulation();
 
-        // Add visuals to simSpace and restore angles for dropped objects
-        List<GameObject> dropped = model.getDroppedObjects();
-        List<PhysicsVisualPair> pairs = model.getPairs();
-        
         // Clear the mapping and rebuild it during setup
         gameObjectToPairMap.clear();
         
+        // Process all physics-visual pairs
+        List<GameObject> dropped = model.getDroppedObjects();
+        List<PhysicsVisualPair> pairs = model.getPairs();
+        
         for (PhysicsVisualPair pair : pairs) {
             if (pair.visual != null) {
-                // Try to find the corresponding dropped object by matching the physics body's position
-                // with the stored GameObject position (since both should be in sync after creation)
-                GameObject matchedDroppedObject = null;
-                
-                for (GameObject obj : dropped) {
-                    if (obj.getName().equals(pair.body.getUserData())) {
-                        // Get the physics body position (converted back to visual coordinates)
-                        org.jbox2d.common.Vec2 bodyPos = pair.body.getPosition();
-                        float expectedVisualX, expectedVisualY;
-                        
-                        // Convert physics position back to expected visual position
-                        if (pair.visual instanceof javafx.scene.shape.Rectangle) {
-                            javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) pair.visual;
-                            expectedVisualX = (float) (bodyPos.x * 50.0f - rect.getWidth() / 2);
-                            expectedVisualY = (float) (bodyPos.y * 50.0f - rect.getHeight() / 2);
-                        } else if (pair.visual instanceof javafx.scene.shape.Polygon) {
-                            // Handle bucket (polygon) positioning - center like rectangles
-                            javafx.scene.shape.Polygon polygon = (javafx.scene.shape.Polygon) pair.visual;
-                            javafx.geometry.Bounds bounds = polygon.getBoundsInLocal();
-                            expectedVisualX = (float) (bodyPos.x * 50.0f - bounds.getWidth() / 2);
-                            expectedVisualY = (float) (bodyPos.y * 50.0f - bounds.getHeight() / 2);
-                        } else {
-                            expectedVisualX = bodyPos.x * 50.0f;
-                            expectedVisualY = bodyPos.y * 50.0f;
-                        }
-                        
-                        // Check if this GameObject's position matches the physics body position
-                        float tolerance = 1.0f; // Small tolerance for floating point precision
-                        if (Math.abs(obj.getPosition().getX() - expectedVisualX) < tolerance &&
-                            Math.abs(obj.getPosition().getY() - expectedVisualY) < tolerance) {
-                            matchedDroppedObject = obj;
-                            break;
-                        }
-                    }
-                }
-                
-                // If we found a matching dropped object, restore its properties and add handlers
-                if (matchedDroppedObject != null) {
-                    pair.visual.setRotate(matchedDroppedObject.getAngle());
-
-                    addMoveHandlersToDroppedVisual(pair, matchedDroppedObject);
-                    gameObjectToPairMap.put(matchedDroppedObject, pair);
-                }
-                
-                simSpace.getChildren().add(pair.visual);
+                processPhysicsVisualPair(pair, dropped, simSpace);
             }
         }
     }
-
+    
+    /**
+     * Processes a single physics-visual pair, matching it with dropped objects
+     * and adding it to the simulation space.
+     */
+    private void processPhysicsVisualPair(PhysicsVisualPair pair, List<GameObject> dropped, Pane simSpace) {
+        GameObject matchedDroppedObject = findMatchingDroppedObject(pair, dropped);
+        
+        if (matchedDroppedObject != null) {
+            configureMatchedObject(pair, matchedDroppedObject);
+        }
+        
+        simSpace.getChildren().add(pair.visual);
+    }
+    
+    /**
+     * Finds a dropped object that matches the given physics-visual pair.
+     */
+    private GameObject findMatchingDroppedObject(PhysicsVisualPair pair, List<GameObject> dropped) {
+        for (GameObject obj : dropped) {
+            if (isMatchingObject(pair, obj)) {
+                return obj;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Checks if a GameObject matches a PhysicsVisualPair based on name and position.
+     */
+    private boolean isMatchingObject(PhysicsVisualPair pair, GameObject obj) {
+        if (!obj.getName().equals(pair.body.getUserData())) {
+            return false;
+        }
+        
+        ExpectedPosition expectedPos = calculateExpectedPosition(pair);
+        return isPositionMatch(obj, expectedPos);
+    }
+    
+    /**
+     * Helper class to hold expected position coordinates.
+     */
+    private static class ExpectedPosition {
+        final float x;
+        final float y;
+        
+        ExpectedPosition(float x, float y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    
+    /**
+     * Calculates the expected visual position from the physics body position.
+     */
+    private ExpectedPosition calculateExpectedPosition(PhysicsVisualPair pair) {
+        org.jbox2d.common.Vec2 bodyPos = pair.body.getPosition();
+        
+        if (pair.visual instanceof javafx.scene.shape.Rectangle) {
+            return calculateRectanglePosition(pair, bodyPos);
+        } else if (pair.visual instanceof javafx.scene.shape.Polygon) {
+            return calculatePolygonPosition(pair, bodyPos);
+        } else {
+            // Default case for circles and other shapes
+            return new ExpectedPosition(bodyPos.x * 50.0f, bodyPos.y * 50.0f);
+        }
+    }
+    
+    /**
+     * Calculates expected position for rectangle shapes.
+     */
+    private ExpectedPosition calculateRectanglePosition(PhysicsVisualPair pair, org.jbox2d.common.Vec2 bodyPos) {
+        javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) pair.visual;
+        float expectedX = (float) (bodyPos.x * 50.0f - rect.getWidth() / 2);
+        float expectedY = (float) (bodyPos.y * 50.0f - rect.getHeight() / 2);
+        return new ExpectedPosition(expectedX, expectedY);
+    }
+    
+    /**
+     * Calculates expected position for polygon shapes (buckets).
+     */
+    private ExpectedPosition calculatePolygonPosition(PhysicsVisualPair pair, org.jbox2d.common.Vec2 bodyPos) {
+        javafx.scene.shape.Polygon polygon = (javafx.scene.shape.Polygon) pair.visual;
+        javafx.geometry.Bounds bounds = polygon.getBoundsInLocal();
+        float expectedX = (float) (bodyPos.x * 50.0f - bounds.getWidth() / 2);
+        float expectedY = (float) (bodyPos.y * 50.0f - bounds.getHeight() / 2);
+        return new ExpectedPosition(expectedX, expectedY);
+    }
+    
+    /**
+     * Checks if a GameObject's position matches the expected position within tolerance.
+     */
+    private boolean isPositionMatch(GameObject obj, ExpectedPosition expected) {
+        float tolerance = 1.0f; // Small tolerance for floating point precision
+        return Math.abs(obj.getPosition().getX() - expected.x) < tolerance &&
+               Math.abs(obj.getPosition().getY() - expected.y) < tolerance;
+    }
+    
+    /**
+     * Configures a matched object by setting its rotation and adding handlers.
+     */
+    private void configureMatchedObject(PhysicsVisualPair pair, GameObject matchedDroppedObject) {
+        pair.visual.setRotate(matchedDroppedObject.getAngle());
+        addMoveHandlersToDroppedVisual(pair, matchedDroppedObject);
+        gameObjectToPairMap.put(matchedDroppedObject, pair);
+    }
+    
     /**
      * Initializes or refreshes the inventory area.
      * <p>
