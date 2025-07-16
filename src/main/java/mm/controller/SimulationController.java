@@ -169,10 +169,13 @@ public class SimulationController {
      * Checks if a GameObject matches a PhysicsVisualPair based on name and position.
      */
     private boolean isMatchingObject(PhysicsVisualPair pair, GameObject obj) {
-        if (!obj.getName().equals(pair.body.getUserData())) {
+        Object userData = pair.body.getUserData();
+        boolean nameMatches = obj.getName().equals(userData)
+            // Also match if this is the winning object
+            || (obj.isWinning() && "winObject".equals(userData));
+        if (!nameMatches) {
             return false;
         }
-        
         ExpectedPosition expectedPos = calculateExpectedPosition(pair);
         return isPositionMatch(obj, expectedPos);
     }
