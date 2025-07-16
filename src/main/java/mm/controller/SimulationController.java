@@ -149,6 +149,12 @@ public class SimulationController {
                             javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) pair.visual;
                             expectedVisualX = (float) (bodyPos.x * 50.0f - rect.getWidth() / 2);
                             expectedVisualY = (float) (bodyPos.y * 50.0f - rect.getHeight() / 2);
+                        } else if (pair.visual instanceof javafx.scene.shape.Polygon) {
+                            // Handle bucket (polygon) positioning - center like rectangles
+                            javafx.scene.shape.Polygon polygon = (javafx.scene.shape.Polygon) pair.visual;
+                            javafx.geometry.Bounds bounds = polygon.getBoundsInLocal();
+                            expectedVisualX = (float) (bodyPos.x * 50.0f - bounds.getWidth() / 2);
+                            expectedVisualY = (float) (bodyPos.y * 50.0f - bounds.getHeight() / 2);
                         } else {
                             expectedVisualX = bodyPos.x * 50.0f;
                             expectedVisualY = bodyPos.y * 50.0f;
@@ -770,6 +776,16 @@ public class SimulationController {
                 } else if (visual instanceof javafx.scene.shape.Circle) {
                     pair.body.setTransform(
                         new org.jbox2d.common.Vec2((float) (newX / 50.0), (float) (newY / 50.0)), 
+                        pair.body.getAngle()
+                    );
+                } else if (visual instanceof javafx.scene.shape.Polygon) {
+                    // Handle bucket (polygon) positioning - center like rectangles
+                    javafx.scene.shape.Polygon polygon = (javafx.scene.shape.Polygon) visual;
+                    javafx.geometry.Bounds bounds = polygon.getBoundsInLocal();
+                    float centerX = (float) (newX + bounds.getWidth() / 2);
+                    float centerY = (float) (newY + bounds.getHeight() / 2);
+                    pair.body.setTransform(
+                        new org.jbox2d.common.Vec2(centerX / 50.0f, centerY / 50.0f), 
                         pair.body.getAngle()
                     );
                 }
