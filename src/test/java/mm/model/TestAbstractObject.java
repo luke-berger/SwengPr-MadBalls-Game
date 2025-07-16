@@ -1,38 +1,23 @@
 package mm.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 public class TestAbstractObject {
     @Test
     public void testAbstractObject() {
-        AbstractObject testObj = new AbstractObject(); 
-        assertNotEquals(null, testObj);
-        assertNotEquals(null, testObj.getClass());
-
+        boolean test1 = testConstructer1();
+        
         String testString = "test";
         Size testSize = new Size();
-        testObj = new AbstractObject(testString, testString, testSize);
-        assertNotEquals(null, testObj);
-        assertNotEquals(null, testObj);
-        assertEquals(testString, testObj.getName());
-        assertEquals(testString, testObj.getType());
-        assertEquals(testSize, testObj.getSize());
-        assertEquals(0.0f, testObj.getAngle(), 0.0001f);
-        assertEquals(false, testObj.isWinning());
+        boolean test2 = testConstructor2(testString, testSize);
 
         Physics testPhysics = new Physics();
-        testObj = new AbstractObject(testString, testString, testSize, testPhysics);
-        assertNotEquals(null, testObj);
-        assertNotEquals(null, testObj);
-        assertEquals(testString, testObj.getName());
-        assertEquals(testString, testObj.getType());
-        assertEquals(testSize, testObj.getSize());
-        assertEquals(0.0f, testObj.getAngle(), 0.0001f);
-        assertEquals(false, testObj.isWinning());
-        assertEquals(testPhysics, testObj.getPhysics());
+        boolean test3 = testConstructor3(testString, testSize, testPhysics);
+        assertTrue(test1 && test2 && test3);
     }
 
     @Test 
@@ -75,5 +60,39 @@ public class TestAbstractObject {
         boolean winning = true;
         testObj.setWinning(winning);
         assertEquals(winning, testObj.isWinning());
+    }
+
+    private boolean testConstructer1() {
+        AbstractObject testObj = new AbstractObject();
+        assertNotNull(testObj);
+        assertEquals(AbstractObject.class, testObj.getClass());
+        return true;
+    }
+    private boolean testConstructor2(String testString, Size testSize) {
+        AbstractObject testObj = new AbstractObject(testString, testString, testSize);
+        testAssertions(testObj, testString, testSize, null);
+        return true;
+    }
+
+    private boolean testConstructor3(String testString, Size testSize, Physics testPhysics) {
+        AbstractObject testObj = new AbstractObject(testString, testString, testSize, testPhysics);
+        testAssertions(testObj, testString, testSize, testPhysics);
+        return true;
+    }
+
+    private void testAssertions(AbstractObject testObj, String testString, Size testSize, Physics testPhysics) {
+        assertNotNull(testObj);
+        assertEquals(AbstractObject.class, testObj.getClass());
+        assertEquals(testString, testObj.getName());
+        assertEquals(testString, testObj.getType());
+        assertEquals(testSize, testObj.getSize());
+        testAssertions2(testObj, testPhysics);
+    }
+
+    private void testAssertions2(AbstractObject testObj, Physics testPhysics) {
+        assertEquals(0.0f, testObj.getAngle(), 0.0001f);
+        //test condition inverted for less static imports because of PMD violations
+        assertTrue(!testObj.isWinning());
+        assertEquals(testPhysics, testObj.getPhysics());
     }
 }

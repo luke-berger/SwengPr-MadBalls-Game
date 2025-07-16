@@ -1,7 +1,7 @@
 package mm.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
  * Test-Klasse für die Physics-Klasse.
  * Testet die Funktionalität der Physics-Klasse inklusive aller Setter/Getter-Methoden
  * für physikalische Eigenschaften.
- * 
- * @version 1.0
  */
 public class TestPhysics {
     
@@ -21,8 +19,8 @@ public class TestPhysics {
     @Test
     public void testPhysics() {
         Physics testPhysics = new Physics();
-        assertNotEquals(null, testPhysics);
-        assertNotEquals(null, testPhysics.getClass());
+        assertNotNull(testPhysics);
+        assertEquals(Physics.class, testPhysics.getClass());
     }
 
     /**

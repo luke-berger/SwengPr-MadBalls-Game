@@ -1,7 +1,7 @@
 package mm.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
  * Test-Klasse für die Size-Klasse.
  * Testet die Funktionalität der Size-Klasse inklusive aller Dimensionseigenschaften
  * wie Width, Height und Radius.
- * 
- * @version 1.0
  */
 public class TestSize {
     
@@ -21,8 +19,8 @@ public class TestSize {
     @Test
     public void testSize() {
         Size testSize = new Size();
-        assertNotEquals(null, testSize);
-        assertNotEquals(null, testSize.getClass());        
+        assertNotNull(testSize);
+        assertEquals(Size.class, testSize.getClass());        
     }
 
     /**
