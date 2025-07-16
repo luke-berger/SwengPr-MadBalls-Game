@@ -128,7 +128,7 @@ public class CollisionDetection {
 
     private boolean isWinZone(PhysicsVisualPair pair){
         Object userData = pair.body.getUserData();
-        return "winzone".equals(userData) || "winPlat".equals(userData) || "winObject".equals(userData);
+        return "winzone".equals(userData);
     }
     
     /**
