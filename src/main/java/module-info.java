@@ -18,6 +18,6 @@ module mm {
     exports mm.controller;
     exports mm.view;
 
-    opens mm.model to com.fasterxml.jackson.databind;
+    opens mm.model;
     opens mm.controller to javafx.graphics;
 }
