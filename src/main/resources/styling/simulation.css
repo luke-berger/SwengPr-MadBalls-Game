@@ -234,3 +234,59 @@
 .item-count-no-wrapper {
   -fx-opacity: 0.5;
 }
+
+/* Inventory ScrollPane styling */
+.inventory-scroll-pane {
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+}
+
+.inventory-scroll-pane .viewport {
+  -fx-background-color: transparent;
+}
+
+.inventory-scroll-pane .corner {
+  -fx-background-color: transparent;
+}
+
+/* Customize scrollbar for inventory */
+.inventory-scroll-pane .scroll-bar:vertical {
+  -fx-background-color: rgba(14, 23, 34, 0.5);
+  -fx-background-radius: 0;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-pref-width: 8;
+}
+
+.inventory-scroll-pane .scroll-bar:vertical .track {
+  -fx-background-color: rgba(27, 39, 54, 0.3);
+  -fx-background-radius: 4;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+
+.inventory-scroll-pane .scroll-bar:vertical .thumb {
+  -fx-background-color: rgba(58, 75, 92, 0.8);
+  -fx-background-radius: 4;
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+}
+
+.inventory-scroll-pane .scroll-bar:vertical .thumb:hover {
+  -fx-background-color: rgba(78, 95, 112, 0.9);
+}
+
+.inventory-scroll-pane .scroll-bar:vertical .thumb:pressed {
+  -fx-background-color: rgba(98, 115, 132, 1);
+}
+
+/* Hide horizontal scrollbar completely */
+.inventory-scroll-pane .scroll-bar:horizontal {
+  -fx-background-color: transparent;
+  -fx-pref-height: 0;
+  -fx-max-height: 0;
+  -fx-min-height: 0;
+}
