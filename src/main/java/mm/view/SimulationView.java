@@ -1,10 +1,13 @@
 package mm.view;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * The {@code SimulationView} class is responsible for constructing and managing
@@ -327,6 +330,30 @@ public class SimulationView {
         layout.scene = new Scene(layout.rootStack, primaryStage.getWidth(), primaryStage.getHeight());
         layout.scene.getStylesheets().add(
                 getClass().getResource("/styling/simulation.css").toExternalForm());
+        
+        // Subtle resize trick to fix framebuffer issues on Linux
+        // Automatically triggers a minimal window resize after a short delay
+        javafx.application.Platform.runLater(() -> {
+            // Wait a moment for the scene to be fully initialized
+            Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(100), e -> {
+                    double currentWidth = primaryStage.getWidth();
+                    double currentHeight = primaryStage.getHeight();
+                    // Minimal resize (1 pixel) - almost invisible to user
+                    primaryStage.setWidth(currentWidth + 1);
+                    primaryStage.setHeight(currentHeight + 1);
+                    // Immediately resize back to original dimensions
+                    Timeline resetTimeline = new Timeline(
+                        new KeyFrame(Duration.millis(50), reset -> {
+                            primaryStage.setWidth(currentWidth);
+                            primaryStage.setHeight(currentHeight);
+                        })
+                    );
+                    resetTimeline.play();
+                })
+            );
+            timeline.play();
+        });
     }
 
     // ==================================================================================
