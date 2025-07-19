@@ -64,6 +64,7 @@ import java.io.File;
  * @author MadBalls
  */
 public class SimulationController {
+    private String selectedSkin = "Default";
 
     private final SimulationModel model;
     private final SimulationView view;
@@ -84,10 +85,23 @@ public class SimulationController {
      * @param primaryStage the primary stage of the application
      * @param levelPath    the resource path to the level JSON file
      */
-    public SimulationController(Stage primaryStage, String levelPath, boolean isPuzzleMode, boolean atPuzzlesEnd) {
+
+    /**
+     * Constructs the SimulationController, sets up the model and view, and wires up
+     * event handlers. Accepts a skin selection for inventory sprites.
+     *
+     * @param primaryStage the primary stage of the application
+     * @param levelPath    the resource path to the level JSON file
+     * @param isPuzzleMode whether puzzle mode is enabled
+     * @param atPuzzlesEnd whether at the end of puzzles
+     * @param selectedSkin the selected skin ("Default" or "Legacy")
+     */
+    public SimulationController(Stage primaryStage, String levelPath, boolean isPuzzleMode, boolean atPuzzlesEnd,
+            String selectedSkin) {
         this.primaryStage = primaryStage;
         this.model = new SimulationModel(levelPath);
         this.view = new SimulationView(primaryStage, isPuzzleMode, atPuzzlesEnd);
+        this.selectedSkin = selectedSkin != null ? selectedSkin : "Default";
 
         // Set win listener
         this.model.setWinListener(() -> {
@@ -96,10 +110,33 @@ public class SimulationController {
 
         setupSimulation();
         setupInventory(true); // Load data from file on initial setup
+        updateInventorySpritesForSkin(); // Update sprites AFTER inventory is loaded
+        refreshInventoryDisplay(); // Refresh the display with updated sprite paths
         setupDragAndDrop();
         setupMenuButtons();
         setupOverlayToggle();
         setupWinNextLevel();
+    }
+
+    /**
+     * Updates all inventory object sprite paths to use the selected skin folder.
+     */
+    private void updateInventorySpritesForSkin() {
+        SkinManager.getInstance().updateInventorySpritesForSkin(model.getInventoryObjects());
+    }
+
+    /**
+     * Updates the skin choice and refreshes the inventory display.
+     * This method should be called when returning from the title screen.
+     */
+    public void updateSkinChoice() {
+        String currentSkin = SkinManager.getInstance().getSelectedSkin();
+
+        if (!currentSkin.equals(this.selectedSkin)) {
+            this.selectedSkin = currentSkin;
+            updateInventorySpritesForSkin();
+            refreshInventoryDisplay();
+        }
     }
 
     /**
@@ -124,7 +161,6 @@ public class SimulationController {
         simSpace.getChildren().clear();
 
         model.setupSimulation();
-
         // Clear the mapping and rebuild it during setup
         gameObjectToPairMap.clear();
 
@@ -710,8 +746,7 @@ public class SimulationController {
             // Hide the overlay before switching scenes to avoid overlay showing on title
             // screen
             view.getOverlaySettings().setVisible(false);
-            TitleScreenController titleScreenView = new TitleScreenController(primaryStage);
-            Scene newScreen = titleScreenView.getScene();
+            Scene newScreen = ApplicationController.titleScreenController.getScene();
             primaryStage.setScene(newScreen);
             primaryStage.setWidth(scene.getWidth());
             primaryStage.setHeight(scene.getHeight());
@@ -724,8 +759,7 @@ public class SimulationController {
         // win screen overlay functions
         winButtons.btnWinHome.setOnAction(e -> {
             view.getWinScreenOverlay().setVisible(false);
-            TitleScreenController titleScreenView = new TitleScreenController(primaryStage);
-            Scene newScreen = titleScreenView.getScene();
+            Scene newScreen = ApplicationController.titleScreenController.getScene();
             primaryStage.setScene(newScreen);
             primaryStage.setWidth(scene.getWidth());
             primaryStage.setHeight(scene.getHeight());
@@ -782,7 +816,7 @@ public class SimulationController {
         if (view.getWinScreenButtons().btnWinNext != null) {
             view.getWinScreenButtons().btnWinNext.setOnAction(e -> {
                 SimulationController simController = new SimulationController(primaryStage, nextLevelPath,
-                        true, atPuzzlesEnd);
+                        true, atPuzzlesEnd, selectedSkin);
                 Scene simScene = simController.getScene();
                 primaryStage.setScene(simScene);
             });
@@ -937,6 +971,7 @@ public class SimulationController {
      * @param movingPair The physics-visual pair being moved
      * @param newX       The proposed new X position
      * @param newY       The proposed new Y position
+
      * @param newAngle   The proposed new angle (in degrees)
      * @return true if the new transform would cause an overlap, false otherwise
      */
