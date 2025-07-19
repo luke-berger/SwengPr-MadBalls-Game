@@ -60,7 +60,7 @@ public class FxToGameObjectController {
 
         // Create GameObject with basic constructor
         GameObject gameObject = new GameObject(name, type, position, size);
-        
+        gameObject.setSprite(sprite);
         // Set additional properties using setters
         gameObject.setPhysics(physics);
         gameObject.setAngle(angle);
