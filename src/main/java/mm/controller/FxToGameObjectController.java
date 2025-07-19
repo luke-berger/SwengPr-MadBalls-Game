@@ -51,6 +51,7 @@ public class FxToGameObjectController {
         boolean winning = "winObject".equalsIgnoreCase((String) pair.body.getUserData());
         Shape shape = pair.visual;
 
+        String sprite = extractSprite(pair, shape);
         String colour = (String.class != null) ? "BLACK" : extractColour(pair, shape);
         Position position = new Position(0, 0);
         Size size = new Size();
