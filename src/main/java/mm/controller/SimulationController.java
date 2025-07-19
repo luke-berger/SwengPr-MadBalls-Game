@@ -74,6 +74,11 @@ public class SimulationController {
     // Map to track correspondence between GameObjects and their PhysicsVisualPairs
     private final java.util.Map<GameObject, PhysicsVisualPair> gameObjectToPairMap = new java.util.HashMap<>();
 
+    // Store original window dimensions to restore them when returning to title
+    // screen
+    private final double originalWidth;
+    private final double originalHeight;
+
     // Drag start position and angle for undo functionality
     private Position dragStartPosition;
     private float dragStartAngle;
@@ -99,6 +104,11 @@ public class SimulationController {
     public SimulationController(Stage primaryStage, String levelPath, boolean isPuzzleMode, boolean atPuzzlesEnd,
             String selectedSkin) {
         this.primaryStage = primaryStage;
+
+        // Store original window dimensions before any changes
+        this.originalWidth = primaryStage.getWidth();
+        this.originalHeight = primaryStage.getHeight();
+
         this.model = new SimulationModel(levelPath);
         this.view = new SimulationView(primaryStage, isPuzzleMode, atPuzzlesEnd);
         this.selectedSkin = selectedSkin != null ? selectedSkin : "Default";
@@ -748,8 +758,9 @@ public class SimulationController {
             view.getOverlaySettings().setVisible(false);
             Scene newScreen = ApplicationController.titleScreenController.getScene();
             primaryStage.setScene(newScreen);
-            primaryStage.setWidth(scene.getWidth());
-            primaryStage.setHeight(scene.getHeight());
+            // Reset to original application dimensions to avoid size drift
+            primaryStage.setWidth(originalWidth);
+            primaryStage.setHeight(originalHeight);
         });
 
         overlayButtons.overlayQuitButton.setOnAction(e -> {
@@ -761,8 +772,9 @@ public class SimulationController {
             view.getWinScreenOverlay().setVisible(false);
             Scene newScreen = ApplicationController.titleScreenController.getScene();
             primaryStage.setScene(newScreen);
-            primaryStage.setWidth(scene.getWidth());
-            primaryStage.setHeight(scene.getHeight());
+            // Reset to original application dimensions to avoid size drift
+            primaryStage.setWidth(originalWidth);
+            primaryStage.setHeight(originalHeight);
         });
 
         if (winButtons.btnWinExport != null) {
