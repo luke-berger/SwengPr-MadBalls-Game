@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Test;
  * Test-Klasse für die Level-Klasse.
  * Testet die Funktionalität des Level-Objekts inklusive der Verwaltung von
  * GameObjects und InventoryObjects.
- * 
- * @version 1.0
  */
 public class TestLevel {
     
@@ -25,8 +23,8 @@ public class TestLevel {
     @Test
     public void testLevel() {
         Level testLevel = new Level();
-        assertNotEquals(null, testLevel);
-        assertNotEquals(null, testLevel.getClass());
+        assertNotNull(testLevel);
+        assertEquals(Level.class, testLevel.getClass());
 
         List<GameObject> gameObjects = new ArrayList<>();
         List<InventoryObject> inventoryObjects = new ArrayList<>();

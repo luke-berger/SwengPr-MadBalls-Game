@@ -30,6 +30,31 @@ public class Size {
     /** The radius of the object (for circular shapes). */
     private float radius;
 
+    /** 
+     * Creates new empty Size object
+     */
+    public Size() {}
+
+    /** 
+     * Creates rectangle Size object
+     * 
+     * @param width the width of Size
+     * @param height the height of Size
+     */
+    public Size(float width, float height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    /**
+     * Create circular Size object
+     * 
+     * @param radius the radius of Size
+     */
+    public Size(float radius) {
+        this.radius = radius;
+    }
+    
     /**
      * Returns the width of the object.
      * 

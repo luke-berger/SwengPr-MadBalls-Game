@@ -32,6 +32,20 @@
             <version>5.7.1</version>
             <scope>test</scope>
         </dependency>
+        <!-- Mock testing with Mockitio-->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Mockito JUnit Jupiter Integration -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.3.1</version>
+            <scope>test</scope>
+        </dependency>
         <!-- JavaFX 17 (compatible with Apple Silicon) -->
         <dependency>
             <groupId>org.openjfx</groupId>

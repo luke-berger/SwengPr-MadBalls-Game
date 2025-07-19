@@ -66,8 +66,8 @@ import java.io.File;
 public class SimulationController {
     private String selectedSkin = "Default";
 
-    private final SimulationModel model;
-    private final SimulationView view;
+    public final SimulationModel model;
+    public final SimulationView view;
     private final List<StackPane> inventoryWrappers = new ArrayList<>();
     private final Stage primaryStage;
     private boolean atPuzzlesEnd;
