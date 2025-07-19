@@ -11,6 +11,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.*;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import mm.model.GameObject;
@@ -881,7 +882,7 @@ public class SimulationController {
 
                 // Update physics body position
                 if (visual instanceof javafx.scene.shape.Rectangle) {
-                    javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) visual;
+                    Rectangle rect = (javafx.scene.shape.Rectangle) visual;
                     float centerX = (float) (newX + rect.getWidth() / 2);
                     float centerY = (float) (newY + rect.getHeight() / 2);
                     pair.body.setTransform(
@@ -893,7 +894,7 @@ public class SimulationController {
                             pair.body.getAngle());
                 } else if (visual instanceof javafx.scene.shape.Polygon) {
                     // Handle bucket (polygon) positioning - center like rectangles
-                    javafx.scene.shape.Polygon polygon = (javafx.scene.shape.Polygon) visual;
+                    Polygon polygon = (Polygon) visual;
                     javafx.geometry.Bounds bounds = polygon.getBoundsInLocal();
                     float centerX = (float) (newX + bounds.getWidth() / 2);
                     float centerY = (float) (newY + bounds.getHeight() / 2);

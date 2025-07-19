@@ -276,8 +276,9 @@ public class InventoryObjectController {
         float width = obj.getSize().getWidth();
         float height = obj.getSize().getHeight();
         float wallThickness = 10.0f;
-
+        
         Polygon bucket = new Polygon();
+        
         // Define U-shape vertices (relative to top-left, matching other shapes)
         Double[] points = {
             (double)(0), (double)(height),                                    // Bottom-left outer
@@ -289,10 +290,10 @@ public class InventoryObjectController {
             (double)(width), (double)(0),                                     // Top-right outer
             (double)(width), (double)(height)                                // Bottom-right outer
         };
-
+        
         bucket.getPoints().addAll(points);
         bucket.setFill(Color.valueOf(obj.getColour()));
-
+        
         return bucket;
     }
 
