@@ -42,8 +42,8 @@ public class TestSimulationController {
 
     @BeforeEach
     void setUp() {
-        sandboxController = new SimulationController(mockStage, "/level/basic_sandbox.json", false, false);
-        puzzleController = new SimulationController(mockStage, "/level/level1.json", true, false);
+        sandboxController = new SimulationController(mockStage, "/level/basic_sandbox.json", false, false, "Default");
+        puzzleController = new SimulationController(mockStage, "/level/level1.json", true, false, "Default");
     }
 
     @Test
