@@ -9,7 +9,7 @@
         "height": 100.0,
         "radius": 0.0
       },
-      "angle": 90.0,
+      "angle": 0.0,
       "sprite": null,
       "colour": "BROWN",
       "physics": {
@@ -213,26 +213,6 @@
       },
       "winning": false,
       "count": 15
-    },
-    {
-      "name": "box1",
-      "type": "rectangle",
-      "size": {
-        "width": 70.0,
-        "height": 70.0,
-        "radius": 0.0
-      },
-      "angle": 0.0,
-      "sprite": "madBox.png",
-      "colour": "BROWN",
-      "physics": {
-        "density": 1.0,
-        "friction": 0.4,
-        "restitution": 0.1,
-        "shape": "DYNAMIC"
-      },
-      "winning": false,
-      "count": 1
     },
     {
       "name": "bucket",
