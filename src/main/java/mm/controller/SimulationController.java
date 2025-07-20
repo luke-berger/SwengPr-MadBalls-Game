@@ -1,6 +1,7 @@
 package mm.controller;
 
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
@@ -11,6 +12,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.*;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import mm.model.GameObject;
@@ -170,7 +172,7 @@ public class SimulationController {
         Pane simSpace = view.getSimSpace();
         simSpace.getChildren().clear();
 
-        model.setupSimulation();
+        model.setupSimulation(simSpace);
         // Clear the mapping and rebuild it during setup
         gameObjectToPairMap.clear();
 
@@ -342,18 +344,16 @@ public class SimulationController {
      * @return a StackPane wrapper containing the visual representation
      */
     private StackPane createInventoryItemWrapper(InventoryObject obj) {
-        PhysicsVisualPair pair = mm.controller.InventoryObjectController.convert(obj, model.getWorld());
-        if (pair.visual == null) {
+        Node visual = InventoryObjectController.createPreviewVisual(obj);
+        if (visual == null) {
             return null;
         }
 
-        pair.visual.setRotate(obj.getAngle());
-
         // Dynamically adjust wrapper size based on rotated dimensions
-        double rotatedWidth = pair.visual.getBoundsInParent().getWidth();
-        double rotatedHeight = pair.visual.getBoundsInParent().getHeight();
+        double rotatedWidth = visual.getBoundsInParent().getWidth();
+        double rotatedHeight = visual.getBoundsInParent().getHeight();
 
-        StackPane wrapper = new StackPane(pair.visual);
+        StackPane wrapper = new StackPane(visual);
         wrapper.setPrefSize(rotatedWidth + 20, rotatedHeight + 20);
 
         Label countLabel = new Label(Integer.toString(obj.getCount()));
@@ -881,7 +881,7 @@ public class SimulationController {
 
                 // Update physics body position
                 if (visual instanceof javafx.scene.shape.Rectangle) {
-                    javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) visual;
+                    Rectangle rect = (javafx.scene.shape.Rectangle) visual;
                     float centerX = (float) (newX + rect.getWidth() / 2);
                     float centerY = (float) (newY + rect.getHeight() / 2);
                     pair.body.setTransform(
@@ -893,7 +893,7 @@ public class SimulationController {
                             pair.body.getAngle());
                 } else if (visual instanceof javafx.scene.shape.Polygon) {
                     // Handle bucket (polygon) positioning - center like rectangles
-                    javafx.scene.shape.Polygon polygon = (javafx.scene.shape.Polygon) visual;
+                    Polygon polygon = (Polygon) visual;
                     javafx.geometry.Bounds bounds = polygon.getBoundsInLocal();
                     float centerX = (float) (newX + bounds.getWidth() / 2);
                     float centerY = (float) (newY + bounds.getHeight() / 2);

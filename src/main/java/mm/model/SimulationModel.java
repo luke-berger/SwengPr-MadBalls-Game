@@ -10,6 +10,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 import org.jbox2d.dynamics.contacts.Contact;
 
+import javafx.scene.layout.Pane;
 import mm.controller.GameObjectController;
 import mm.controller.LevelExportController;
 import mm.controller.LevelImportController;
@@ -265,8 +266,9 @@ public class SimulationModel {
      * It also adds any previously dropped objects and sets up the contact listener
      * for win conditions.
      * </p>
+     * @param simSpace the Pane representing the simulation space in the view
      */
-    public void setupSimulation() {
+    public void setupSimulation(Pane simSpace) {
         physics.world = new World(new Vec2(0.0f, 9.8f));
         physics.pairs = new ArrayList<>();
         gameObjects.noPlaceZones = new ArrayList<>();
@@ -292,7 +294,8 @@ public class SimulationModel {
             }
         }
 
-        physics.timer = new PhysicsAnimationController(physics.world, physics.pairs);
+        // Use simSpace passed as parameter
+        physics.timer = new PhysicsAnimationController(physics.world, physics.pairs, this, simSpace);
 
         listenContact();
     }
