@@ -8,6 +8,18 @@
 .sim-space {
   background-color: white;
   -fx-background-color: white;
+
+  /* Background image */
+  background-image: url("/pictures/levelSelect.png");
+  -fx-background-image: url("/pictures/levelSelect.png");
+
+  /* Background positioning and sizing */
+  background-size: cover;
+  -fx-background-size: cover;
+  background-position: center center;
+  -fx-background-position: center center;
+  background-repeat: no-repeat;
+  -fx-background-repeat: no-repeat;
 }
 
 /* Buttons inside simulation area */

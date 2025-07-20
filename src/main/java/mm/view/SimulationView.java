@@ -225,6 +225,21 @@ public class SimulationView {
 
         layout.simSpace = new Pane();
         layout.simSpace.getStyleClass().add("sim-space");
+
+        // Add background image directly via Java code
+        try {
+            String backgroundImagePath = getClass().getResource("/pictures/levelSelect.png").toExternalForm();
+            layout.simSpace.setStyle(
+                    "-fx-background-image: url('" + backgroundImagePath + "'); " +
+                            "-fx-background-size: cover; " +
+                            "-fx-background-position: center center; " +
+                            "-fx-background-repeat: no-repeat;");
+        } catch (Exception e) {
+            System.out.println("Background image not found: " + e.getMessage());
+            // Fallback to solid color if image not found
+            layout.simSpace.setStyle("-fx-background-color: white;");
+        }
+
         // Ensure simSpace doesn't grow beyond reasonable bounds
         layout.simSpace.setMaxWidth(Region.USE_COMPUTED_SIZE);
         layout.simSpace.setMaxHeight(Region.USE_COMPUTED_SIZE);
