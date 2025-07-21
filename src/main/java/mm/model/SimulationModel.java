@@ -712,7 +712,7 @@ public class SimulationModel {
 
     /**
      * Generates a JSON representation of the current simulation state.
-     * This includes all dropped objects and their current positions/rotations.
+     * This includes all dropped objects and their current positions/rotations with full details.
      * 
      * @return JSON string representing the current simulation state
      */
@@ -730,13 +730,32 @@ public class SimulationModel {
             json.append("        \"x\": ").append(String.format("%.2f", obj.getPosition().getX())).append(",\n");
             json.append("        \"y\": ").append(String.format("%.2f", obj.getPosition().getY())).append("\n");
             json.append("      },\n");
+            json.append("      \"angle\": ").append(String.format("%.2f", obj.getAngle())).append(",\n");
             json.append("      \"size\": {\n");
             json.append("        \"width\": ").append(String.format("%.2f", obj.getSize().getWidth())).append(",\n");
-            json.append("        \"height\": ").append(String.format("%.2f", obj.getSize().getHeight())).append("\n");
+            json.append("        \"height\": ").append(String.format("%.2f", obj.getSize().getHeight())).append(",\n");
+            json.append("        \"radius\": ").append(String.format("%.2f", obj.getSize().getRadius())).append("\n");
             json.append("      },\n");
-            json.append("      \"angle\": ").append(String.format("%.2f", obj.getAngle())).append(",\n");
+            
+            // Add sprite information
+            String sprite = obj.getSprite();
+            if (sprite != null) {
+                json.append("      \"sprite\": \"").append(sprite).append("\",\n");
+            } else {
+                json.append("      \"sprite\": null,\n");
+            }
+            
             json.append("      \"colour\": \"").append(obj.getColour()).append("\",\n");
-            json.append("      \"isWinning\": ").append(obj.isWinning()).append("\n");
+            
+            // Add physics properties
+            json.append("      \"physics\": {\n");
+            json.append("        \"density\": ").append(String.format("%.2f", obj.getPhysics().getDensity())).append(",\n");
+            json.append("        \"friction\": ").append(String.format("%.2f", obj.getPhysics().getFriction())).append(",\n");
+            json.append("        \"restitution\": ").append(String.format("%.2f", obj.getPhysics().getRestitution())).append(",\n");
+            json.append("        \"shape\": \"").append(obj.getPhysics().getShape()).append("\"\n");
+            json.append("      },\n");
+            
+            json.append("      \"winning\": ").append(obj.isWinning()).append("\n");
             json.append("    }");
             if (i < gameObjects.droppedObjects.size() - 1) {
                 json.append(",");
@@ -751,7 +770,34 @@ public class SimulationModel {
             InventoryObject obj = gameObjects.inventoryObjects.get(i);
             json.append("    {\n");
             json.append("      \"name\": \"").append(obj.getName()).append("\",\n");
-            json.append("      \"count\": ").append(obj.getCount()).append("\n");
+            json.append("      \"type\": \"").append(obj.getType()).append("\",\n");
+            json.append("      \"count\": ").append(obj.getCount()).append(",\n");
+            json.append("      \"angle\": ").append(String.format("%.2f", obj.getAngle())).append(",\n");
+            json.append("      \"size\": {\n");
+            json.append("        \"width\": ").append(String.format("%.2f", obj.getSize().getWidth())).append(",\n");
+            json.append("        \"height\": ").append(String.format("%.2f", obj.getSize().getHeight())).append(",\n");
+            json.append("        \"radius\": ").append(String.format("%.2f", obj.getSize().getRadius())).append("\n");
+            json.append("      },\n");
+            
+            // Add sprite information
+            String sprite = obj.getSprite();
+            if (sprite != null) {
+                json.append("      \"sprite\": \"").append(sprite).append("\",\n");
+            } else {
+                json.append("      \"sprite\": null,\n");
+            }
+            
+            json.append("      \"colour\": \"").append(obj.getColour()).append("\",\n");
+            
+            // Add physics properties
+            json.append("      \"physics\": {\n");
+            json.append("        \"density\": ").append(String.format("%.2f", obj.getPhysics().getDensity())).append(",\n");
+            json.append("        \"friction\": ").append(String.format("%.2f", obj.getPhysics().getFriction())).append(",\n");
+            json.append("        \"restitution\": ").append(String.format("%.2f", obj.getPhysics().getRestitution())).append(",\n");
+            json.append("        \"shape\": \"").append(obj.getPhysics().getShape()).append("\"\n");
+            json.append("      },\n");
+            
+            json.append("      \"winning\": ").append(obj.isWinning()).append("\n");
             json.append("    }");
             if (i < gameObjects.inventoryObjects.size() - 1) {
                 json.append(",");
