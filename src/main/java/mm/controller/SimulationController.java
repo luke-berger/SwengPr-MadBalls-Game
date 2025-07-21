@@ -1,9 +1,12 @@
 package mm.controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
@@ -25,6 +28,7 @@ import mm.view.SimulationView;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
+import javafx.util.Duration;
 
 /**
  * The {@code SimulationController} class coordinates the interaction between
@@ -85,17 +89,13 @@ public class SimulationController {
     private Position dragStartPosition;
     private float dragStartAngle;
 
-    /**
-     * Constructs the SimulationController, sets up the model and view, and wires up
-     * event handlers.
-     *
-     * @param primaryStage the primary stage of the application
-     * @param levelPath    the resource path to the level JSON file
-     */
+    // Add these fields to the controller
+    private boolean isUpdatingFromJson = false;
+    private String lastJsonContent = "";
 
     /**
      * Constructs the SimulationController, sets up the model and view, and wires up
-     * event handlers. Accepts a skin selection for inventory sprites.
+     * event handlers.
      *
      * @param primaryStage the primary stage of the application
      * @param levelPath    the resource path to the level JSON file
@@ -128,6 +128,9 @@ public class SimulationController {
         setupMenuButtons();
         setupOverlayToggle();
         setupWinNextLevel();
+        updateJsonViewer(); // Initialize JSON viewer
+
+        setupJsonListener(); // Add this line
     }
 
     /**
@@ -185,6 +188,8 @@ public class SimulationController {
                 processPhysicsVisualPair(pair, dropped, simSpace);
             }
         }
+        
+        updateJsonViewer(); // Update JSON viewer after simulation setup
     }
 
     /**
@@ -446,6 +451,95 @@ public class SimulationController {
     }
 
     /**
+     * Sets up real-time JSON monitoring for bidirectional updates.
+     * Only works in sandbox mode where JSON viewer is available.
+     */
+    private void setupJsonListener() {
+        TextArea jsonViewer = view.getJsonViewer();
+        
+        // Only set up JSON listener if JSON viewer exists (sandbox mode only)
+        if (jsonViewer == null) {
+            return;
+        }
+        
+        // Add text change listener for real-time updates
+        jsonViewer.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isUpdatingFromJson && !newValue.equals(lastJsonContent)) {
+                // Visual feedback for editing
+                jsonViewer.setStyle("-fx-border-color: orange; -fx-border-width: 2px;");
+                
+                // Debounce rapid changes
+                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> {
+                    boolean success = updateSimulationFromJson(newValue);
+                    // Visual feedback for update result
+                    if (success) {
+                        jsonViewer.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
+                    } else {
+                        jsonViewer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                    }
+                    
+                    // Reset border after 1 second
+                    Timeline resetTimeline = new Timeline(new KeyFrame(Duration.millis(1000), reset -> {
+                        jsonViewer.setStyle("");
+                    }));
+                    resetTimeline.play();
+                }));
+                timeline.play();
+            }
+        });
+        
+        // Add key shortcuts for manual updates
+        jsonViewer.setOnKeyPressed(event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+                boolean success = updateSimulationFromJson(jsonViewer.getText());
+                // Immediate visual feedback for manual update
+                if (success) {
+                    jsonViewer.setStyle("-fx-border-color: green; -fx-border-width: 2px;");
+                } else {
+                    jsonViewer.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+                }
+                event.consume();
+            }
+        });
+    }
+
+    /**
+     * Updates the simulation from the JSON viewer content.
+     */
+    private boolean updateSimulationFromJson(String jsonContent) {
+        if (isInteractionAllowed() && model.updateFromJson(jsonContent)) {
+            // Refresh the entire simulation
+            Platform.runLater(() -> {
+                isUpdatingFromJson = true;
+                setupSimulation();
+                refreshInventoryDisplay();
+                lastJsonContent = jsonContent;
+                isUpdatingFromJson = false;
+            });
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Updates the JSON viewer with the current simulation state.
+     * This method is called whenever the simulation state changes.
+     * Only works in sandbox mode where JSON viewer is available.
+     */
+    private void updateJsonViewer() {
+        // Only update if JSON viewer exists (sandbox mode only) and not currently updating
+        if (!isUpdatingFromJson && view.getJsonViewer() != null) {
+            Platform.runLater(() -> {
+                isUpdatingFromJson = true;
+                String jsonContent = model.generateCurrentStateJson();
+                view.getJsonViewer().setText(jsonContent);
+                lastJsonContent = jsonContent;
+                isUpdatingFromJson = false;
+            });
+        }
+    }
+
+    /**
      * Refreshes the inventory display without reloading data from file.
      * <p>
      * This method updates the visual representation of inventory items
@@ -454,6 +548,7 @@ public class SimulationController {
      */
     private void refreshInventoryDisplay() {
         setupInventory(false);
+        updateJsonViewer(); // Update JSON viewer when inventory changes
     }
 
     /**
@@ -651,6 +746,7 @@ public class SimulationController {
             simButtons.undoButton.setOnAction(e -> {
                 if (isInteractionAllowed()) {
                     model.getUndoRedoManager().undo();
+                    updateJsonViewer(); // Update JSON viewer after undo
                 }
             });
         }
@@ -659,6 +755,7 @@ public class SimulationController {
             simButtons.redoButton.setOnAction(e -> {
                 if (isInteractionAllowed()) {
                     model.getUndoRedoManager().redo();
+                    updateJsonViewer(); // Update JSON viewer after redo
                 }
             });
         }
@@ -682,6 +779,7 @@ public class SimulationController {
                 setInventoryItemsDisabled(false);
                 setupSimulation();
                 refreshInventoryDisplay();
+                updateJsonViewer(); // Update JSON viewer after deleting all
             });
         }
     }
@@ -901,6 +999,8 @@ public class SimulationController {
                             new org.jbox2d.common.Vec2(centerX / 50.0f, centerY / 50.0f),
                             pair.body.getAngle());
                 }
+                
+                updateJsonViewer(); // Update JSON viewer during drag
             }
             // If collision would occur, simply don't update the position - object stays in
             // place
@@ -933,6 +1033,7 @@ public class SimulationController {
                 model.getUndoRedoManager().executeCommand(moveCommand);
             }
 
+            updateJsonViewer(); // Update JSON viewer after drag ends
             event.consume();
         });
 
@@ -968,6 +1069,8 @@ public class SimulationController {
                         .build();
                 MoveObjectController rotateCommand = new MoveObjectController(rotateParams);
                 model.getUndoRedoManager().executeCommand(rotateCommand);
+                
+                updateJsonViewer(); // Update JSON viewer after rotation
             }
             // If collision would occur, do nothing (deny rotation)
 

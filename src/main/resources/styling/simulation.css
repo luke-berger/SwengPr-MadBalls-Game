@@ -123,6 +123,8 @@
   -fx-border-width: 2 0 0 0; /* top border only */
   -fx-pref-height: 150px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4, 0, 0, -2);
+  -fx-padding: 10;
+  -fx-alignment: center;
 }
 
 /* Buttons or elements inside bottom bar */
@@ -395,4 +397,100 @@
   -fx-max-height: 0;
   min-height: 0;
   -fx-min-height: 0;
+}
+
+.json-viewer {
+  -fx-font-family: "Courier New", monospace;
+  -fx-font-size: 11px;
+  -fx-background-color: #f8f8f8;
+  -fx-border-color: #cccccc;
+  -fx-border-width: 1px;
+  -fx-text-fill: #000000;
+}
+
+.json-viewer:focused {
+  -fx-border-color: #4a90e2;
+  -fx-border-width: 2px;
+  -fx-background-color: #ffffff;
+}
+
+/* Add visual indicator for JSON editing mode */
+.json-viewer:focused {
+  -fx-effect: dropshadow(gaussian, rgba(74, 144, 226, 0.3), 5, 0.3, 0, 0);
+}
+
+.json-scroll-pane {
+  -fx-background-color: transparent;
+}
+
+.json-scroll-pane .viewport {
+  -fx-background-color: #f8f8f8;
+}
+
+/* Bottom bar styling - updated to accommodate JSON viewer */
+.bottom-bar {
+  background-color: #0e1722;
+  -fx-background-color: #0e1722;
+  border-color: #1b2736;
+  -fx-border-color: #1b2736;
+  border-width: 2px 0 0 0; /* top border only */
+  -fx-border-width: 2 0 0 0; /* top border only */
+  -fx-pref-height: 150px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4, 0, 0, -2);
+  -fx-padding: 10;
+}
+
+/* JSON viewer in bottom bar - adjusted styling */
+.bottom-bar .json-viewer {
+  -fx-font-family: "Courier New", monospace;
+  -fx-font-size: 10px;
+  -fx-background-color: #f8f8f8;
+  -fx-border-color: #cccccc;
+  -fx-border-width: 1px;
+  -fx-text-fill: #000000;
+  -fx-background-radius: 4;
+  -fx-border-radius: 4;
+}
+
+.bottom-bar .json-viewer:focused {
+  -fx-border-color: #4a90e2;
+  -fx-border-width: 2px;
+}
+
+.bottom-bar .json-scroll-pane {
+  -fx-background-color: transparent;
+  -fx-background-radius: 4;
+  -fx-border-radius: 4;
+}
+
+.bottom-bar .json-scroll-pane .viewport {
+  -fx-background-color: #f8f8f8;
+  -fx-background-radius: 4;
+}
+
+/* Add visual indicator for JSON editing mode in bottom bar */
+.bottom-bar .json-viewer:focused {
+  -fx-effect: dropshadow(gaussian, rgba(74, 144, 226, 0.3), 3, 0.3, 0, 0);
+}
+
+/* Bottom bar placeholder for puzzle mode */
+.bottom-bar-placeholder {
+  -fx-text-fill: #7a8a9a;
+  -fx-font-size: 14px;
+  -fx-alignment: center;
+  -fx-text-alignment: center;
+}
+
+/* Style the bottom bar consistently for both modes */
+.bottom-bar {
+  background-color: #0e1722;
+  -fx-background-color: #0e1722;
+  border-color: #1b2736;
+  -fx-border-color: #1b2736;
+  border-width: 2px 0 0 0; /* top border only */
+  -fx-border-width: 2 0 0 0; /* top border only */
+  -fx-pref-height: 150px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4, 0, 0, -2);
+  -fx-padding: 10;
+  -fx-alignment: center;
 }

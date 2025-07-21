@@ -4,7 +4,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -93,6 +95,12 @@ public class SimulationView {
 
         /** Root stack pane that layers the main content and overlays */
         public StackPane rootStack;
+        
+        /** JSON viewer area showing real-time simulation state */
+        public TextArea jsonViewer;
+        
+        /** ScrollPane containing the JSON viewer */
+        public ScrollPane jsonScrollPane;
     }
 
     /**
@@ -207,9 +215,9 @@ public class SimulationView {
         this.menuGridBuilder = new MenuGridFactory(simulationButtons);
         this.overlayFactory = new OverlayFactory(overlayButtons, winScreenButtons);
 
-        initializeMainComponents();
+        initializeMainComponents(isPuzzleMode); // Pass isPuzzleMode parameter
         createSideBarWithMenuButtons(isPuzzleMode);
-        setupMainLayout();
+        setupMainLayout(isPuzzleMode); // Pass isPuzzleMode parameter
         createOverlays(primaryStage, isPuzzleMode, atPuzzlesEnd);
         setupRootStackAndScene(primaryStage);
     }
@@ -218,8 +226,10 @@ public class SimulationView {
      * Initializes the main UI components for the simulation interface.
      * Creates the main pane, simulation space, and bottom bar with proper styling
      * and size constraints.
+     * 
+     * @param isPuzzleMode true if in puzzle mode (no JSON viewer), false for sandbox mode
      */
-    private void initializeMainComponents() {
+    private void initializeMainComponents(boolean isPuzzleMode) {
         layout.mainPane = new BorderPane();
         layout.mainPane.setId("root-pane");
 
@@ -244,10 +254,35 @@ public class SimulationView {
         layout.simSpace.setMaxWidth(Region.USE_COMPUTED_SIZE);
         layout.simSpace.setMaxHeight(Region.USE_COMPUTED_SIZE);
 
-        layout.bottomBar = new HBox();
-        layout.bottomBar.getStyleClass().add("bottom-bar");
+        // Always create bottom bar, but content depends on mode
+        createBottomBar(isPuzzleMode);
+    }
 
-        // Set background image for bottom bar
+    /**
+     * Creates the bottom bar with mode-specific content.
+     * In sandbox mode: includes JSON viewer
+     * In puzzle mode: empty bar for future features
+     * 
+     * @param isPuzzleMode true if in puzzle mode, false for sandbox mode
+     */
+    private void createBottomBar(boolean isPuzzleMode) {
+    layout.bottomBar = new HBox();
+    layout.bottomBar.getStyleClass().add("bottom-bar");
+    
+    layout.bottomBar.setPrefHeight(200);
+    layout.bottomBar.setMaxHeight(200);
+    layout.bottomBar.setMinHeight(200);
+    // Add padding inside the bottom bar
+    layout.bottomBar.setSpacing(10);
+    layout.bottomBar.setStyle("-fx-padding: 10;");
+    
+    if (!isPuzzleMode) {
+        // Sandbox mode: add JSON viewer directly (no ScrollPane wrapper)
+        createJsonViewer();
+        layout.bottomBar.getChildren().add(layout.jsonViewer);
+        HBox.setHgrow(layout.jsonViewer, Priority.ALWAYS);
+    } else {
+        // Puzzle mode: set background image for bottom bar
         try {
             String bottomBarImagePath = getClass().getResource("/pictures/bottombar2.png").toExternalForm();
             layout.bottomBar.setStyle("-fx-background-color: transparent; " +
@@ -259,11 +294,8 @@ public class SimulationView {
         } catch (Exception e) {
             System.err.println("Warning: Could not load bottom bar background image: " + e.getMessage());
         }
-
-        layout.bottomBar.setPrefHeight(200);
-        layout.bottomBar.setMaxHeight(200);
-        layout.bottomBar.setMinHeight(200);
     }
+}
 
     /**
      * Creates the sidebar with inventory and control buttons.
@@ -326,10 +358,14 @@ public class SimulationView {
 
     /**
      * Arranges the main UI components into their layout positions.
+     * 
+     * @param isPuzzleMode true if in puzzle mode, false for sandbox mode
      */
-    private void setupMainLayout() {
+    private void setupMainLayout(boolean isPuzzleMode) {
         layout.mainPane.setCenter(layout.simSpace);
         layout.mainPane.setRight(layout.sideBar);
+        
+        // Always add bottom bar (content varies by mode)
         layout.mainPane.setBottom(layout.bottomBar);
     }
 
@@ -425,10 +461,20 @@ public class SimulationView {
     public VBox getSideBar() {
         return layout.sideBar;
     }
-
-    /** @return the bottom bar (reserved for future features) */
+    
+    /** @return the bottom bar (only available in sandbox mode) */
     public HBox getBottomBar() {
         return layout.bottomBar;
+    }
+
+    /** @return the JSON viewer text area (only available in sandbox mode) */
+    public TextArea getJsonViewer() {
+        return layout.jsonViewer;
+    }
+
+    /** @return the JSON viewer scroll pane (only available in sandbox mode) */
+    public ScrollPane getJsonScrollPane() {
+        return null; // No longer using ScrollPane wrapper
     }
 
     /** @return the settings/pause menu overlay */
