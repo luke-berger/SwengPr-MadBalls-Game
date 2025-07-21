@@ -452,9 +452,15 @@ public class SimulationController {
 
     /**
      * Sets up real-time JSON monitoring for bidirectional updates.
+     * Only works in sandbox mode where JSON viewer is available.
      */
     private void setupJsonListener() {
         TextArea jsonViewer = view.getJsonViewer();
+        
+        // Only set up JSON listener if JSON viewer exists (sandbox mode only)
+        if (jsonViewer == null) {
+            return;
+        }
         
         // Add text change listener for real-time updates
         jsonViewer.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -518,9 +524,11 @@ public class SimulationController {
     /**
      * Updates the JSON viewer with the current simulation state.
      * This method is called whenever the simulation state changes.
+     * Only works in sandbox mode where JSON viewer is available.
      */
     private void updateJsonViewer() {
-        if (!isUpdatingFromJson) {
+        // Only update if JSON viewer exists (sandbox mode only) and not currently updating
+        if (!isUpdatingFromJson && view.getJsonViewer() != null) {
             Platform.runLater(() -> {
                 isUpdatingFromJson = true;
                 String jsonContent = model.generateCurrentStateJson();
