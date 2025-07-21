@@ -145,14 +145,18 @@ public class GeometricCollisionDetection {
         }
         
         // Detailed collision detection based on geometry types
-        if (geom1 instanceof RectangleGeometry && geom2 instanceof RectangleGeometry) {
-            return rectanglesIntersect((RectangleGeometry) geom1, (RectangleGeometry) geom2);
-        } else if (geom1 instanceof CircleGeometry && geom2 instanceof CircleGeometry) {
-            return circlesIntersect((CircleGeometry) geom1, (CircleGeometry) geom2);
-        } else if (geom1 instanceof RectangleGeometry && geom2 instanceof CircleGeometry) {
-            return rectangleCircleIntersect((RectangleGeometry) geom1, (CircleGeometry) geom2);
-        } else if (geom1 instanceof CircleGeometry && geom2 instanceof RectangleGeometry) {
-            return rectangleCircleIntersect((RectangleGeometry) geom2, (CircleGeometry) geom1);
+        if (geom1 instanceof RectangleGeometry) {
+            if (geom2 instanceof RectangleGeometry) {
+                return rectanglesIntersect((RectangleGeometry) geom1, (RectangleGeometry) geom2);
+            } else if (geom2 instanceof CircleGeometry) {
+                return rectangleCircleIntersect((RectangleGeometry) geom1, (CircleGeometry) geom2);
+            }
+        } else if (geom1 instanceof CircleGeometry) {
+            if (geom2 instanceof CircleGeometry) {
+                return circlesIntersect((CircleGeometry) geom1, (CircleGeometry) geom2);
+            } else if (geom2 instanceof RectangleGeometry) {
+                return rectangleCircleIntersect((RectangleGeometry) geom2, (CircleGeometry) geom1);
+            }
         }
         
         return false;
