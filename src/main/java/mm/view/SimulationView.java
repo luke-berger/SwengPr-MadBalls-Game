@@ -256,15 +256,17 @@ public class SimulationView {
         layout.bottomBar.setPrefHeight(200);
         layout.bottomBar.setMaxHeight(200);
         layout.bottomBar.setMinHeight(200);
+        // Add padding inside the bottom bar
+        layout.bottomBar.setSpacing(10);
+        layout.bottomBar.setStyle("-fx-padding: 10;");
         
         if (!isPuzzleMode) {
-            // Sandbox mode: add JSON viewer
+            // Sandbox mode: add JSON viewer directly (no ScrollPane wrapper)
             createJsonViewer();
-            layout.bottomBar.getChildren().add(layout.jsonScrollPane);
-            HBox.setHgrow(layout.jsonScrollPane, Priority.ALWAYS);
+            layout.bottomBar.getChildren().add(layout.jsonViewer);
+            HBox.setHgrow(layout.jsonViewer, Priority.ALWAYS);
         } else {
             // Puzzle mode: empty bottom bar (reserved for future features)
-            // You can add puzzle-specific components here later
             Label placeholderLabel = new Label("Puzzle Mode");
             placeholderLabel.getStyleClass().add("bottom-bar-placeholder");
             layout.bottomBar.getChildren().add(placeholderLabel);
@@ -280,16 +282,18 @@ public class SimulationView {
         layout.jsonViewer.setEditable(true);
         layout.jsonViewer.getStyleClass().add("json-viewer");
         layout.jsonViewer.setWrapText(false);
-        layout.jsonViewer.setPrefHeight(170); // Adjusted for taller bottom bar
-        layout.jsonViewer.setMinHeight(170);
-        layout.jsonViewer.setMaxHeight(170);
+        // Remove fixed height constraints - let it fill the bottom bar completely
+        layout.jsonViewer.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        layout.jsonViewer.setMinHeight(Region.USE_PREF_SIZE);
+        layout.jsonViewer.setMaxHeight(Region.USE_COMPUTED_SIZE);
         
-        layout.jsonScrollPane = new ScrollPane(layout.jsonViewer);
-        layout.jsonScrollPane.setFitToWidth(true);
-        layout.jsonScrollPane.setFitToHeight(true);
-        layout.jsonScrollPane.getStyleClass().add("json-scroll-pane");
-        layout.jsonScrollPane.setPrefHeight(180); // Adjusted for taller bottom bar
-        layout.jsonScrollPane.setMaxHeight(180);
+        // No ScrollPane wrapper - TextArea handles its own scrolling
+        // layout.jsonScrollPane = new ScrollPane(layout.jsonViewer);
+        // layout.jsonScrollPane.setFitToWidth(true);
+        // layout.jsonScrollPane.setFitToHeight(true);
+        // layout.jsonScrollPane.getStyleClass().add("json-scroll-pane");
+        // layout.jsonScrollPane.setPrefHeight(170);
+        // layout.jsonScrollPane.setMaxHeight(170);
     }
 
     /**
@@ -460,7 +464,7 @@ public class SimulationView {
 
     /** @return the JSON viewer scroll pane (only available in sandbox mode) */
     public ScrollPane getJsonScrollPane() {
-        return layout.jsonScrollPane;
+        return null; // No longer using ScrollPane wrapper
     }
 
     /** @return the settings/pause menu overlay */
