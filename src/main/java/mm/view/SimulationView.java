@@ -225,15 +225,44 @@ public class SimulationView {
 
         layout.simSpace = new Pane();
         layout.simSpace.getStyleClass().add("sim-space");
+
+        // Add background image directly via Java code
+        try {
+            String backgroundImagePath = getClass().getResource("/pictures/simSpaceBg.png").toExternalForm();
+            layout.simSpace.setStyle(
+                    "-fx-background-image: url('" + backgroundImagePath + "'); " +
+                            "-fx-background-size: cover; " +
+                            "-fx-background-position: center center; " +
+                            "-fx-background-repeat: no-repeat;");
+        } catch (Exception e) {
+            System.out.println("Background image not found: " + e.getMessage());
+            // Fallback to solid color if image not found
+            layout.simSpace.setStyle("-fx-background-color: white;");
+        }
+
         // Ensure simSpace doesn't grow beyond reasonable bounds
         layout.simSpace.setMaxWidth(Region.USE_COMPUTED_SIZE);
         layout.simSpace.setMaxHeight(Region.USE_COMPUTED_SIZE);
 
         layout.bottomBar = new HBox();
         layout.bottomBar.getStyleClass().add("bottom-bar");
-        layout.bottomBar.setPrefHeight(150);
-        layout.bottomBar.setMaxHeight(150);
-        layout.bottomBar.setMinHeight(150);
+
+        // Set background image for bottom bar
+        try {
+            String bottomBarImagePath = getClass().getResource("/pictures/bottombar2.png").toExternalForm();
+            layout.bottomBar.setStyle("-fx-background-color: transparent; " +
+                    "-fx-background-image: url('" + bottomBarImagePath + "'); " +
+                    "-fx-background-repeat: no-repeat; " +
+                    "-fx-background-position: center; " +
+                    "-fx-background-size: cover;");
+            System.out.println("Bottom bar background image loaded successfully: " + bottomBarImagePath);
+        } catch (Exception e) {
+            System.err.println("Warning: Could not load bottom bar background image: " + e.getMessage());
+        }
+
+        layout.bottomBar.setPrefHeight(200);
+        layout.bottomBar.setMaxHeight(200);
+        layout.bottomBar.setMinHeight(200);
     }
 
     /**
@@ -273,6 +302,15 @@ public class SimulationView {
         inventory.inventoryScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         inventory.inventoryScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         inventory.inventoryScrollPane.getStyleClass().add("inventory-scroll-pane");
+
+        // Increase scroll speed for better user experience
+        inventory.inventoryScrollPane.setOnScroll(event -> {
+            double deltaY = event.getDeltaY() * 3; // 3x faster scroll speed
+            double height = inventory.inventoryScrollPane.getContent().getBoundsInLocal().getHeight();
+            double vvalue = inventory.inventoryScrollPane.getVvalue();
+            inventory.inventoryScrollPane.setVvalue(vvalue - deltaY / height);
+            event.consume();
+        });
 
         inventory.inventoryBox.getChildren().add(inventory.inventoryScrollPane);
     }
