@@ -810,4 +810,225 @@ public class SimulationModel {
         
         return json.toString();
     }
+
+    /**
+     * Updates the simulation state from a JSON string.
+     * Parses the JSON and updates both dropped objects and inventory counts.
+     * 
+     * @param jsonString the JSON representation of the simulation state
+     * @return true if update was successful, false if JSON was invalid
+     */
+    public boolean updateFromJson(String jsonString) {
+        try {
+            // Simple JSON parsing - you could use a proper JSON library here
+            return parseAndUpdateSimulation(jsonString);
+        } catch (Exception e) {
+            System.err.println("Failed to parse JSON: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Parses JSON string and updates simulation state.
+     * This is a simplified parser - in production you'd use Jackson or Gson.
+     */
+    private boolean parseAndUpdateSimulation(String jsonString) {
+        try {
+            // Clear current dropped objects
+            gameObjects.droppedObjects.clear();
+            gameObjects.droppedVisualPairs.clear();
+            
+            // Parse dropped objects
+            parseDroppedObjects(jsonString);
+            
+            // Parse inventory objects and update counts
+            parseInventoryObjects(jsonString);
+            
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error parsing JSON: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Parses dropped objects from JSON and adds them to the simulation.
+     */
+    private void parseDroppedObjects(String jsonString) {
+        String droppedSection = extractJsonSection(jsonString, "droppedObjects");
+        if (droppedSection == null) return;
+        
+        String[] objects = splitJsonArray(droppedSection);
+        for (String objStr : objects) {
+            GameObject obj = parseGameObject(objStr);
+            if (obj != null) {
+                gameObjects.droppedObjects.add(obj);
+            }
+        }
+    }
+
+    /**
+     * Parses inventory objects from JSON and updates their counts.
+     */
+    private void parseInventoryObjects(String jsonString) {
+        String inventorySection = extractJsonSection(jsonString, "inventoryObjects");
+        if (inventorySection == null) return;
+        
+        String[] objects = splitJsonArray(inventorySection);
+        for (String objStr : objects) {
+            updateInventoryObjectCount(objStr);
+        }
+    }
+
+    /**
+     * Extracts a section from JSON string (simplified parser).
+     */
+    private String extractJsonSection(String jsonString, String sectionName) {
+        String startPattern = "\"" + sectionName + "\": [";
+        int startIndex = jsonString.indexOf(startPattern);
+        if (startIndex == -1) return null;
+        
+        startIndex += startPattern.length();
+        int bracketCount = 1;
+        int endIndex = startIndex;
+        
+        while (endIndex < jsonString.length() && bracketCount > 0) {
+            char c = jsonString.charAt(endIndex);
+            if (c == '[') bracketCount++;
+            else if (c == ']') bracketCount--;
+            endIndex++;
+        }
+        
+        return jsonString.substring(startIndex, endIndex - 1);
+    }
+
+    /**
+     * Splits JSON array into individual object strings.
+     */
+    private String[] splitJsonArray(String arrayStr) {
+        List<String> objects = new ArrayList<>();
+        int braceCount = 0;
+        int start = 0;
+        
+        for (int i = 0; i < arrayStr.length(); i++) {
+            char c = arrayStr.charAt(i);
+            if (c == '{') braceCount++;
+            else if (c == '}') {
+                braceCount--;
+                if (braceCount == 0) {
+                    objects.add(arrayStr.substring(start, i + 1).trim());
+                    start = i + 2; // Skip comma and whitespace
+                }
+            }
+        }
+        
+        return objects.toArray(new String[0]);
+    }
+
+    /**
+     * Parses a single GameObject from JSON string.
+     */
+    private GameObject parseGameObject(String objStr) {
+        try {
+            String name = extractJsonValue(objStr, "name");
+            String type = extractJsonValue(objStr, "type");
+            
+            float x = Float.parseFloat(extractJsonValue(objStr, "x"));
+            float y = Float.parseFloat(extractJsonValue(objStr, "y"));
+            float angle = Float.parseFloat(extractJsonValue(objStr, "angle"));
+            
+            float width = Float.parseFloat(extractJsonValue(objStr, "width"));
+            float height = Float.parseFloat(extractJsonValue(objStr, "height"));
+            float radius = Float.parseFloat(extractJsonValue(objStr, "radius"));
+            
+            String colour = extractJsonValue(objStr, "colour");
+            String sprite = extractJsonValue(objStr, "sprite");
+            boolean winning = Boolean.parseBoolean(extractJsonValue(objStr, "winning"));
+            
+            // Physics properties
+            float density = Float.parseFloat(extractJsonValue(objStr, "density"));
+            float friction = Float.parseFloat(extractJsonValue(objStr, "friction"));
+            float restitution = Float.parseFloat(extractJsonValue(objStr, "restitution"));
+            String shape = extractJsonValue(objStr, "shape");
+            
+            // Create GameObject
+            GameObject obj = new GameObject(name, type, new Position(x, y), new Size(width, height));
+            obj.getSize().setRadius(radius);
+            obj.setAngle(angle);
+            obj.setColour(colour);
+            obj.setSprite("null".equals(sprite) ? null : sprite);
+            obj.setWinning(winning);
+            
+            // Set physics
+            Physics physics = new Physics(density, friction, restitution, shape);
+            obj.setPhysics(physics);
+            
+            return obj;
+        } catch (Exception e) {
+            System.err.println("Error parsing GameObject: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Updates inventory object count from JSON.
+     */
+    private void updateInventoryObjectCount(String objStr) {
+        try {
+            String name = extractJsonValue(objStr, "name");
+            int count = Integer.parseInt(extractJsonValue(objStr, "count"));
+            
+            for (InventoryObject invObj : gameObjects.inventoryObjects) {
+                if (invObj.getName().equals(name)) {
+                    invObj.setCount(count);
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error updating inventory count: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Extracts a value from JSON string (simplified parser).
+     */
+    private String extractJsonValue(String jsonStr, String key) {
+        String pattern = "\"" + key + "\":";
+        int startIndex = jsonStr.indexOf(pattern);
+        if (startIndex == -1) return "";
+        
+        startIndex += pattern.length();
+        while (startIndex < jsonStr.length() && Character.isWhitespace(jsonStr.charAt(startIndex))) {
+            startIndex++;
+        }
+        
+        if (startIndex >= jsonStr.length()) return "";
+        
+        char firstChar = jsonStr.charAt(startIndex);
+        if (firstChar == '"') {
+            // String value
+            startIndex++;
+            int endIndex = jsonStr.indexOf('"', startIndex);
+            return endIndex != -1 ? jsonStr.substring(startIndex, endIndex) : "";
+        } else {
+            // Number or boolean value
+            int endIndex = startIndex;
+            while (endIndex < jsonStr.length()) {
+                char c = jsonStr.charAt(endIndex);
+                if (c == ',' || c == '}' || c == '\n' || Character.isWhitespace(c)) {
+                    break;
+                }
+                endIndex++;
+            }
+            return jsonStr.substring(startIndex, endIndex).trim();
+        }
+    }
+
+    /**
+     * Triggers a complete simulation refresh from the current model state.
+     */
+    public void refreshSimulationFromModel() {
+        // This will be called by the controller to refresh the visual simulation
+        // after JSON updates
+    }
 }

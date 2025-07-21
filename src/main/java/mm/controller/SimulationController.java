@@ -1,9 +1,12 @@
 package mm.controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
@@ -25,6 +28,7 @@ import mm.view.SimulationView;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
+import javafx.util.Duration;
 
 /**
  * The {@code SimulationController} class coordinates the interaction between
@@ -85,6 +89,10 @@ public class SimulationController {
     private Position dragStartPosition;
     private float dragStartAngle;
 
+    // Add these fields to the controller
+    private boolean isUpdatingFromJson = false;
+    private String lastJsonContent = "";
+
     /**
      * Constructs the SimulationController, sets up the model and view, and wires up
      * event handlers.
@@ -129,6 +137,8 @@ public class SimulationController {
         setupOverlayToggle();
         setupWinNextLevel();
         updateJsonViewer(); // Initialize JSON viewer
+
+        setupJsonListener(); // Add this line
     }
 
     /**
@@ -449,14 +459,61 @@ public class SimulationController {
     }
 
     /**
+     * Sets up real-time JSON monitoring for bidirectional updates.
+     */
+    private void setupJsonListener() {
+        TextArea jsonViewer = view.getJsonViewer();
+        
+        // Add text change listener for real-time updates
+        jsonViewer.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!isUpdatingFromJson && !newValue.equals(lastJsonContent)) {
+                // Debounce rapid changes
+                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(500), e -> {
+                    updateSimulationFromJson(newValue);
+                }));
+                timeline.play();
+            }
+        });
+        
+        // Add key shortcuts for manual updates
+        jsonViewer.setOnKeyPressed(event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.ENTER) {
+                updateSimulationFromJson(jsonViewer.getText());
+                event.consume();
+            }
+        });
+    }
+
+    /**
+     * Updates the simulation from the JSON viewer content.
+     */
+    private void updateSimulationFromJson(String jsonContent) {
+        if (isInteractionAllowed() && model.updateFromJson(jsonContent)) {
+            // Refresh the entire simulation
+            Platform.runLater(() -> {
+                isUpdatingFromJson = true;
+                setupSimulation();
+                refreshInventoryDisplay();
+                lastJsonContent = jsonContent;
+                isUpdatingFromJson = false;
+            });
+        }
+    }
+
+    /**
      * Updates the JSON viewer with the current simulation state.
      * This method is called whenever the simulation state changes.
      */
     private void updateJsonViewer() {
-        Platform.runLater(() -> {
-            String jsonContent = model.generateCurrentStateJson();
-            view.getJsonViewer().setText(jsonContent);
-        });
+        if (!isUpdatingFromJson) {
+            Platform.runLater(() -> {
+                isUpdatingFromJson = true;
+                String jsonContent = model.generateCurrentStateJson();
+                view.getJsonViewer().setText(jsonContent);
+                lastJsonContent = jsonContent;
+                isUpdatingFromJson = false;
+            });
+        }
     }
 
     /**

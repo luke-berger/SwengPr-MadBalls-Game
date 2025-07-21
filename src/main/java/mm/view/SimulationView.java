@@ -250,12 +250,12 @@ public class SimulationView {
      */
     private void createJsonViewer() {
         layout.jsonViewer = new TextArea();
-        layout.jsonViewer.setEditable(false);
+        layout.jsonViewer.setEditable(true);
         layout.jsonViewer.getStyleClass().add("json-viewer");
         layout.jsonViewer.setWrapText(false);
-        layout.jsonViewer.setPrefWidth(300);
-        layout.jsonViewer.setMinWidth(300);
-        layout.jsonViewer.setMaxWidth(300);
+        layout.jsonViewer.setPrefWidth(350); 
+        layout.jsonViewer.setMinWidth(350);
+        layout.jsonViewer.setMaxWidth(350);
         
         layout.jsonScrollPane = new ScrollPane(layout.jsonViewer);
         layout.jsonScrollPane.setFitToWidth(false);
