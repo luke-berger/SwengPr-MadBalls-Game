@@ -241,13 +241,12 @@ public class PhysicsAnimationController extends AnimationTimer {
                     continue;
                 }
 
-                // Apply balloon physics if applicable - reuse the boolean check
                 if (isBalloon) {
-                    float up = -1 / pair.body.getFixtureList().getDensity();
-                    Vec2 boyancy = new Vec2(0f, up);
-                    pair.body.applyForceToCenter(boyancy);
+    
+                    Vec2 buoyancy = new Vec2(0f, -3.8f);
+                    pair.body.applyForceToCenter(buoyancy);
                 }
-
+                
                 // Update visual positions as before
                 if (pair.visual instanceof javafx.scene.shape.Rectangle) {
                     javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) pair.visual;
@@ -259,6 +258,13 @@ public class PhysicsAnimationController extends AnimationTimer {
                     circ.setTranslateX(pos.x * SCALE);
                     circ.setTranslateY(pos.y * SCALE);
                     circ.setRotate(angle);
+                } else if (pair.visual instanceof javafx.scene.shape.Polygon) {
+                    // Handle bucket (polygon) positioning - center like rectangles
+                    javafx.scene.shape.Polygon polygon = (javafx.scene.shape.Polygon) pair.visual;
+                    javafx.geometry.Bounds bounds = polygon.getBoundsInLocal();
+                    polygon.setTranslateX(pos.x * SCALE - bounds.getWidth() / 2);
+                    polygon.setTranslateY(pos.y * SCALE - bounds.getHeight() / 2);
+                    polygon.setRotate(angle);
                 }
             }
         }
