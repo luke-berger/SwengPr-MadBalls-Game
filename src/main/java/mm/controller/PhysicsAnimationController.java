@@ -259,6 +259,13 @@ public class PhysicsAnimationController extends AnimationTimer {
                     circ.setTranslateX(pos.x * SCALE);
                     circ.setTranslateY(pos.y * SCALE);
                     circ.setRotate(angle);
+                } else if (pair.visual instanceof javafx.scene.shape.Polygon) {
+                    // Handle bucket (polygon) positioning - center like rectangles
+                    javafx.scene.shape.Polygon polygon = (javafx.scene.shape.Polygon) pair.visual;
+                    javafx.geometry.Bounds bounds = polygon.getBoundsInLocal();
+                    polygon.setTranslateX(pos.x * SCALE - bounds.getWidth() / 2);
+                    polygon.setTranslateY(pos.y * SCALE - bounds.getHeight() / 2);
+                    polygon.setRotate(angle);
                 }
             }
         }
