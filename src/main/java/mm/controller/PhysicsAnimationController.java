@@ -240,14 +240,7 @@ public class PhysicsAnimationController extends AnimationTimer {
                     }
                     continue;
                 }
-
-                // Apply balloon physics if applicable - reuse the boolean check
-                if (isBalloon) {
-                    float up = -1 / pair.body.getFixtureList().getDensity();
-                    Vec2 boyancy = new Vec2(0f, up);
-                    pair.body.applyForceToCenter(boyancy);
-                }
-
+                
                 // Update visual positions as before
                 if (pair.visual instanceof javafx.scene.shape.Rectangle) {
                     javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) pair.visual;
