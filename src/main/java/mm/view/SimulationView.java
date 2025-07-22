@@ -220,7 +220,7 @@ public class SimulationView {
 
         initializeMainComponents(isPuzzleMode); // Pass isPuzzleMode parameter
         createSideBarWithMenuButtons(isPuzzleMode);
-        setupMainLayout(isPuzzleMode); // Pass isPuzzleMode parameter
+        setupMainLayout(); // Pass isPuzzleMode parameter
         createOverlays(primaryStage, isPuzzleMode, atPuzzlesEnd);
         setupRootStackAndScene(primaryStage);
     }
@@ -391,7 +391,7 @@ public class SimulationView {
      * 
      * @param isPuzzleMode true if in puzzle mode, false for sandbox mode
      */
-    private void setupMainLayout(boolean isPuzzleMode) {
+    private void setupMainLayout() {
         layout.mainPane.setCenter(layout.simSpace);
         layout.mainPane.setRight(layout.sideBar);
 
