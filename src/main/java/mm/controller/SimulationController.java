@@ -797,10 +797,17 @@ public class SimulationController {
                         new FileChooser.ExtensionFilter("JSON Files", "*.json"));
                 File file = fileChooser.showOpenDialog(primaryStage);
                 if (file != null) {
+                    // Clear everything before importing new level
+                    clearSimulationForImport();
+                    
+                    // Set new level path
                     model.setLevelPath("/level/" + file.getName());
+                    
+                    // Setup simulation with imported level
+                    setupSimulation();
+                    setupInventory(true); // Reload data when importing new level
+                    updateJsonViewer(); // Update JSON viewer after import
                 }
-                setupSimulation();
-                setupInventory(true); // Reload data when importing new level
             });
         }
 
@@ -812,6 +819,29 @@ public class SimulationController {
                 }
             });
         }
+    }
+
+    /**
+     * Clears all simulation state before importing a new level.
+     * This ensures that only objects from the imported level are present.
+     */
+    private void clearSimulationForImport() {
+        // Clear undo/redo history
+        model.getUndoRedoManager().clear();
+        
+        // Clear all dropped objects and their visual pairs
+        model.setDroppedObjects(new ArrayList<>());
+        model.setDroppedVisualPairs(new ArrayList<>());
+        
+        // Clear the mapping between GameObjects and PhysicsVisualPairs
+        gameObjectToPairMap.clear();
+        
+        // Re-enable inventory items (in case they were disabled)
+        setInventoryItemsDisabled(false);
+        
+        // Clear the simulation space visually
+        Pane simSpace = view.getSimSpace();
+        simSpace.getChildren().clear();
     }
 
     /**

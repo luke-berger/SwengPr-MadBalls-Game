@@ -119,14 +119,14 @@ public class FxToGameObjectController {
      * Extracts shape-specific properties (position, size) and returns the shape type.
      * <p>
      * This method acts as a dispatcher, determining the type of JavaFX Shape and
-     * delegating to the appropriate handler method. It supports Rectangle and Circle
-     * shapes, throwing an exception for unsupported shape types.
+     * delegating to the appropriate handler method. It supports Rectangle, Circle,
+     * and Polygon shapes, throwing an exception for unsupported shape types.
      * </p>
      * 
      * @param shape The JavaFX Shape to analyze
      * @param position The Position object to populate with extracted coordinates
      * @param size The Size object to populate with extracted dimensions
-     * @return A string representation of the shape type ("Rectangle" or "Circle")
+     * @return A string representation of the shape type ("Rectangle", "Circle", or "Bucket")
      * @throws IllegalArgumentException if the shape type is not supported
      */
     private static String extractShapeProperties(Shape shape, Position position, Size size) {
@@ -134,6 +134,8 @@ public class FxToGameObjectController {
             return handleRectangle((Rectangle) shape, position, size);
         } else if (shape instanceof Circle) {
             return handleCircle((Circle) shape, position, size);
+        } else if (shape instanceof Polygon) {
+            return handlePolygon((Polygon) shape, position, size);
         } else {
             throw new IllegalArgumentException("Shape-Typ nicht unterstützt: " + shape.getClass());
         }
@@ -181,6 +183,32 @@ public class FxToGameObjectController {
         size.setWidth(0);
         size.setRadius((float) circle.getRadius());
         return "Circle";
+    }
+
+    /**
+     * Handles polygon shape properties extraction.
+     * <p>
+     * Extracts position and size properties specific to Polygon shapes (buckets).
+     * The position is taken from the translation coordinates (translateX/Y),
+     * and the size is calculated from the polygon's bounding box dimensions.
+     * </p>
+     * 
+     * @param polygon The Polygon shape to extract properties from
+     * @param position The Position object to populate with x,y coordinates
+     * @param size The Size object to populate with width and height
+     * @return The string "Bucket" indicating the shape type
+     */
+    private static String handlePolygon(Polygon polygon, Position position, Size size) {
+        position.setX((float) polygon.getTranslateX());
+        position.setY((float) polygon.getTranslateY());
+        
+        // Calculate size from polygon bounds
+        javafx.geometry.Bounds bounds = polygon.getBoundsInLocal();
+        size.setWidth((float) bounds.getWidth());
+        size.setHeight((float) bounds.getHeight());
+        size.setRadius(0); // Polygons don't have a radius
+        
+        return "Bucket";
     }
 
     /**

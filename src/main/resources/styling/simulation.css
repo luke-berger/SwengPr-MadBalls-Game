@@ -399,19 +399,112 @@
   -fx-min-height: 0;
 }
 
+/* JSON Viewer ScrollPane styling - same as inventory */
+.json-viewer .scroll-pane {
+  background-color: transparent;
+  -fx-background-color: transparent;
+  border-color: transparent;
+  -fx-border-color: transparent;
+  border-width: 0;
+  -fx-border-width: 0;
+  border-radius: 0;
+  -fx-background-radius: 0;
+  -fx-border-radius: 0;
+}
+
+.json-viewer .scroll-pane .viewport {
+  background-color: transparent;
+  -fx-background-color: transparent;
+}
+
+.json-viewer .scroll-pane .corner {
+  background-color: transparent;
+  -fx-background-color: transparent;
+}
+
+/* JSON Viewer scrollbar styling - same as inventory */
+.json-viewer .scroll-bar:vertical {
+  background-color: rgba(14, 23, 34, 0.5);
+  -fx-background-color: rgba(14, 23, 34, 0.5);
+  border-radius: 0;
+  -fx-background-radius: 0;
+  border-color: transparent;
+  -fx-border-color: transparent;
+  border-width: 0;
+  -fx-border-width: 0;
+  -fx-pref-width: 8;
+}
+
+.json-viewer .scroll-bar:vertical .track {
+  background-color: rgba(27, 39, 54, 0.3);
+  -fx-background-color: rgba(27, 39, 54, 0.3);
+  border-radius: 4px;
+  -fx-background-radius: 4;
+  border-color: transparent;
+  -fx-border-color: transparent;
+  border-width: 0;
+  -fx-border-width: 0;
+}
+
+.json-viewer .scroll-bar:vertical .thumb {
+  background-color: rgba(58, 75, 92, 0.8);
+  -fx-background-color: rgba(58, 75, 92, 0.8);
+  border-radius: 4px;
+  -fx-background-radius: 4;
+  border-color: transparent;
+  -fx-border-color: transparent;
+  border-width: 0;
+  -fx-border-width: 0;
+}
+
+.json-viewer .scroll-bar:vertical .thumb:hover {
+  background-color: rgba(78, 95, 112, 0.9);
+  -fx-background-color: rgba(78, 95, 112, 0.9);
+}
+
+.json-viewer .scroll-bar:vertical .thumb:pressed {
+  background-color: rgba(98, 115, 132, 1);
+  -fx-background-color: rgba(98, 115, 132, 1);
+}
+
+.json-viewer .scroll-bar:horizontal {
+  background-color: transparent;
+  -fx-background-color: transparent;
+  height: 0;
+  -fx-pref-height: 0;
+  max-height: 0;
+  -fx-max-height: 0;
+  min-height: 0;
+  -fx-min-height: 0;
+}
+
 .json-viewer {
   -fx-font-family: "Courier New", monospace;
-  -fx-font-size: 11px;
-  -fx-background-color: #f8f8f8;
-  -fx-border-color: #cccccc;
-  -fx-border-width: 1px;
-  -fx-text-fill: #000000;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+  -fx-background-color: #1b2736;
+  -fx-border-color: #0e1722;
+  -fx-border-width: 2px;
+  -fx-border-radius: 8;
+  -fx-background-radius: 8;
+  -fx-text-fill: #ffffff;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4, 0, 0, 2);
+}
+
+/* Style the internal content area of the JSON viewer */
+.json-viewer .content {
+  -fx-background-color: #1b2736;
+}
+
+.json-viewer .viewport {
+  -fx-background-color: #1b2736;
 }
 
 .json-viewer:focused {
   -fx-border-color: #4a90e2;
   -fx-border-width: 2px;
-  -fx-background-color: #ffffff;
+  -fx-background-color: #1b2736;
+  -fx-text-fill: #ffffff;
 }
 
 /* Add visual indicator for JSON editing mode */
@@ -443,18 +536,31 @@
 /* JSON viewer in bottom bar - adjusted styling */
 .bottom-bar .json-viewer {
   -fx-font-family: "Courier New", monospace;
-  -fx-font-size: 10px;
-  -fx-background-color: #f8f8f8;
-  -fx-border-color: #cccccc;
-  -fx-border-width: 1px;
-  -fx-text-fill: #000000;
-  -fx-background-radius: 4;
-  -fx-border-radius: 4;
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+  -fx-background-color: #1b2736;
+  -fx-border-color: #0e1722;
+  -fx-border-width: 2px;
+  -fx-text-fill: #ffffff;
+  -fx-background-radius: 8;
+  -fx-border-radius: 8;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 4, 0, 0, 2);
+}
+
+/* Style the internal content area of the bottom bar JSON viewer */
+.bottom-bar .json-viewer .content {
+  -fx-background-color: #1b2736;
+}
+
+.bottom-bar .json-viewer .viewport {
+  -fx-background-color: #1b2736;
 }
 
 .bottom-bar .json-viewer:focused {
   -fx-border-color: #4a90e2;
   -fx-border-width: 2px;
+  -fx-background-color: #1b2736;
+  -fx-text-fill: #ffffff;
 }
 
 .bottom-bar .json-scroll-pane {
