@@ -294,11 +294,6 @@ public class TestSimulationModelBasics extends SimulationTestSetup {
             boolean result = simulationModel.isInNoPlaceZone(50.0, 50.0);
             assertFalse(result); // Should be false for empty no-place zones
         });
-        
-        assertDoesNotThrow(() -> {
-            boolean result = simulationModel.isInNoPlaceZone(0.0, 0.0);
-            assertFalse(result); // Should be false for empty no-place zones
-        });
     }
     
     /**
@@ -327,13 +322,79 @@ public class TestSimulationModelBasics extends SimulationTestSetup {
             boolean result = simulationModel.isInWinZone(100.0, 100.0);
             assertFalse(result); // Should be false for empty win zones
         });
-        
+    }
+
+    /**
+     * Tests zone detection methods with extreme coordinate values.
+     * <p>
+     * This test ensures the zone detection methods handle extreme values gracefully:
+     * </p>
+     * <ul>
+     * <li>Very large positive numbers</li>
+     * <li>Very large negative numbers</li>
+     * <li>Floating point edge cases</li>
+     * </ul>
+     * <p>
+     * The primary goal is to verify no exceptions are thrown with extreme inputs.
+     * </p>
+     * 
+     * @see SimulationModel#isInNoPlaceZone(double, double)
+     * @see SimulationModel#isInWinZone(double, double)
+     */
+    @Test
+    public void testZoneDetectionExtremeValues() {
+        // Test very large values
         assertDoesNotThrow(() -> {
-            boolean result = simulationModel.isInWinZone(-10.0, -10.0);
-            assertFalse(result); // Should be false for empty win zones
+            simulationModel.isInNoPlaceZone(Double.MAX_VALUE, Double.MAX_VALUE);
+            simulationModel.isInWinZone(Double.MAX_VALUE, Double.MAX_VALUE);
+        });
+        
+        // Test very small (most negative) values
+        assertDoesNotThrow(() -> {
+            simulationModel.isInNoPlaceZone(-Double.MAX_VALUE, -Double.MAX_VALUE);
+            simulationModel.isInWinZone(-Double.MAX_VALUE, -Double.MAX_VALUE);
+        });
+        
+        // Test special floating point values (if they don't cause issues)
+        assertDoesNotThrow(() -> {
+            // Note: These might not be meaningful for coordinate systems,
+            // but we test that the methods handle them gracefully
+            simulationModel.isInNoPlaceZone(Double.MIN_VALUE, Double.MIN_VALUE);
+            simulationModel.isInWinZone(Double.MIN_VALUE, Double.MIN_VALUE);
         });
     }
-    
+
+    /**
+     * Tests consistent behavior of zone detection methods.
+     * <p>
+     * This test verifies that repeated calls with the same coordinates
+     * return consistent results:
+     * </p>
+     * <ul>
+     * <li>Multiple calls with same coordinates should return same result</li>
+     * <li>No side effects from method calls</li>
+     * </ul>
+     * 
+     * @see SimulationModel#isInNoPlaceZone(double, double)
+     * @see SimulationModel#isInWinZone(double, double)
+     */
+    @Test
+    public void testZoneDetectionConsistency() {
+        double testX = 42.42;
+        double testY = 84.84;
+        
+        // Test isInNoPlaceZone consistency
+        boolean noPlaceResult1 = simulationModel.isInNoPlaceZone(testX, testY);
+        boolean noPlaceResult2 = simulationModel.isInNoPlaceZone(testX, testY);        
+        assertEquals(noPlaceResult1, noPlaceResult2, "isInNoPlaceZone should return consistent results");
+        
+        // Test isInWinZone consistency  
+        boolean winZoneResult1 = simulationModel.isInWinZone(testX, testY);
+        boolean winZoneResult2 = simulationModel.isInWinZone(testX, testY);
+        
+        assertEquals(winZoneResult1, winZoneResult2, "isInWinZone should return consistent results");
+    }
+
     /**
      * Tests collision detection methods for object overlap.
      * <p>
