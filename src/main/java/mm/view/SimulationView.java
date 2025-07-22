@@ -95,10 +95,10 @@ public class SimulationView {
 
         /** Root stack pane that layers the main content and overlays */
         public StackPane rootStack;
-        
+
         /** JSON viewer area showing real-time simulation state */
         public TextArea jsonViewer;
-        
+
         /** ScrollPane containing the JSON viewer */
         public ScrollPane jsonScrollPane;
         
@@ -230,7 +230,8 @@ public class SimulationView {
      * Creates the main pane, simulation space, and bottom bar with proper styling
      * and size constraints.
      * 
-     * @param isPuzzleMode true if in puzzle mode (no JSON viewer), false for sandbox mode
+     * @param isPuzzleMode true if in puzzle mode (no JSON viewer), false for
+     *                     sandbox mode
      */
     private void initializeMainComponents(boolean isPuzzleMode) {
         layout.mainPane = new BorderPane();
@@ -269,6 +270,7 @@ public class SimulationView {
      * @param isPuzzleMode true if in puzzle mode, false for sandbox mode
      */
     private void createBottomBar(boolean isPuzzleMode) {
+
     layout.bottomBar = new HBox();
     layout.bottomBar.getStyleClass().add("bottom-bar");
     
@@ -293,7 +295,7 @@ public class SimulationView {
     } else {
         // Puzzle mode: set background image for bottom bar
         try {
-            String bottomBarImagePath = getClass().getResource("/pictures/bottombar2.png").toExternalForm();
+            String bottomBarImagePath = getClass().getResource("/pictures/bottombar.png").toExternalForm();
             layout.bottomBar.setStyle("-fx-background-color: transparent; " +
                     "-fx-background-image: url('" + bottomBarImagePath + "'); " +
                     "-fx-background-repeat: no-repeat; " +
@@ -304,9 +306,9 @@ public class SimulationView {
             System.err.println("Warning: Could not load bottom bar background image: " + e.getMessage());
         }
     }
-}
 
     private void createJsonViewer() {
+      
     layout.jsonViewer = new TextArea();
     layout.jsonViewer.setEditable(true);
     layout.jsonViewer.getStyleClass().add("json-viewer");
@@ -390,7 +392,7 @@ public class SimulationView {
     private void setupMainLayout(boolean isPuzzleMode) {
         layout.mainPane.setCenter(layout.simSpace);
         layout.mainPane.setRight(layout.sideBar);
-        
+
         // Always add bottom bar (content varies by mode)
         layout.mainPane.setBottom(layout.bottomBar);
     }
@@ -487,7 +489,7 @@ public class SimulationView {
     public VBox getSideBar() {
         return layout.sideBar;
     }
-    
+
     /** @return the bottom bar (only available in sandbox mode) */
     public HBox getBottomBar() {
         return layout.bottomBar;
