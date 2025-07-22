@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
+import mm.Generated;
 import mm.model.PhysicsVisualPair;
 import mm.model.SimulationModel;
 
@@ -83,6 +84,7 @@ public class PhysicsAnimationController extends AnimationTimer {
      * @param model the SimulationModel to update when objects are culled
      * @param simSpace the JavaFX Pane representing the simulation space
      */
+    @Generated
     public PhysicsAnimationController(World world, List<PhysicsVisualPair> pairs, SimulationModel model, Pane simSpace) {
         this.world = world;
         this.pairs = pairs;
@@ -121,6 +123,7 @@ public class PhysicsAnimationController extends AnimationTimer {
      * 
      * @param simSpace the JavaFX Pane representing the simulation space
      */
+    @Generated
     public void setSimSpace(Pane simSpace) {
         // Get actual simulation space bounds
         this.simSpaceWidth = simSpace.getWidth();
@@ -136,6 +139,7 @@ public class PhysicsAnimationController extends AnimationTimer {
     /**
      * Starts the animation timer and marks it as running.
      */
+    @Generated
     @Override
     public void start(){
         running = true;
@@ -203,7 +207,7 @@ public class PhysicsAnimationController extends AnimationTimer {
         visualsToRemove.clear();
 
         for (PhysicsVisualPair pair : pairs) {
-            if (pair.visual != null && pair.body != null) {
+            if (pair.body != null) {
                 float SCALE = 50.0f;
                 Vec2 pos = pair.body.getPosition();
                 double angle = Math.toDegrees(pair.body.getAngle());
@@ -262,25 +266,27 @@ public class PhysicsAnimationController extends AnimationTimer {
                     Vec2 buoyancy = new Vec2(0f, -3.8f);
                     pair.body.applyForceToCenter(buoyancy);
                 }
-                
-                // Update visual positions as before
-                if (pair.visual instanceof javafx.scene.shape.Rectangle) {
-                    javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) pair.visual;
-                    rect.setTranslateX(pos.x * SCALE - rect.getWidth() / 2);
-                    rect.setTranslateY(pos.y * SCALE - rect.getHeight() / 2);
-                    rect.setRotate(angle);
-                } else if (pair.visual instanceof javafx.scene.shape.Circle) {
-                    javafx.scene.shape.Circle circ = (javafx.scene.shape.Circle) pair.visual;
-                    circ.setTranslateX(pos.x * SCALE);
-                    circ.setTranslateY(pos.y * SCALE);
-                    circ.setRotate(angle);
-                } else if (pair.visual instanceof javafx.scene.shape.Polygon) {
+
+                if (pair.visual != null) {
+                    // Update visual positions as before
+                    if (pair.visual instanceof javafx.scene.shape.Rectangle) {
+                        javafx.scene.shape.Rectangle rect = (javafx.scene.shape.Rectangle) pair.visual;
+                        rect.setTranslateX(pos.x * SCALE - rect.getWidth() / 2);
+                        rect.setTranslateY(pos.y * SCALE - rect.getHeight() / 2);
+                        rect.setRotate(angle);
+                    } else if (pair.visual instanceof javafx.scene.shape.Circle) {
+                        javafx.scene.shape.Circle circ = (javafx.scene.shape.Circle) pair.visual;
+                        circ.setTranslateX(pos.x * SCALE);
+                        circ.setTranslateY(pos.y * SCALE);
+                        circ.setRotate(angle);
+                    } else if (pair.visual instanceof javafx.scene.shape.Polygon) {
                     // Handle bucket (polygon) positioning - center like rectangles
                     javafx.scene.shape.Polygon polygon = (javafx.scene.shape.Polygon) pair.visual;
                     javafx.geometry.Bounds bounds = polygon.getBoundsInLocal();
                     polygon.setTranslateX(pos.x * SCALE - bounds.getWidth() / 2);
                     polygon.setTranslateY(pos.y * SCALE - bounds.getHeight() / 2);
                     polygon.setRotate(angle);
+                    }
                 }
             }
         }
@@ -324,6 +330,7 @@ public class PhysicsAnimationController extends AnimationTimer {
     /**
      * Resets the timer and restores all culled objects to their original positions.
      */
+    @Generated
     public void reset() {
         lastTime = 0;
         accumulator = 0.0f; // Reset physics accumulator
@@ -403,6 +410,7 @@ public class PhysicsAnimationController extends AnimationTimer {
         return running;
     }
 
+    @Generated
     @Override
     public void stop() {
         running = false;
