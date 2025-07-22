@@ -434,6 +434,8 @@ public class SimulationView {
         layout.scene = new Scene(layout.rootStack, primaryStage.getWidth(), primaryStage.getHeight());
         layout.scene.getStylesheets().add(
                 getClass().getResource("/styling/simulation.css").toExternalForm());
+        layout.scene.getStylesheets().add(
+                getClass().getResource("/styling/jsonview.css").toExternalForm());
 
         // Subtle resize trick to fix framebuffer issues on Linux
         // Automatically triggers a minimal window resize after a short delay
