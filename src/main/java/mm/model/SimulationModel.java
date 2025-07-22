@@ -765,9 +765,19 @@ public class SimulationModel {
     }
     
     private void updateInventoryFromState(List<InventoryObject> newInventoryObjects) {
+        // Create a set of names from new inventory for quick lookup
+        java.util.Set<String> newInventoryNames = newInventoryObjects.stream()
+                .map(InventoryObject::getName)
+                .collect(java.util.stream.Collectors.toSet());
+        
+        // Remove items that are not in the new inventory (deletion)
+        gameObjects.inventoryObjects.removeIf(existing -> !newInventoryNames.contains(existing.getName()));
+        
+        // Update existing items and add new ones
         for (InventoryObject newObj : newInventoryObjects) {
             InventoryObject existing = findInventoryObjectByName(newObj.getName());
             if (existing != null) {
+                // Update existing item
                 existing.setCount(newObj.getCount());
                 existing.setAngle(newObj.getAngle());
                 existing.setPhysics(newObj.getPhysics());
@@ -775,6 +785,14 @@ public class SimulationModel {
                 existing.setSprite(newObj.getSprite());
                 existing.setWinning(newObj.isWinning());
                 existing.setColour(newObj.getColour());
+                
+                // Remove item if count is 0 or negative
+                if (existing.getCount() <= 0) {
+                    gameObjects.inventoryObjects.remove(existing);
+                }
+            } else if (newObj.getCount() > 0) {
+                // Add new item only if count is positive
+                gameObjects.inventoryObjects.add(newObj);
             }
         }
     }
