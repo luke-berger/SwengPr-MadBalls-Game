@@ -415,8 +415,8 @@ public class TitleScreenView {
 
         levelCards.levelCard1 = createLevelCard("Level 1 - LoopHole", "Difficulty: Easy",
                 "/pictures/level1Preview.png");
-        levelCards.levelCard2 = createLevelCard("Level 2 - ", "Difficulty: Medium",
-                "/pictures/level1Preview.png");
+        levelCards.levelCard2 = createLevelCard("Level 2 - Chain Reaction", "Difficulty: Medium",
+                "/pictures/level2Preview.png");
         levelCards.levelCard3 = createLevelCard("Level 3 - Precise Interplay", "Difficulty: Hard",
                 "/pictures/level3Preview.png");
 
