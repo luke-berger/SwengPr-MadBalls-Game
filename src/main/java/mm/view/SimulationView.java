@@ -101,6 +101,9 @@ public class SimulationView {
 
         /** ScrollPane containing the JSON viewer */
         public ScrollPane jsonScrollPane;
+        
+        /** Status label for JSON validation feedback */
+        public Label jsonStatusLabel;
     }
 
     /**
@@ -267,47 +270,60 @@ public class SimulationView {
      * @param isPuzzleMode true if in puzzle mode, false for sandbox mode
      */
     private void createBottomBar(boolean isPuzzleMode) {
-        layout.bottomBar = new HBox();
-        layout.bottomBar.getStyleClass().add("bottom-bar");
 
-        layout.bottomBar.setPrefHeight(200);
-        layout.bottomBar.setMaxHeight(200);
-        layout.bottomBar.setMinHeight(200);
-        // Add padding inside the bottom bar
-        layout.bottomBar.setSpacing(10);
-        layout.bottomBar.setStyle("-fx-padding: 10;");
-
-        if (!isPuzzleMode) {
-            // Sandbox mode: add JSON viewer directly (no ScrollPane wrapper)
-            createJsonViewer();
-            layout.bottomBar.getChildren().add(layout.jsonViewer);
-            HBox.setHgrow(layout.jsonViewer, Priority.ALWAYS);
-        } else {
-            // Puzzle mode: set background image for bottom bar
-            try {
-                String bottomBarImagePath = getClass().getResource("/pictures/bottombar.png").toExternalForm();
-                layout.bottomBar.setStyle("-fx-background-color: transparent; " +
-                        "-fx-background-image: url('" + bottomBarImagePath + "'); " +
-                        "-fx-background-repeat: no-repeat; " +
-                        "-fx-background-position: center; " +
-                        "-fx-background-size: cover;");
-                System.out.println("Bottom bar background image loaded successfully: " + bottomBarImagePath);
-            } catch (Exception e) {
-                System.err.println("Warning: Could not load bottom bar background image: " + e.getMessage());
-            }
+    layout.bottomBar = new HBox();
+    layout.bottomBar.getStyleClass().add("bottom-bar");
+    
+    layout.bottomBar.setPrefHeight(200);
+    layout.bottomBar.setMaxHeight(200);
+    layout.bottomBar.setMinHeight(200);
+    // Add padding inside the bottom bar
+    layout.bottomBar.setSpacing(10);
+    layout.bottomBar.setStyle("-fx-padding: 10;");
+    
+    if (!isPuzzleMode) {
+        // Sandbox mode: add JSON viewer with status label
+        createJsonViewer();
+        
+        // Create container for JSON viewer and status label
+        VBox jsonContainer = new VBox(5); // 5px spacing
+        jsonContainer.getChildren().addAll(layout.jsonViewer, layout.jsonStatusLabel);
+        VBox.setVgrow(layout.jsonViewer, Priority.ALWAYS); // JSON viewer takes most space
+        
+        layout.bottomBar.getChildren().add(jsonContainer);
+        HBox.setHgrow(jsonContainer, Priority.ALWAYS);
+    } else {
+        // Puzzle mode: set background image for bottom bar
+        try {
+            String bottomBarImagePath = getClass().getResource("/pictures/bottombar.png").toExternalForm();
+            layout.bottomBar.setStyle("-fx-background-color: transparent; " +
+                    "-fx-background-image: url('" + bottomBarImagePath + "'); " +
+                    "-fx-background-repeat: no-repeat; " +
+                    "-fx-background-position: center; " +
+                    "-fx-background-size: cover;");
+            System.out.println("Bottom bar background image loaded successfully: " + bottomBarImagePath);
+        } catch (Exception e) {
+            System.err.println("Warning: Could not load bottom bar background image: " + e.getMessage());
         }
     }
 
     private void createJsonViewer() {
-        layout.jsonViewer = new TextArea();
-        layout.jsonViewer.setEditable(true);
-        layout.jsonViewer.getStyleClass().add("json-viewer");
-        layout.jsonViewer.setWrapText(false);
-        // Remove fixed height constraints - let it fill the bottom bar completely
-        layout.jsonViewer.setPrefHeight(Region.USE_COMPUTED_SIZE);
-        layout.jsonViewer.setMinHeight(Region.USE_PREF_SIZE);
-        layout.jsonViewer.setMaxHeight(Region.USE_COMPUTED_SIZE);
-    }
+      
+    layout.jsonViewer = new TextArea();
+    layout.jsonViewer.setEditable(true);
+    layout.jsonViewer.getStyleClass().add("json-viewer");
+    layout.jsonViewer.setWrapText(false);
+    // Remove fixed height constraints - let it fill the bottom bar completely
+    layout.jsonViewer.setPrefHeight(Region.USE_COMPUTED_SIZE);
+    layout.jsonViewer.setMinHeight(Region.USE_PREF_SIZE);
+    layout.jsonViewer.setMaxHeight(Region.USE_COMPUTED_SIZE);
+    
+    // Create status label for JSON validation feedback
+    layout.jsonStatusLabel = new Label("");
+    layout.jsonStatusLabel.getStyleClass().add("json-status-label");
+    layout.jsonStatusLabel.setWrapText(true);
+    layout.jsonStatusLabel.setVisible(false); // Initially hidden
+}
 
     /**
      * Creates the sidebar with inventory and control buttons.
@@ -482,6 +498,11 @@ public class SimulationView {
     /** @return the JSON viewer text area (only available in sandbox mode) */
     public TextArea getJsonViewer() {
         return layout.jsonViewer;
+    }
+    
+    /** @return the JSON status label (only available in sandbox mode) */
+    public Label getJsonStatusLabel() {
+        return layout.jsonStatusLabel;
     }
 
     /** @return the JSON viewer scroll pane (only available in sandbox mode) */
