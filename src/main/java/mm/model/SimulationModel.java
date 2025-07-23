@@ -702,4 +702,35 @@ public class SimulationModel {
             }
         }
     }
+
+    /**
+     * Refreshes the simulation using the current model state.
+     * Unlike setupSimulation(), this doesn't reload from file and preserves modifications.
+     */
+    public void refreshSimulationFromModel() {
+        // Recreate physics world
+        physics.world = new World(new Vec2(0.0f, 9.8f));
+        physics.pairs = new ArrayList<>();
+        physics.geometryPairs = new ArrayList<>();
+        
+        // Keep existing dropped objects but recreate their physics representations
+        for (GameObject obj : gameObjects.droppedObjects) {
+            PhysicsVisualPair pair = GameObjectController.convert(obj, physics.world);
+            addPhysicsVisualPair(pair);
+            
+            // Add to visual pairs if not a special zone
+            if (!obj.getName().equals("noPlaceZone") && !obj.getName().equals("winZone")) {
+                gameObjects.droppedVisualPairs.add(pair);
+            }
+            
+            // Track special zones
+            if (obj.getName().equals("noPlaceZone")) {
+                gameObjects.noPlaceZones.add(pair);
+            }
+        }
+        
+        // Initialize timer without simSpace - will be connected by controller later
+        physics.timer = new PhysicsAnimationController(physics.world, physics.pairs, this);
+        contactEventService.setupContactListener();
+    }
 }

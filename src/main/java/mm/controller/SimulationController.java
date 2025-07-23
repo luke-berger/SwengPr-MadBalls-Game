@@ -303,11 +303,33 @@ public class SimulationController {
         if (jsonViewer != null && statusLabel != null) {
             // Create callback for when simulation needs to be refreshed
             Runnable onSimulationUpdate = () -> {
-                setupSimulation();
+                // Use the new method instead of setupSimulation()
+                model.refreshSimulationFromModel();
+                connectSimulationToView(); // Add a method to reconnect the view
                 inventoryManager.refreshInventoryDisplay();
             };
 
             jsonViewController = new JsonViewController(model, jsonViewer, statusLabel, onSimulationUpdate);
+        }
+    }
+
+    /**
+     * Connects the simulation to the view after refreshing.
+     */
+    private void connectSimulationToView() {
+        Pane simSpace = view.getSimSpace();
+        simSpace.getChildren().clear();
+        
+        model.connectToView(simSpace);
+        
+        // Process all physics-visual pairs
+        List<GameObject> dropped = model.getDroppedObjects();
+        List<PhysicsVisualPair> pairs = model.getPairs();
+
+        for (PhysicsVisualPair pair : pairs) {
+            if (pair.visual != null) {
+                processPhysicsVisualPair(pair, dropped, simSpace);
+            }
         }
     }
 
