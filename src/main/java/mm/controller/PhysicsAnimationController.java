@@ -37,17 +37,13 @@ import java.util.List;
  * </pre>
  */
 public class PhysicsAnimationController extends AnimationTimer {
-    // Core simulation fields
-    private long lastTime = 0;
+    // Core simulation components
     private final World world;
     private final List<PhysicsVisualPair> pairs;
     private final SimulationModel model;
-    private boolean running = false;
-    private float accumulator = 0.0f;
     
-    // Simulation space dimensions
-    private double simSpaceWidth;
-    private double simSpaceHeight;
+    // State management
+    private final SimulationStateManager stateManager;
     
     // Helper classes following MVC pattern
     private final PhysicsPerformanceMonitor performanceMonitor;
@@ -73,15 +69,11 @@ public class PhysicsAnimationController extends AnimationTimer {
         this.cullingManager = new ObjectCullingController(model);
         this.visualHandler = new VisualUpdateController();
         
-        // Get actual simulation space bounds
-        this.simSpaceWidth = simSpace.getWidth();
-        this.simSpaceHeight = simSpace.getHeight();
+        // Initialize unified state manager
+        this.stateManager = new SimulationStateManager();
         
-        // Listen for size changes
-        simSpace.widthProperty().addListener((obs, old, newVal) -> 
-            this.simSpaceWidth = newVal.doubleValue());
-        simSpace.heightProperty().addListener((obs, old, newVal) -> 
-            this.simSpaceHeight = newVal.doubleValue());
+        // Setup space tracking
+        this.stateManager.setupSpaceTracking(simSpace);
     }
 
     /**
@@ -101,9 +93,8 @@ public class PhysicsAnimationController extends AnimationTimer {
         this.cullingManager = new ObjectCullingController(model);
         this.visualHandler = new VisualUpdateController();
         
-        // Default dimensions - will be updated when simSpace is set
-        this.simSpaceWidth = 800.0;
-        this.simSpaceHeight = 600.0;
+        // Initialize unified state manager with default dimensions
+        this.stateManager = new SimulationStateManager();
     }
 
     /**
@@ -113,15 +104,7 @@ public class PhysicsAnimationController extends AnimationTimer {
      */
     @Generated
     public void setSimSpace(Pane simSpace) {
-        // Get actual simulation space bounds
-        this.simSpaceWidth = simSpace.getWidth();
-        this.simSpaceHeight = simSpace.getHeight();
-        
-        // Listen for size changes
-        simSpace.widthProperty().addListener((obs, old, newVal) -> 
-            this.simSpaceWidth = newVal.doubleValue());
-        simSpace.heightProperty().addListener((obs, old, newVal) -> 
-            this.simSpaceHeight = newVal.doubleValue());
+        this.stateManager.setupSpaceTracking(simSpace);
     }
 
     /**
@@ -130,7 +113,7 @@ public class PhysicsAnimationController extends AnimationTimer {
     @Generated
     @Override
     public void start(){
-        running = true;
+        stateManager.setRunning(true);
         super.start();
     }
     
@@ -139,7 +122,7 @@ public class PhysicsAnimationController extends AnimationTimer {
      * @return the width of the simulation space
      */
     public double getSimSpaceWidth() {
-        return simSpaceWidth;
+        return stateManager.getSimSpaceWidth();
     }
     
     /**
@@ -147,7 +130,7 @@ public class PhysicsAnimationController extends AnimationTimer {
      * @return the height of the simulation space
      */
     public double getSimSpaceHeight() {
-        return simSpaceHeight;
+        return stateManager.getSimSpaceHeight();
     }
 
     /**
@@ -161,14 +144,14 @@ public class PhysicsAnimationController extends AnimationTimer {
      */
     @Override
     public void handle(long now) {
-        if (lastTime == 0) {
-            lastTime = now;
+        if (stateManager.getLastTime() == 0) {
+            stateManager.setLastTime(now);
             return;
         }
 
-        long actualFrameTimeNs = now - lastTime;
+        long actualFrameTimeNs = now - stateManager.getLastTime();
         float frameTime = actualFrameTimeNs / 1_000_000_000.0f;
-        lastTime = now;
+        stateManager.setLastTime(now);
         
         // Update performance monitoring
         performanceMonitor.updatePerformance(actualFrameTimeNs);
@@ -196,12 +179,12 @@ public class PhysicsAnimationController extends AnimationTimer {
         final float fixedTimeStep = 1.0f / 60.0f;
         
         // Accumulate time and step physics in fixed intervals
-        accumulator += cappedFrameTime;
+        stateManager.addToAccumulator(cappedFrameTime);
         
-        while (accumulator >= fixedTimeStep) {
+        while (stateManager.getAccumulator() >= fixedTimeStep) {
             world.step(fixedTimeStep, performanceMonitor.getVelocityIterations(), 
                       performanceMonitor.getPositionIterations());
-            accumulator -= fixedTimeStep;
+            stateManager.subtractFromAccumulator(fixedTimeStep);
         }
     }
     
@@ -221,7 +204,7 @@ public class PhysicsAnimationController extends AnimationTimer {
             String objectName = (String) pair.body.getUserData();
             
             // Check for culling
-            if (shouldCullPair(pair, pos, objectName)) {
+            if (shouldCullPair(pos, objectName)) {
                 cullingManager.cullObject(pair, objectName);
                 continue;
             }
@@ -237,12 +220,15 @@ public class PhysicsAnimationController extends AnimationTimer {
     /**
      * Determines if a pair should be culled based on position.
      */
-    private boolean shouldCullPair(PhysicsVisualPair pair, Vec2 pos, String objectName) {
+    private boolean shouldCullPair(Vec2 pos, String objectName) {
         double scaledX = pos.x * 50.0f; // Using SCALE constant
         double scaledY = pos.y * 50.0f;
 
-        // Create SimulationBounds object using simSpaceWidth and simSpaceHeight
-        SimulationBounds bounds = new SimulationBounds(simSpaceWidth, simSpaceHeight);
+        // Create SimulationBounds object using stateManager dimensions
+        SimulationBounds bounds = new SimulationBounds(
+            stateManager.getSimSpaceWidth(), 
+            stateManager.getSimSpaceHeight()
+        );
 
         return cullingManager.shouldCullObject(scaledX, scaledY, bounds, objectName);
     }
@@ -312,8 +298,7 @@ public class PhysicsAnimationController extends AnimationTimer {
      */
     @Generated
     public void reset() {
-        lastTime = 0;
-        accumulator = 0.0f; // Reset physics accumulator
+        stateManager.reset();
         
         // Clear object cache and restore objects
         cullingManager.clearObjectCache();
@@ -334,13 +319,13 @@ public class PhysicsAnimationController extends AnimationTimer {
      * @return {@code true} if the timer is running, {@code false} otherwise
      */
     public boolean isRunning(){
-        return running;
+        return stateManager.isRunning();
     }
 
     @Generated
     @Override
     public void stop() {
-        running = false;
+        stateManager.setRunning(false);
         super.stop();
     }
 }
