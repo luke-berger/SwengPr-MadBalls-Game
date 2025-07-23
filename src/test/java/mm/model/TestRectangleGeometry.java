@@ -246,27 +246,18 @@ public class TestRectangleGeometry {
      * The test validates that:
      * </p>
      * <ul>
-     * <li>Zero-size rectangles can be created without throwing exceptions</li>
-     * <li>Point containment is handled correctly - only the exact position point should be "inside"</li>
-     * <li>Points infinitesimally close to the position are correctly identified as outside</li>
-     * <li>The degenerate geometry doesn't break containment calculation logic</li>
+     * <li>Zero-size rectangles cannot be created and Exception is thrown</li>
      * </ul>
-     * <p>
-     * This edge case testing is important for robustness in scenarios where
-     * objects might be collapsed to zero size during animations or when
-     * invalid geometry data is provided.
-     * </p>
      * 
      * @see RectangleGeometry#RectangleGeometry(Position, double, double)
      * @see RectangleGeometry#containsPoint(double, double)
      */
     @Test
     public void testZeroSizeRectangle() {
-        RectangleGeometry zeroRect = new RectangleGeometry(testPosition, 0.0, 0.0);
-        
-        // Only the exact position should be inside
-        assertTrue(zeroRect.containsPoint(10.0, 20.0));
-        assertFalse(zeroRect.containsPoint(10.1, 20.0));
+        assertThrows(IllegalArgumentException.class, () -> {
+            RectangleGeometry zeroRect = new RectangleGeometry(testPosition, 0.0, 0.0);
+            assertNull(zeroRect);
+        });
     }
     
     /**
