@@ -286,8 +286,8 @@
 
                         <exclude>mm/model/CollisionDetection.class</exclude>
                         <exclude>mm/model/CollisionDetection$*.class</exclude>
-                        <exclude>mm/model/CollisonShapeHandler.class</exclude>
-                        <exclude>mm/model/CollisonShapeHandler$*.class</exclude>
+                        <exclude>mm/model/CollisionShapeHandler.class</exclude>
+                        <exclude>mm/model/CollisionShapeHandler$*.class</exclude>
 
                         <!-- Lambda functions are compiled to synthetic methods with specific patterns -->
                         <exclude>**/PhysicsAnimationController$lambda$*</exclude>
