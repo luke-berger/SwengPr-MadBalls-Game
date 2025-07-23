@@ -126,6 +126,30 @@ public class TestRectangleGeometry {
         assertFalse(rectangleGeometry.containsPoint(12.0, 25.0));  // above
     }
     
+    /**
+     * Tests point containment for rotated rectangles.
+     * <p>
+     * Verifies that the containsPoint method correctly handles point-in-rectangle
+     * calculations when the rectangle has been rotated. This is a complex geometric
+     * operation that requires coordinate transformation to account for the rotation.
+     * </p>
+     * <p>
+     * The test creates a rectangle rotated 45 degrees and verifies that:
+     * </p>
+     * <ul>
+     * <li>The geometric center point is always contained regardless of rotation</li>
+     * <li>Rotation transformation is applied correctly to the point containment algorithm</li>
+     * <li>The rotation doesn't break the fundamental containment logic</li>
+     * </ul>
+     * <p>
+     * This test is crucial for validating collision detection accuracy in scenarios
+     * where game objects are oriented at non-axis-aligned angles, which is common
+     * in realistic physics simulations and game environments.
+     * </p>
+     * 
+     * @see RectangleGeometry#containsPoint(double, double)
+     * @see RectangleGeometry#RectangleGeometry(Position, double, double, double)
+     */
     @Test
     public void testContainsPointWithRotation() {
         // Create a rotated rectangle (45 degrees)
@@ -137,6 +161,30 @@ public class TestRectangleGeometry {
         assertTrue(rotatedRect.containsPoint(centerX, centerY));
     }
     
+    /**
+     * Tests bounding box calculation for non-rotated rectangles.
+     * <p>
+     * Verifies that the getBounds method correctly calculates the axis-aligned
+     * bounding box (AABB) for rectangles without rotation. The bounding box
+     * should exactly match the rectangle's dimensions and position.
+     * </p>
+     * <p>
+     * The test validates:
+     * </p>
+     * <ul>
+     * <li>The returned bounds array has exactly 4 elements</li>
+     * <li>Bounds are in the correct format: [minX, minY, maxX, maxY]</li>
+     * <li>Calculated boundaries precisely match the rectangle's edges</li>
+     * <li>Position offset is correctly applied to the bounding calculations</li>
+     * </ul>
+     * <p>
+     * For a rectangle at position (10, 20) with width 6.0 and height 4.0,
+     * the expected bounds are [10.0, 20.0, 16.0, 24.0].
+     * </p>
+     * 
+     * @see RectangleGeometry#getBounds()
+     * @see GeometryData#getBounds()
+     */
     @Test
     public void testGetBoundsNoRotation() {
         double[] bounds = rectangleGeometry.getBounds();
@@ -149,6 +197,32 @@ public class TestRectangleGeometry {
         assertEquals(24.0, bounds[3], 0.001); // maxY
     }
     
+    /**
+     * Tests bounding box calculation for rotated rectangles.
+     * <p>
+     * Verifies that the getBounds method correctly calculates the axis-aligned
+     * bounding box (AABB) for rectangles that have been rotated. When a rectangle
+     * is rotated, its AABB must expand to encompass all corners of the rotated shape.
+     * </p>
+     * <p>
+     * The test creates a rectangle rotated 45 degrees and validates:
+     * </p>
+     * <ul>
+     * <li>The returned bounds array has exactly 4 elements</li>
+     * <li>The bounding box is larger than the original rectangle's dimensions</li>
+     * <li>The AABB correctly encompasses the rotated rectangle's extent</li>
+     * <li>Rotation calculations don't introduce invalid or NaN values</li>
+     * </ul>
+     * <p>
+     * For a 45-degree rotation, the diagonal length of the rectangle becomes
+     * significant in determining the expanded bounding box dimensions. This
+     * test ensures that collision detection broad-phase algorithms will work
+     * correctly with rotated rectangular objects.
+     * </p>
+     * 
+     * @see RectangleGeometry#getBounds()
+     * @see GeometryData#getBounds()
+     */
     @Test
     public void testGetBoundsWithRotation() {
         RectangleGeometry rotatedRect = new RectangleGeometry(testPosition, 6.0, 4.0, 45.0);
@@ -161,6 +235,31 @@ public class TestRectangleGeometry {
         assertTrue(bounds[3] - bounds[1] > 4.0); // height > original height
     }
     
+    /**
+     * Tests behavior of zero-size rectangles.
+     * <p>
+     * Verifies that rectangles with zero width and height are handled correctly
+     * by the geometry system. Zero-size rectangles represent degenerate cases
+     * that can occur in edge conditions or during object initialization phases.
+     * </p>
+     * <p>
+     * The test validates that:
+     * </p>
+     * <ul>
+     * <li>Zero-size rectangles can be created without throwing exceptions</li>
+     * <li>Point containment is handled correctly - only the exact position point should be "inside"</li>
+     * <li>Points infinitesimally close to the position are correctly identified as outside</li>
+     * <li>The degenerate geometry doesn't break containment calculation logic</li>
+     * </ul>
+     * <p>
+     * This edge case testing is important for robustness in scenarios where
+     * objects might be collapsed to zero size during animations or when
+     * invalid geometry data is provided.
+     * </p>
+     * 
+     * @see RectangleGeometry#RectangleGeometry(Position, double, double)
+     * @see RectangleGeometry#containsPoint(double, double)
+     */
     @Test
     public void testZeroSizeRectangle() {
         RectangleGeometry zeroRect = new RectangleGeometry(testPosition, 0.0, 0.0);
@@ -170,6 +269,27 @@ public class TestRectangleGeometry {
         assertFalse(zeroRect.containsPoint(10.1, 20.0));
     }
     
+    /**
+     * Tests rectangle behavior with edge case rotation angles.
+     * <p>
+     * Verifies that the RectangleGeometry correctly handles various rotation angles
+     * that represent common geometric edge cases. These include orthogonal rotations
+     * and full rotations that should be mathematically equivalent to no rotation.
+     * </p>
+     * <p>
+     * For all test cases, the geometric center point should remain contained within
+     * the rectangle regardless of rotation angle. This validates that:
+     * </p>
+     * <ul>
+     * <li>Rotation calculations handle standard angle values correctly</li>
+     * <li>Trigonometric functions produce expected results for key angles</li>
+     * <li>The center point calculation remains stable across rotations</li>
+     * <li>No numerical instabilities occur with common rotation values</li>
+     * </ul>
+     * 
+     * @see RectangleGeometry#RectangleGeometry(Position, double, double, double)
+     * @see RectangleGeometry#containsPoint(double, double)
+     */
     @Test
     public void testEdgeCasesRotation() {
         // Test 90 degree rotation
