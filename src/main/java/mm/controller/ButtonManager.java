@@ -499,6 +499,17 @@ public class ButtonManager {
                 }
             });
         }
+
+        if (winButtons.btnWinHome != null) {
+            winButtons.btnWinHome.setOnAction(e -> {
+                TitleScreenController titleScreenController = new TitleScreenController(uiComponents.primaryStage);
+                uiComponents.primaryStage.setScene(titleScreenController.getScene());
+            
+                uiComponents.primaryStage.setWidth(uiComponents.originalWidth);
+                uiComponents.primaryStage.setHeight(uiComponents.originalHeight);
+            });
+            
+        }
     }
 
     /**
