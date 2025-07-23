@@ -13,7 +13,7 @@ import mm.model.PhysicsVisualPair;
  * This class is responsible for updating JavaFX visual positions and rotations
  * based on physics simulation data.
  */
-public class VisualUpdateHandler {
+public class VisualUpdateController {
     private static final float SCALE = 50.0f;
     
     /**

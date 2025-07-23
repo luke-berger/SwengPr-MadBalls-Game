@@ -15,7 +15,7 @@ import mm.model.SimulationModel;
  * Handles object culling operations for the physics simulation.
  * This class manages out-of-bounds detection, object removal, and restoration.
  */
-public class ObjectCullingManager {
+public class ObjectCullingController {
     private final SimulationModel model;
     private final List<GameObject> culledObjects = new ArrayList<>();
     private final List<Vec2> originalPositions = new ArrayList<>();
@@ -31,7 +31,7 @@ public class ObjectCullingManager {
      * 
      * @param model the simulation model to manage
      */
-    public ObjectCullingManager(SimulationModel model) {
+    public ObjectCullingController(SimulationModel model) {
         this.model = model;
     }
     
