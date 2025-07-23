@@ -1,25 +1,47 @@
 {
   "levelObjects" : [ {
-    "name" : "bucket",
-    "type" : "Bucket",
+    "name" : "box1",
+    "type" : "Rectangle",
     "size" : {
       "width" : 100.0,
-      "height" : 80.0,
+      "height" : 100.0,
       "radius" : 0.0
     },
     "angle" : 0.0,
-    "sprite" : null,
-    "colour" : "0x808080ff",
+    "sprite" : "madBox.png",
+    "colour" : "BLACK",
     "physics" : {
       "density" : 1.0,
       "friction" : 0.4,
       "restitution" : 0.1,
-      "shape" : "STATIC"
+      "shape" : "DYNAMIC"
     },
     "winning" : false,
     "position" : {
-      "x" : 1188.8572,
-      "y" : 433.14285
+      "x" : 971.1429,
+      "y" : 247.71428
+    }
+  }, {
+    "name" : "box1",
+    "type" : "Rectangle",
+    "size" : {
+      "width" : 100.0,
+      "height" : 100.0,
+      "radius" : 0.0
+    },
+    "angle" : 0.0,
+    "sprite" : "madBox.png",
+    "colour" : "BLACK",
+    "physics" : {
+      "density" : 1.0,
+      "friction" : 0.4,
+      "restitution" : 0.1,
+      "shape" : "DYNAMIC"
+    },
+    "winning" : false,
+    "position" : {
+      "x" : 1140.8572,
+      "y" : 178.57144
     }
   } ],
   "inventoryObjects" : [ {
@@ -40,7 +62,7 @@
       "shape" : "DYNAMIC"
     },
     "winning" : false,
-    "count" : 15
+    "count" : 13
   }, {
     "name" : "Domino",
     "type" : "rectangle",
@@ -97,7 +119,7 @@
       "shape" : "STATIC"
     },
     "winning" : false,
-    "count" : 0
+    "count" : 15
   }, {
     "name" : "platform",
     "type" : "rectangle",
@@ -249,6 +271,6 @@
       "shape" : "STATIC"
     },
     "winning" : false,
-    "count" : 14
+    "count" : 15
   } ]
 }

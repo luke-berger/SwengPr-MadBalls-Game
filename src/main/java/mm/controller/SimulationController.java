@@ -90,26 +90,167 @@ public class SimulationController {
     private JsonViewController jsonViewController;
 
     /**
+     * Parameter object for SimulationController constructor to reduce parameter count.
+     * <p>
+     * This class encapsulates all the configuration parameters needed to create a SimulationController
+     * instance, following the parameter object pattern to avoid excessive parameter lists.
+     * Uses the Builder pattern for flexible and readable object construction.
+     * </p>
+     * 
+     * @see SimulationController#SimulationController(SimulationControllerParams)
+     * @see Builder
+     */
+    public static class SimulationControllerParams {
+        /** The primary stage of the JavaFX application */
+        public final Stage primaryStage;
+        
+        /** The resource path to the level JSON file to load */
+        public final String levelPath;
+        
+        /** Whether the simulation is running in puzzle mode (true) or sandbox mode (false) */
+        public final boolean isPuzzleMode;
+        
+        /** Whether the player has reached the end of all puzzle levels */
+        public final boolean atPuzzlesEnd;
+        
+        /** The selected visual skin theme ("Default" or "Legacy") */
+        public final String selectedSkin;
+        
+        /**
+         * Private constructor to enforce use of the Builder pattern.
+         * 
+         * @param builder the builder instance containing all configuration values
+         */
+        private SimulationControllerParams(Builder builder) {
+            this.primaryStage = builder.primaryStage;
+            this.levelPath = builder.levelPath;
+            this.isPuzzleMode = builder.isPuzzleMode;
+            this.atPuzzlesEnd = builder.atPuzzlesEnd;
+            this.selectedSkin = builder.selectedSkin;
+        }
+        
+        /**
+         * Builder class for constructing SimulationControllerParams instances.
+         * <p>
+         * Provides a fluent API for setting configuration parameters with sensible defaults.
+         * Required parameters (primaryStage and levelPath) are validated in the build() method.
+         * </p>
+         * 
+         * <h3>Usage Example:</h3>
+         * <pre>{@code
+         * SimulationControllerParams params = new SimulationControllerParams.Builder()
+         *     .setPrimaryStage(stage)
+         *     .setLevelPath("/level/level1.json")
+         *     .setPuzzleMode(true)
+         *     .setSelectedSkin("Legacy")
+         *     .build();
+         * }</pre>
+         */
+        public static class Builder {
+            /** The primary stage - required parameter */
+            private Stage primaryStage;
+            
+            /** The level path - required parameter */
+            private String levelPath;
+            
+            /** Whether puzzle mode is enabled - defaults to false (sandbox mode) */
+            private boolean isPuzzleMode = false;
+            
+            /** Whether at the end of puzzles - defaults to false */
+            private boolean atPuzzlesEnd = false;
+            
+            /** The selected skin - defaults to "Default" */
+            private String selectedSkin = "Default";
+            
+            /**
+             * Sets the primary stage for the simulation.
+             * 
+             * @param primaryStage the JavaFX primary stage (required)
+             * @return this builder instance for method chaining
+             */
+            public Builder setPrimaryStage(Stage primaryStage) {
+                this.primaryStage = primaryStage;
+                return this;
+            }
+            
+            /**
+             * Sets the path to the level JSON file.
+             * 
+             * @param levelPath the resource path to the level file (required)
+             * @return this builder instance for method chaining
+             */
+            public Builder setLevelPath(String levelPath) {
+                this.levelPath = levelPath;
+                return this;
+            }
+            
+            /**
+             * Sets whether the simulation should run in puzzle mode.
+             * 
+             * @param isPuzzleMode true for puzzle mode, false for sandbox mode
+             * @return this builder instance for method chaining
+             */
+            public Builder setPuzzleMode(boolean isPuzzleMode) {
+                this.isPuzzleMode = isPuzzleMode;
+                return this;
+            }
+            
+            /**
+             * Sets whether the player has reached the end of all puzzle levels.
+             * 
+             * @param atPuzzlesEnd true if at the end of puzzles, false otherwise
+             * @return this builder instance for method chaining
+             */
+            public Builder setAtPuzzlesEnd(boolean atPuzzlesEnd) {
+                this.atPuzzlesEnd = atPuzzlesEnd;
+                return this;
+            }
+            
+            /**
+             * Sets the selected visual skin theme.
+             * 
+             * @param selectedSkin the skin name ("Default" or "Legacy")
+             * @return this builder instance for method chaining
+             */
+            public Builder setSelectedSkin(String selectedSkin) {
+                this.selectedSkin = selectedSkin;
+                return this;
+            }
+            
+            /**
+             * Builds and returns a new SimulationControllerParams instance.
+             * <p>
+             * Validates that all required parameters (primaryStage and levelPath) have been set.
+             * </p>
+             * 
+             * @return a new SimulationControllerParams instance with the configured values
+             * @throws IllegalStateException if primaryStage or levelPath is null
+             */
+            public SimulationControllerParams build() {
+                if (primaryStage == null || levelPath == null) {
+                    throw new IllegalStateException("Primary stage and level path are required");
+                }
+                return new SimulationControllerParams(this);
+            }
+        }
+    }
+
+    /**
      * Constructs the SimulationController, sets up the model and view, and wires up
      * event handlers.
      *
-     * @param primaryStage the primary stage of the application
-     * @param levelPath    the resource path to the level JSON file
-     * @param isPuzzleMode whether puzzle mode is enabled
-     * @param atPuzzlesEnd whether at the end of puzzles
-     * @param selectedSkin the selected skin ("Default" or "Legacy")
+     * @param params the parameter object containing all configuration values
      */
-    public SimulationController(Stage primaryStage, String levelPath, boolean isPuzzleMode, boolean atPuzzlesEnd,
-            String selectedSkin) {
-        this.primaryStage = primaryStage;
+    public SimulationController(SimulationControllerParams params) {
+        this.primaryStage = params.primaryStage;
 
         // Store original window dimensions before any changes
-        this.originalWidth = primaryStage.getWidth();
-        this.originalHeight = primaryStage.getHeight();
+        this.originalWidth = params.primaryStage.getWidth();
+        this.originalHeight = params.primaryStage.getHeight();
 
-        this.model = new SimulationModel(levelPath);
-        this.view = new SimulationView(primaryStage, isPuzzleMode, atPuzzlesEnd);
-        this.selectedSkin = selectedSkin != null ? selectedSkin : "Default";
+        this.model = new SimulationModel(params.levelPath);
+        this.view = new SimulationView(params.primaryStage, params.isPuzzleMode, params.atPuzzlesEnd);
+        this.selectedSkin = params.selectedSkin != null ? params.selectedSkin : "Default";
 
         // Set win listener
         this.model.setWinListener(() -> {
@@ -893,8 +1034,14 @@ public class SimulationController {
         String nextLevelPath = "/level/level" + nextLevel + ".json";
         if (view.getWinScreenButtons().btnWinNext != null) {
             view.getWinScreenButtons().btnWinNext.setOnAction(e -> {
-                SimulationController simController = new SimulationController(primaryStage, nextLevelPath,
-                        true, atPuzzlesEnd, selectedSkin);
+                SimulationControllerParams params = new SimulationControllerParams.Builder()
+                    .setPrimaryStage(primaryStage)
+                    .setLevelPath(nextLevelPath)
+                    .setPuzzleMode(true)
+                    .setAtPuzzlesEnd(atPuzzlesEnd)
+                    .setSelectedSkin(selectedSkin)
+                    .build();
+                SimulationController simController = new SimulationController(params);
                 Scene simScene = simController.getScene();
                 primaryStage.setScene(simScene);
             });
