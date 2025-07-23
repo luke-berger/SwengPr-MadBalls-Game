@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import mm.model.GameObject;
 import mm.model.InventoryObject;
+import mm.model.AbstractObject;
 
 /**
  * Singleton class to manage the globally selected skin/texture pack.
@@ -90,29 +91,9 @@ public class SkinManagerController {
      */
     public void updateInventorySpritesForSkin(List<InventoryObject> inventoryObjects) {
         String skinFolder = OBJECT_SKINS_PATH + selectedSkin + "/";
-
+        
         for (InventoryObject obj : inventoryObjects) {
-            String objectName = obj.getName();
-            String defaultSprite = DEFAULT_SPRITES.get(objectName);
-
-            if (defaultSprite != null) {
-                // Set the sprite with the current skin folder
-                obj.setSprite(skinFolder + defaultSprite);
-            } else {
-                // Handle existing sprite logic for objects not in our default map
-                String originalSprite = obj.getSprite();
-                if (originalSprite != null && !originalSprite.trim().isEmpty()) {
-                    String newSprite;
-                    // If sprite already contains full path, replace the skin folder
-                    if (originalSprite.contains(OBJECT_SKINS_PATH)) {
-                        newSprite = originalSprite.replaceAll(OBJECT_SKINS_PATH + "[^/]+/", skinFolder);
-                    } else {
-                        // If sprite is just filename, prepend with skin folder
-                        newSprite = skinFolder + originalSprite;
-                    }
-                    obj.setSprite(newSprite);
-                }
-            }
+            updateSpriteForObject(obj, skinFolder);
         }
     }
 
@@ -125,28 +106,39 @@ public class SkinManagerController {
      */
     public void updateGameObjectSpritesForSkin(List<GameObject> gameObjects) {
         String skinFolder = OBJECT_SKINS_PATH + selectedSkin + "/";
-
+        
         for (GameObject obj : gameObjects) {
-            String objectName = obj.getName();
-            String defaultSprite = DEFAULT_SPRITES.get(objectName);
+            updateSpriteForObject(obj, skinFolder);
+        }
+    }
+    
+    /**
+     * Updates the sprite for a single object based on the current skin folder.
+     * Handles both default sprite mapping and existing sprite path updates.
+     * 
+     * @param obj The object (GameObject or InventoryObject) to update
+     * @param skinFolder The current skin folder path
+     */
+    private void updateSpriteForObject(AbstractObject obj, String skinFolder) {
+        String objectName = obj.getName();
+        String defaultSprite = DEFAULT_SPRITES.get(objectName);
 
-            if (defaultSprite != null) {
-                // Set the sprite with the current skin folder
-                obj.setSprite(skinFolder + defaultSprite);
-            } else {
-                // Handle existing sprite logic for objects not in our default map
-                String originalSprite = obj.getSprite();
-                if (originalSprite != null && !originalSprite.trim().isEmpty()) {
-                    String newSprite;
-                    // If sprite already contains full path, replace the skin folder
-                    if (originalSprite.contains(OBJECT_SKINS_PATH)) {
-                        newSprite = originalSprite.replaceAll(OBJECT_SKINS_PATH + "[^/]+/", skinFolder);
-                    } else {
-                        // If sprite is just filename, prepend with skin folder
-                        newSprite = skinFolder + originalSprite;
-                    }
-                    obj.setSprite(newSprite);
+        if (defaultSprite != null) {
+            // Set the sprite with the current skin folder
+            obj.setSprite(skinFolder + defaultSprite);
+        } else {
+            // Handle existing sprite logic for objects not in our default map
+            String originalSprite = obj.getSprite();
+            if (originalSprite != null && !originalSprite.trim().isEmpty()) {
+                String newSprite;
+                // If sprite already contains full path, replace the skin folder
+                if (originalSprite.contains(OBJECT_SKINS_PATH)) {
+                    newSprite = originalSprite.replaceAll(OBJECT_SKINS_PATH + "[^/]+/", skinFolder);
+                } else {
+                    // If sprite is just filename, prepend with skin folder
+                    newSprite = skinFolder + originalSprite;
                 }
+                obj.setSprite(newSprite);
             }
         }
     }
